@@ -1,0 +1,28 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Release Please
+        uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: node
+          package-name: moleculer-setup
+          bump-minor-pre-major: true

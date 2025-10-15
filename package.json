@@ -1,0 +1,29 @@
+{
+  "name": "moleculer-setup",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "A Moleculer.js project generator, to make a simple Moleculer-based microservices template with Docker Compose setup for development environment.",
+  "scripts": {
+    "init": "node ./bin/cli.js init",
+    "lint": "standard"
+  },
+  "bin": {
+    "moleculer-setup": "./bin/cli.js"
+  },
+  "dependencies": {
+    "commander": "14.0.1",
+    "inquirer": "12.9.6",
+    "js-yaml": "4.1.0",
+    "mustache": "4.2.0",
+    "slugify": "1.6.6"
+  },
+  "devDependencies": {
+    "standard": "17.1.2"
+  },
+  "standard": {
+    "ignore": [
+      "/core/utils/docker-compose-helpers.js"
+    ]
+  },
+  "type": "module"
+}
