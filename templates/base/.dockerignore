@@ -1,0 +1,29 @@
+# Ignore dependency directory
+node_modules
+
+# Ignore npm configuration file
+.npmrc
+
+# Ignore all logs files
+logs
+*.log
+npm-debug.log
+
+# Ignore git files
+.git
+.gitignore
+
+# Ignore Docker files
+Dockerfile
+docker-compose.yaml
+
+# Ignore .env files
+.env
+.env.*
+*.env
+
+# Ignore makefile
+makefile
+
+# Ignore README files
+README.md

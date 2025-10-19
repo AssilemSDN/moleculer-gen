@@ -1,0 +1,41 @@
+# Node.js dependencies
+node_modules/
+
+# NPM log files
+npm-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+.env.*
+*.env
+
+# Allow example files
+!.env.example
+
+# Moleculer-specific files
+.moleculer-logs/
+.moleculer/
+
+# Docker-related files
+.docker/
+docker-compose.override.yml
+
+# Build artifacts
+/dist/
+build/
+
+# IDE configuration files
+.vscode/
+.idea/
+*.iml
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Temporary files created by editors (such as Vim)
+*.swp
