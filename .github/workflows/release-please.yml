@@ -13,16 +13,19 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
+      # --- release-please ---
       - name: Release Please
         uses: google-github-actions/release-please-action@v3
         with:
           release-type: node
           package-name: moleculer-gen
           bump-minor-pre-major: true
+          token: ${{ secrets.GH_TOKEN }}
