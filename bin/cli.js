@@ -4,8 +4,8 @@
   PATH  /bin/cli.js
 */
 import { program } from 'commander'
-import { applyLoggerLevel, registerGlobalOptions } from '../src/core/cli/options.js'
-import { registerCommands } from '../src/core/cli/commands.js'
+import { applyLoggerLevel, registerGlobalOptions } from '../src/cli/options.js'
+import { registerCommands } from '../src/cli/commands.js'
 
 // CLI definition
 program

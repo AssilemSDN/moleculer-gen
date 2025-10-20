@@ -14,10 +14,11 @@ export const registerCommands = (program) => {
   program
     .command('init')
     .description('Initialize a new Moleculer project')
-    .action(async () => {
+    .option('--dry-run', 'Simulate project generation without creating files')
+    .action(async (opts) => {
       try {
         logger.info('🚀 Starting project initialization...')
-        const result = await initProject()
+        const result = await initProject({ dryRun: opts.dryRun })
 
         if (result.success) {
           logger.info('🎉 Project initialized successfully!')

@@ -3,9 +3,9 @@
 */
 import inquirer from 'inquirer'
 import { AppError } from '../errors/AppError.js'
-import { transporterMetas } from '../../../dist/modules/transporters/index.js'
-import { databaseMetas } from '../../../dist/modules/databases/index.js'
-import { pluginMetas } from '../../../dist/modules/plugins/index.js'
+import { transporterMetas } from '../../dist/modules/transporters/index.js'
+import { databaseMetas } from '../../dist/modules/databases/index.js'
+import { pluginMetas } from '../../dist/modules/plugins/index.js'
 
 const sanitizeProjectName = (name) =>
   name

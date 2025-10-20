@@ -7,16 +7,16 @@ import { initPrompts } from '../prompts/init-prompts.js'
 import { safeRun } from '../utils/safe-run.js'
 
 // Modules Factory
-import { databases } from '../../../dist/modules/databases/index.js'
-import { transporters } from '../../../dist/modules/transporters/index.js'
-import { plugins } from '../../../dist/modules/plugins/index.js'
+import { databases } from '../../dist/modules/databases/index.js'
+import { transporters } from '../../dist/modules/transporters/index.js'
+import { plugins } from '../../dist/modules/plugins/index.js'
 
 // Generator
 import { generate } from '../generators/generate.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const TEMPLATE_DIR = path.join(__dirname, '../../../templates/base')
+const TEMPLATE_DIR = path.join(__dirname, '../../templates/base')
 
 /**
  * Command to initialize a Moleculer project.
@@ -24,7 +24,7 @@ const TEMPLATE_DIR = path.join(__dirname, '../../../templates/base')
  * @function initProject
  * @returns {Promise<Object>} > User answers from prompts
  */
-export const initProject = safeRun(async () => {
+export const initProject = safeRun(async ({ dryRun = false } = {}) => {
   // 1- Ask prompts
   const answers = await initPrompts()
   const { projectNameSanitized, database, transporter, plugins: selectedPlugins } = answers
@@ -39,7 +39,7 @@ export const initProject = safeRun(async () => {
   ]
   // 3- Generate the project
   const projectDir = path.join(process.cwd(), projectNameSanitized)
-  await generate(projectNameSanitized, { database }, modulesToGenerate, TEMPLATE_DIR, projectDir)
+  await generate(projectNameSanitized, { database }, modulesToGenerate, TEMPLATE_DIR, projectDir, { dryRun })
 
   return answers
 })
