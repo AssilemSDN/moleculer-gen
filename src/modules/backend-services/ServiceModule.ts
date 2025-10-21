@@ -1,7 +1,7 @@
 /*
   PATH  /src/core/modules/backend-services/ServiceModule.ts
 */
-import { ModuleDefinition, ModuleMeta, DockerConfigExtended } from "../types"
+import { ModuleDefinition, ModuleMeta, DockerConfig } from "../types"
 
 interface ServiceModuleOptions {
   /** Slugified project name, e.g., "myapp" */
@@ -11,7 +11,7 @@ interface ServiceModuleOptions {
   /** Optional array of Docker service names this service depends on */
   dependsOn?: string[]
   /** Optional Docker labels for the service */
-  labels?: Record<string, string>
+  labels?: string[]
 }
 
 /**
@@ -25,7 +25,7 @@ export const ServiceModule = ({
   projectNameSanitized,
   serviceName,
   dependsOn = [],
-  labels = {}
+  labels = []
 }: ServiceModuleOptions): ModuleDefinition => {
   const serviceNameSanitized = serviceName.trim()
     .toLowerCase()
@@ -40,7 +40,7 @@ export const ServiceModule = ({
     enabledByDefault: true
   }
 
-  const docker: DockerConfigExtended = {
+  const docker: DockerConfig = {
     serviceName: `${projectNameSanitized}-${serviceNameSanitized}`,
     container_name: "${DOCKER_CONTAINER_BASENAME_APP}-"+`${serviceNameSanitized}`,
     image: '${DOCKER_IMAGE_NAME_APP}:${DOCKER_IMAGE_TAG_APP}',

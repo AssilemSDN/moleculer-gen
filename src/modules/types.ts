@@ -41,19 +41,13 @@ export interface DockerConfig {
   /** Services this container depends on */
   depends_on?: string[]
   /** Optional Docker labels (useful for Traefik or other orchestrators) */
-  labels?: Record<string, string>
+  labels?: string[]
+  /** Optional env files */
+  env_file?: string[]
   /** Security options for the container */
   security_opt?: string[]
   /** Restart policy for the container */
   restart?: 'no' | 'on-failure' | 'always' | 'unless-stopped'
-}
-
-/** 
- * Extended Docker configuration to support extra options like labels and env_file 
- */
-export interface DockerConfigExtended extends DockerConfig {
-  labels?: Record<string, string>
-  env_file?: string[]
 }
 
 /**

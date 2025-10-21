@@ -10,6 +10,7 @@ import { safeRun } from '../utils/safe-run.js'
 import { databases } from '../../dist/modules/databases/index.js'
 import { transporters } from '../../dist/modules/transporters/index.js'
 import { plugins } from '../../dist/modules/plugins/index.js'
+import { ApiGatewayModule } from '../../dist/modules/backend-services/ApiGatewayModule.js'
 
 // Generator
 import { generate } from '../generators/generate.js'
@@ -29,7 +30,9 @@ export const initProject = safeRun(async ({ dryRun = false } = {}) => {
   const answers = await initPrompts()
   const { projectNameSanitized, database, transporter, plugins: selectedPlugins } = answers
   // 2- Factory chosen modules
+  const needsTraefikLabels = selectedPlugins.includes('traefik')
   const modulesToGenerate = [
+    ApiGatewayModule({ projectNameSanitized, needsTraefikLabels }),
     databases[database](projectNameSanitized),
     transporters[transporter](projectNameSanitized),
     ...selectedPlugins

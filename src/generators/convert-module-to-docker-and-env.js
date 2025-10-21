@@ -17,14 +17,16 @@ export const ConvertModuleToDockerAndEnv = (module) => {
     [module.docker.serviceName]: {
       image: module.docker.image,
       container_name: module.docker.container_name,
+      environment: module.docker.environment,
       networks: module.docker.networks,
       volumes: module.docker.volumes,
       ports: module.docker.ports,
       command: module.docker.command,
-      environment: module.docker.environment,
       depends_on: module.docker.depends_on,
-      restart: module.docker.restart,
-      security_opt: module.docker.security_opt
+      labels: module.docker.labels,
+      env_file: module.docker.env_file,
+      security_opt: module.docker.security_opt,
+      restart: module.docker.restart
     }
   }
 
