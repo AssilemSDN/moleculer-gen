@@ -3,9 +3,9 @@
 */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import path from 'path'
-import { initProject } from '../../src/commands/init-project.js'
-import { logger } from '../../src/utils/logger.js'
-import { ApiGatewayModule } from '../../dist/modules/backend-services/ApiGatewayModule.js'
+import { initProject } from '../../../src/commands/init-project.js'
+import { logger } from '../../../src/utils/logger.js'
+import { ApiGatewayModule } from '../../../dist/modules/backend-services/ApiGatewayModule.js'
 
 // ---- Mocks ----
 vi.mock('../../../src/prompts/init-prompts.js', () => ({
@@ -46,8 +46,8 @@ describe('initProject (unit test)', () => {
   beforeEach(async () => {
     vi.clearAllMocks()
     cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(fakeCwd)
-    ;({ initPrompts } = await import('../../src/prompts/init-prompts.js'))
-    ;({ generate } = await import('../../src/generators/generate.js'))
+    ;({ initPrompts } = await import('../../../src/prompts/init-prompts.js'))
+    ;({ generate } = await import('../../../src/generators/generate.js'))
   })
 
   afterEach(() => cwdSpy.mockRestore())

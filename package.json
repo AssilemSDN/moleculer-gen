@@ -6,7 +6,8 @@
   "scripts": {
     "init": "node ./bin/cli.js init",
     "lint": "standard",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest run --reporter=dot"
   },
   "bin": {
     "moleculer-gen": "./bin/cli.js"
@@ -21,7 +22,8 @@
   "devDependencies": {
     "@types/node": "24.8.1",
     "standard": "17.1.2",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
   },
   "type": "module"
 }
