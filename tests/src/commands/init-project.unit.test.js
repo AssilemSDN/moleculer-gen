@@ -8,29 +8,29 @@ import { logger } from '../../../src/utils/logger.js'
 import { ApiGatewayModule } from '../../../dist/modules/backend-services/ApiGatewayModule.js'
 
 // ---- Mocks ----
-vi.mock('../../src/prompts/init-prompts.js', () => ({
+vi.mock('../../../src/prompts/init-prompts.js', () => ({
   initPrompts: vi.fn()
 }))
-vi.mock('../../src/generators/generate.js', () => ({
+vi.mock('../../../src/generators/generate.js', () => ({
   generate: vi.fn().mockResolvedValue(undefined)
 }))
 
 vi.spyOn(logger, 'info').mockImplementation(() => {})
 
 // ---- Modules mocks ----
-vi.mock('../../dist/modules/databases/index.js', () => ({
+vi.mock('../../../dist/modules/databases/index.js', () => ({
   databases: { mongodb: () => ({ meta: { key: 'mongodb' }, docker: {}, env: {} }) }
 }))
-vi.mock('../../dist/modules/transporters/index.js', () => ({
+vi.mock('../../../dist/modules/transporters/index.js', () => ({
   transporters: { nats: () => ({ meta: { key: 'nats' }, docker: {}, env: {} }) }
 }))
-vi.mock('../../dist/modules/plugins/index.js', () => ({
+vi.mock('../../../dist/modules/plugins/index.js', () => ({
   plugins: {
     traefik: () => ({ meta: { key: 'traefik' }, docker: {}, env: {} }),
     prometheus: () => ({ meta: { key: 'prometheus' }, docker: {}, env: {} })
   }
 }))
-vi.mock('../../dist/modules/backend-services/ApiGatewayModule.js', () => ({
+vi.mock('../../../dist/modules/backend-services/ApiGatewayModule.js', () => ({
   ApiGatewayModule: vi.fn(({ projectNameSanitized, needsTraefikLabels }) => ({
     meta: { key: `${projectNameSanitized}-api-gateway`, needsTraefikLabels },
     docker: {},
