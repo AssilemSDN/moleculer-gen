@@ -34,7 +34,9 @@ export interface DockerConfig {
   networks?: string[]
   /** Docker volumes */
   volumes?: string[]
-  /** Ports exposed by the container, e.g., 5000 or "5000:5000" */
+  /** Ports exposed by the container to other containers */
+  expose?: number | string
+  /** Ports exposed by the container from the outside, e.g., 5000 or "5000:5000" */
   ports?: Array<number | string>
   /** Additional command to run inside the container */
   command?: string[]

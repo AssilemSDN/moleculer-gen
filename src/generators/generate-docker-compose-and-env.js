@@ -28,7 +28,17 @@ export const generateDockerComposeAndEnv = async (modules, outputDir, envFile = 
   const dockerComposeDoc = {
     // version: '3.9',
     services,
-    networks: { backend: {}, publique: {} },
+    networks: {
+      publique: {
+        name: 'publique',
+        driver: 'bridge'
+      },
+      backend: {
+        name: 'backend',
+        internal: true,
+        driver: 'bridge'
+      }
+    },
     volumes: { mongodb_data: {} }
   }
   await writeYAML(path.join(outputDir, 'docker-compose.yml'), dockerComposeDoc)

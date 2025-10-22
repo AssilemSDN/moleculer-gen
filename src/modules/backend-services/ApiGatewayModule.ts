@@ -20,13 +20,13 @@ export const ApiGatewayModule = ({
 }: ApiGatewayModuleOptions): ModuleDefinition => {
   const base = ServiceModule({ projectNameSanitized, serviceName: 'Api Gateway', dependsOn, labels: 
     needsTraefikLabels?[
-      "traefik.enable=true",
+      String("traefik.enable=true"),
       "traefik.http.routers.api.rule=Host(`${DOCKER_CONTAINER_BASENAME_APP}.local`)",
-      "traefik.http.routers.api.entrypoints=web",
+      String("traefik.http.routers.api.entrypoints=web"),
       "traefik.http.services.api.loadbalancer.server.port=${APP_MOLECULER_API_GATEWAY_PORT}"  
     ]:[]
   })
-  base.docker.ports = [ "${APP_MOLECULER_API_GATEWAY_PORT}" ]
+  base.docker.expose = "${APP_MOLECULER_API_GATEWAY_PORT}"
   base.env.APP_MOLECULER_API_GATEWAY_PORT = port
   return { meta: base.meta, docker: base.docker, env: base.env }
 }

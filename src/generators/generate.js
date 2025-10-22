@@ -3,6 +3,7 @@
 */
 import { mkdirp, copyDir, ensureEmptyDir } from '../utils/fs-helpers.js'
 import { logger } from '../utils/logger.js'
+import { generateConfig } from './generate-config.js'
 import { generateDockerComposeAndEnv } from './generate-docker-compose-and-env.js'
 import { generatePackageJson } from './generate-package.json.js'
 
@@ -15,7 +16,7 @@ import { generatePackageJson } from './generate-package.json.js'
  * @param {string} outputDir - Path to output directory
  */
 
-export const generate = async (projectNameSanitized, optionsPkg, modules, templateDir, outputDir, { dryRun = false } = {}) => {
+export const generate = async (answers, optionsPkg, modules, templateDir, outputDir, { dryRun = false } = {}) => {
   if (dryRun) {
     logger.info(`[dry-run] Would generate project at ${outputDir}`)
     logger.info(`[dry-run] Would copy template from ${templateDir}`)
@@ -27,7 +28,8 @@ export const generate = async (projectNameSanitized, optionsPkg, modules, templa
   await copyDir(templateDir, outputDir)
   // run in parallel
   await Promise.all([
-    generatePackageJson(projectNameSanitized, outputDir, optionsPkg),
+    generateConfig(answers, outputDir),
+    generatePackageJson(answers.projectNameSanitized, outputDir, optionsPkg),
     generateDockerComposeAndEnv(modules, outputDir)
   ])
 }

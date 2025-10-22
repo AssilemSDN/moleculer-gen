@@ -42,7 +42,7 @@ export const initProject = safeRun(async ({ dryRun = false } = {}) => {
   ]
   // 3- Generate the project
   const projectDir = path.join(process.cwd(), projectNameSanitized)
-  await generate(projectNameSanitized, { database }, modulesToGenerate, TEMPLATE_DIR, projectDir, { dryRun })
+  await generate(answers, { database }, modulesToGenerate, TEMPLATE_DIR, projectDir, { dryRun })
 
   return answers
 })

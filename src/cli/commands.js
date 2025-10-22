@@ -35,8 +35,8 @@ export const registerCommands = (program) => {
 
   // (Futur) Add command
   program
-    .command('add <type> [name]')
-    .description('Add a new module, service, or plugin to an existing project')
+    .command('add-service')
+    .description('Add a new service to an existing Moleculer.js project')
     .action(async (type, name) => {
       logger.info(`Adding new ${type}: ${name}`)
       // TODO
