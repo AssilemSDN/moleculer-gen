@@ -102,6 +102,17 @@ export const readFile = async (filePath, opts = {}) => {
   }
 }
 
+export const exists = async (path) => {
+  try {
+    await fs.access(path)
+  } catch (err) {
+    throw new AppError(`${path} does not exist.`, {
+      code: 'FS_DOES_NOT_EXIST',
+      details: err
+    })
+  }
+}
+
 /**
  * Write a YAML file.
  * @param {string} filePath

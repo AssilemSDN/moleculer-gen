@@ -59,15 +59,13 @@ export const addServicePrompts = async () => {
       type: 'input',
       name: 'serviceFileName',
       message: 'File name:',
-      default: defaults.serviceFileName,
-      filter: input => input ? kebabCase(input) : defaults.serviceFileName
+      default: defaults.serviceFileName
     },
     {
       type: 'input',
       name: 'serviceDirectoryName',
       message: 'Service directory name:',
-      default: defaults.serviceDirectoryName,
-      filter: input => input ? kebabCase(input) : defaults.serviceDirectoryName
+      default: defaults.serviceDirectoryName
     },
     {
       type: 'input',

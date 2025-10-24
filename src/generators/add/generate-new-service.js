@@ -32,20 +32,20 @@ export const generateNewService = async (
     collectionName
   } = answers
 
-  // --- 🧪 Dry-run mode ---
+  //  1- dry-run mode : no real service generation
   if (dryRun) {
     logger.info(`[dry-run] Would generate service ${serviceFileName} at ${serviceDir}`)
     if (isCrud) logger.info(`[dry-run] Would generate model ${modelFileName}`)
     if (exposeApi) logger.info('[dry-run] Would update api-gateway routes')
+
     return
   }
 
-  // --- 📁 Ensure folders exist ---
-  await mkdirp(serviceDir)
+  // 2- Create needed directories
   await mkdirp(path.join(serviceDir, 'actions'))
   await mkdirp(path.join(serviceDir, 'methods'))
 
-  // --- 🧩 Render service template ---
+  // 3- Render service template
   const serviceTemplatePath = path.join(
     templateDir,
     isCrud ? 'service-crud.mustache' : 'service.mustache'
@@ -60,23 +60,21 @@ export const generateNewService = async (
 
   const serviceFilePath = path.join(serviceDir, serviceFileName)
   await writeFile(serviceFilePath, serviceRendered)
-  logger.success(`✅ Service generated: ${serviceFilePath}`)
 
-  // --- 🧩 Generate model if CRUD ---
+  // 4- Generate model if CRUD
   if (isCrud) {
     const modelTemplatePath = path.join(templateDir, 'model.mustache')
     const modelRendered = await renderTemplate(modelTemplatePath, {
       modelName,
       collectionName
     })
-    const modelFilePath = path.join(outputDir, `data/model/${modelFileName}`)
+    const modelFilePath = path.join(outputDir, `src/data/model/${modelFileName}`)
     await mkdirp(path.dirname(modelFilePath))
     await writeFile(modelFilePath, modelRendered)
-    logger.success(`✅ Model generated: ${modelFilePath}`)
   }
 
-  // --- 🔗 Handle api-gateway route addition (placeholder for future) ---
+  //  Handle api-gateway route addition (placeholder for future)
   if (exposeApi) {
-    logger.warn('ℹ️  API route addition not yet implemented.')
+    logger.warn('API route addition not yet implemented.')
   }
 }
