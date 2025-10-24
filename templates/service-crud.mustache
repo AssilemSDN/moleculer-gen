@@ -1,0 +1,22 @@
+/*
+  PATH      {{serviceDir}}
+  Handles CRUD operations for {{collectionName}} collection.
+*/
+const DbMixin = require('../../mixins/db.mixin')
+const {{modelName}} = require('../../data/model/{{modelFileName}}')
+
+module.exports = {
+  name: '{{serviceName}}',
+  mixins: [
+    DbMixin({
+      model: {{modelName}},
+      collection: '{{collectionName}}'
+    })
+  ],
+  actions: {
+    // add custom actions here
+  },
+  methods: {
+    // add custom methods here
+  }
+}

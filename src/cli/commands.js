@@ -2,6 +2,7 @@
   PATH  /src/core/cli/commands.js
 */
 
+import { addService } from '../commands/add-service.js'
 import { initProject } from '../commands/init-project.js'
 import { logger } from '../utils/logger.js'
 
@@ -37,8 +38,20 @@ export const registerCommands = (program) => {
   program
     .command('add-service')
     .description('Add a new service to an existing Moleculer.js project')
-    .action(async (type, name) => {
-      logger.info(`Adding new ${type}: ${name}`)
-      // TODO
+    .option('--dry-run', 'Simulate service generation without creating files')
+    .action(async (opts) => {
+      try {
+        const result = await addService({ dryRun: opts.dryRun })
+        if (result.success) {
+          logger.info('🎉 Service added successfully!')
+          logger.info('Service settings:\n', result.data)
+        } else {
+          logger.error('❌ Failed to add new service')
+          process.exitCode ||= 1
+        }
+      } catch (err) {
+        logger.error('❌ Unexpected error during add service:', err)
+        process.exitCode ||= 1
+      }
     })
 }

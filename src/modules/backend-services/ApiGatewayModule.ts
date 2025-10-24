@@ -28,5 +28,6 @@ export const ApiGatewayModule = ({
   })
   base.docker.expose = "${APP_MOLECULER_API_GATEWAY_PORT}"
   base.env.APP_MOLECULER_API_GATEWAY_PORT = port
+  base.env.DOCKER_ENV_FILE_APP = '.env.dev'
   return { meta: base.meta, docker: base.docker, env: base.env }
 }

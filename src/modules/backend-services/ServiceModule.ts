@@ -1,6 +1,7 @@
 /*
   PATH  /src/core/modules/backend-services/ServiceModule.ts
 */
+import slugify from "slugify"
 import { ModuleDefinition, ModuleMeta, DockerConfig } from "../types"
 
 interface ServiceModuleOptions {
@@ -27,10 +28,7 @@ export const ServiceModule = ({
   dependsOn = [],
   labels = []
 }: ServiceModuleOptions): ModuleDefinition => {
-  const serviceNameSanitized = serviceName.trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-_]/g, '')
+  const serviceNameSanitized = slugify(serviceName, { lower: true, strict: true, trim: true })
 
   const meta: ModuleMeta = {
     key: serviceNameSanitized,

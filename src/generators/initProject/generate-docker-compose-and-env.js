@@ -1,7 +1,7 @@
 /*
   PATH  /src/core/generator/generate-docker-compose-and-env.js
 */
-import { writeFile, writeYAML } from '../utils/fs-helpers.js'
+import { writeFile, writeYAML } from '../../utils/fs-helpers.js'
 import path from 'path'
 import { ConvertModuleToDockerAndEnv } from './convert-module-to-docker-and-env.js'
 

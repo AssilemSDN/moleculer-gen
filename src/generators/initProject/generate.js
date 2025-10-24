@@ -1,8 +1,9 @@
 /*
   PATH  /src/core/generator/generate.js
 */
-import { mkdirp, copyDir, ensureEmptyDir } from '../utils/fs-helpers.js'
-import { logger } from '../utils/logger.js'
+import path from 'path'
+import { mkdirp, copyDir, ensureEmptyDir } from '../../utils/fs-helpers.js'
+import { logger } from '../../utils/logger.js'
 import { generateConfig } from './generate-config.js'
 import { generateDockerComposeAndEnv } from './generate-docker-compose-and-env.js'
 import { generatePackageJson } from './generate-package.json.js'
@@ -24,7 +25,7 @@ export const generate = async (answers, optionsPkg, modules, templateDir, output
     return
   }
   await ensureEmptyDir(outputDir)
-  await mkdirp(outputDir)
+  await mkdirp(path.join(outputDir, '.moleculer-gen/'))
   await copyDir(templateDir, outputDir)
   // run in parallel
   await Promise.all([

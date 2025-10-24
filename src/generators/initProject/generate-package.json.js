@@ -2,7 +2,7 @@
   PATH  /src/core/generator/generate-package.json.js
 */
 import path from 'path'
-import { writeFile } from '../utils/fs-helpers.js'
+import { writeFile } from '../../utils/fs-helpers.js'
 
 /**
  * Generate a `package.json` file for the new project.

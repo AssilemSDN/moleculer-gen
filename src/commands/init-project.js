@@ -13,7 +13,7 @@ import { plugins } from '../../dist/modules/plugins/index.js'
 import { ApiGatewayModule } from '../../dist/modules/backend-services/ApiGatewayModule.js'
 
 // Generator
-import { generate } from '../generators/generate.js'
+import { generate } from '../generators/initProject/generate.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

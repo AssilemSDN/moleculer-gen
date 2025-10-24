@@ -1,5 +1,5 @@
 import path from 'path'
-import { writeFile } from '../utils/fs-helpers.js'
+import { writeFile } from '../../utils/fs-helpers.js'
 
 /**
  * Generate `.moleculer-gen/config.js`, useful file for moleculer-gen
@@ -14,9 +14,12 @@ import { writeFile } from '../utils/fs-helpers.js'
 export const generateConfig = async (answers, outputDir) => {
   const config = {
     ...answers,
-    services: [
-      'apiGateway'
-    ]
+    services: {
+      apiGateway: {
+        path: 'api-gateway',
+        crud: false
+      }
+    }
   }
   await writeFile(path.join(outputDir, '.moleculer-gen/config.json'), JSON.stringify(config, null, 2))
 }

@@ -6,13 +6,7 @@ import { AppError } from '../errors/AppError.js'
 import { transporterMetas } from '../../dist/modules/transporters/index.js'
 import { databaseMetas } from '../../dist/modules/databases/index.js'
 import { pluginMetas } from '../../dist/modules/plugins/index.js'
-
-const sanitizeProjectName = (name) =>
-  name
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-_]/g, '')
+import slugify from 'slugify'
 
 /**
  * Ask the user interactive prompts to configure a new Moleculer project.
@@ -43,7 +37,7 @@ export const initPrompts = async () => {
     }
   ])
 
-  const projectNameSanitized = sanitizeProjectName(projectName)
+  const projectNameSanitized = slugify(projectName, { lower: true, strict: true, trim: true })
   if (!projectNameSanitized) {
     throw new AppError('Project name invalid.', { code: 'INVALID_PROJECT_NAME' })
   }
