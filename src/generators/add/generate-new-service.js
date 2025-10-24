@@ -29,7 +29,9 @@ export const generateNewService = async (
     serviceFileName,
     modelFileName,
     modelName,
-    collectionName
+    modelVariableName,
+    collectionName,
+    schemaName
   } = answers
 
   //  1- dry-run mode : no real service generation
@@ -53,7 +55,7 @@ export const generateNewService = async (
 
   const serviceRendered = await renderTemplate(serviceTemplatePath, {
     serviceName,
-    modelName,
+    modelVariableName,
     modelFileName,
     collectionName
   })
@@ -65,15 +67,18 @@ export const generateNewService = async (
   if (isCrud) {
     const modelTemplatePath = path.join(templateDir, 'model.mustache')
     const modelRendered = await renderTemplate(modelTemplatePath, {
+      modelFileName,
       modelName,
-      collectionName
+      schemaName
     })
     const modelFilePath = path.join(outputDir, `src/data/model/${modelFileName}`)
     await mkdirp(path.dirname(modelFilePath))
     await writeFile(modelFilePath, modelRendered)
   }
 
-  //  Handle api-gateway route addition (placeholder for future)
+  // Generate new service in docker-compose
+  // Generate new service in .moleculer-gen/config
+  // Handle api-gateway route addition (placeholder for future)
   if (exposeApi) {
     logger.warn('API route addition not yet implemented.')
   }

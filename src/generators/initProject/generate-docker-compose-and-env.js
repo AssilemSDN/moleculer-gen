@@ -12,7 +12,7 @@ import { ConvertModuleToDockerAndEnv } from './convert-module-to-docker-and-env.
  * @param {string} outputDir - Directory where files will be generated
  * @returns {Promise<void>}
  */
-export const generateDockerComposeAndEnv = async (modules, outputDir, envFile = '.env.example') => {
+export const generateDockerComposeAndEnv = async (modules, outputDir) => {
   const services = {}
   const envLines = []
 
@@ -41,8 +41,14 @@ export const generateDockerComposeAndEnv = async (modules, outputDir, envFile = 
     },
     volumes: { mongodb_data: {} }
   }
-  await writeYAML(path.join(outputDir, 'docker-compose.yml'), dockerComposeDoc)
+  const envContent = envLines.join('\n')
+  const envExamplePath = path.join(outputDir, '.env.example')
+  const envDevPath = path.join(outputDir, '.env.dev')
+  const composePath = path.join(outputDir, 'docker-compose.yml')
 
-  // --- write .env ---
-  await writeFile(path.join(outputDir, envFile), envLines.join('\n'))
+  await Promise.all([
+    writeYAML(composePath, dockerComposeDoc),
+    writeFile(envExamplePath, envContent),
+    writeFile(envDevPath, envContent)
+  ])
 }

@@ -13,7 +13,9 @@ const generateDefaultNames = (serviceName) => {
     serviceDirectoryName: `${kebabCase(plural)}`,
     modelFileName: `${kebabCase(singular)}.model.js`,
     modelName: `${pascalCase(singular)}Model`,
-    collectionName: `${kebabCase(plural)}`
+    modelVariableName: `${pascalCase(singular)}`,
+    collectionName: `${kebabCase(plural)}`,
+    schemaName: `${camelCase(singular)}Schema`
   }
 }
 
@@ -58,7 +60,7 @@ export const addServicePrompts = async () => {
     {
       type: 'input',
       name: 'serviceFileName',
-      message: 'File name:',
+      message: 'Service file name:',
       default: defaults.serviceFileName
     },
     {
@@ -78,6 +80,18 @@ export const addServicePrompts = async () => {
       name: 'modelName',
       message: 'Model name:',
       default: defaults.modelName
+    },
+    {
+      type: 'input',
+      name: 'modelVariableName',
+      message: 'Model variable name:',
+      default: defaults.modelName
+    },
+    {
+      type: 'input',
+      name: 'schemaName',
+      message: 'Schema name:',
+      default: defaults.schemaName
     },
     {
       type: 'input',

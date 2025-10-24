@@ -1,0 +1,12 @@
+/*
+  PATH      /src/data/model/{{modelFileName}}
+*/
+const mongoose = require('mongoose')
+
+const {{schemaName}} = new mongoose.Schema({
+    // fields here
+}, {
+  timestamps: true
+})
+
+module.exports = mongoose.model({{modelName}}, {{schemaName}})
