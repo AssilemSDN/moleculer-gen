@@ -11,7 +11,7 @@ import { ApiGatewayModule } from '../../../dist/modules/backend-services/ApiGate
 vi.mock('../../../src/prompts/init-prompts.js', () => ({
   initPrompts: vi.fn()
 }))
-vi.mock('../../../src/generators/generate.js', () => ({
+vi.mock('../../../src/generators/initProject/generate.js', () => ({
   generate: vi.fn().mockResolvedValue(undefined)
 }))
 
@@ -47,7 +47,7 @@ describe('initProject (unit test)', () => {
     vi.clearAllMocks()
     cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(fakeCwd)
     ;({ initPrompts } = await import('../../../src/prompts/init-prompts.js'))
-    ;({ generate } = await import('../../../src/generators/generate.js'))
+    ;({ generate } = await import('../../../src/generators/initProject/generate.js'))
   })
 
   afterEach(() => cwdSpy.mockRestore())
