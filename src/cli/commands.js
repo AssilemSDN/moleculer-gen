@@ -14,7 +14,8 @@ export const registerCommands = (program) => {
     .command('init')
     .description('Initialize a new Moleculer project')
     .option('--dry-run', 'Simulate project generation without creating files')
-    .action((opts) => runCommand('project initialization', initProject, { dryRun: opts.dryRun }))
+    .option('--config <file>', 'Path to a JSON config file')
+    .action((opts) => runCommand('project initialization', initProject, { dryRun: opts.dryRun, configFile: opts.config }))
 
   program
     .command('add-service')
