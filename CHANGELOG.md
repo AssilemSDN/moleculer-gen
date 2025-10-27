@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/AssilemSDN/moleculer-gen/compare/v0.3.0...v0.4.0) (2025-10-27)
+
+
+### Features
+
+* **templates:** convert README to Mustache template ([be7007f](https://github.com/AssilemSDN/moleculer-gen/commit/be7007f1850dd9e9a1be0edab191d994627d0125))
+
+
+### Bug Fixes
+
+* **init:** correct the use of modelName ([98e6787](https://github.com/AssilemSDN/moleculer-gen/commit/98e6787f382fc6fb9808c3127d81fc6840025c21))
+
 ## [0.3.0](https://github.com/AssilemSDN/moleculer-gen/compare/v0.2.0...v0.3.0) (2025-10-27)
 
 
