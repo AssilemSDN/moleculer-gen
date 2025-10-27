@@ -7,6 +7,7 @@ import { logger } from '../../utils/logger.js'
 import { generateConfig } from './generate-config.js'
 import { generateDockerComposeAndEnv } from './generate-docker-compose-and-env.js'
 import { generatePackageJson } from './generate-package.json.js'
+import { renderTemplateToFile } from '../../utils/render-template.js'
 
 /**
  * Generate a new project skeleton.
@@ -26,11 +27,16 @@ export const generate = async (answers, optionsPkg, modules, templateDir, output
   }
   await ensureEmptyDir(outputDir)
   await mkdirp(path.join(outputDir, '.moleculer-gen/'))
-  await copyDir(templateDir, outputDir)
+  await copyDir(path.join(templateDir, 'base'), outputDir)
   // run in parallel
   await Promise.all([
     generateConfig(answers, outputDir),
     generatePackageJson(answers.projectNameSanitized, outputDir, optionsPkg),
-    generateDockerComposeAndEnv(modules, outputDir)
+    generateDockerComposeAndEnv(modules, outputDir),
+    renderTemplateToFile(path.join(templateDir, 'README.mustache'), path.join(outputDir, 'README.md'), {
+      projectName: answers.projectName,
+      database: answers.database,
+      tranporter: answers.tranporter
+    })
   ])
 }

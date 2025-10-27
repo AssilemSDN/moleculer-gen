@@ -82,7 +82,7 @@ describe('initProject (unit test)', () => {
     expect(modules.map(m => m.meta.key)).toEqual(
       expect.arrayContaining(['mongodb', 'nats', 'traefik', 'my-super-project-yay-api-gateway'])
     )
-    expect(templateDir).toContain('templates/base')
+    expect(templateDir).toContain('templates')
     expect(projectDir).toBe(path.join(fakeCwd, 'my-super-project-yay'))
     expect(opts.dryRun).toBe(true)
     expect(ApiGatewayModule).toHaveBeenCalledWith(

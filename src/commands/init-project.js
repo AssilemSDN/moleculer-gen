@@ -18,7 +18,7 @@ import { AppError } from '../errors/AppError.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const TEMPLATE_DIR = path.join(__dirname, '../../templates/base')
+const TEMPLATE_DIR = path.join(__dirname, '../../templates')
 
 /**
  * Validate that a project config object has all required fields and valid module keys.
