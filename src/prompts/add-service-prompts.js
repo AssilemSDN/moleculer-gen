@@ -12,8 +12,8 @@ const generateDefaultNames = (serviceName) => {
     serviceFileName: `${kebabCase(plural)}.service.js`,
     serviceDirectoryName: `${kebabCase(plural)}`,
     modelFileName: `${kebabCase(singular)}.model.js`,
-    modelName: `${pascalCase(singular)}Model`,
-    modelVariableName: `${pascalCase(singular)}`,
+    modelName: `${pascalCase(singular)}`,
+    modelVariableName: `${pascalCase(singular)}Model`,
     collectionName: `${kebabCase(plural)}`,
     schemaName: `${camelCase(singular)}Schema`
   }
