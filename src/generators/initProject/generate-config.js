@@ -16,8 +16,10 @@ export const generateConfig = async (answers, outputDir) => {
     ...answers,
     services: {
       apiGateway: {
-        path: 'api-gateway',
-        crud: false
+        serviceName: 'apiGateway',
+        isCrud: false,
+        serviceFileName: 'api-gateway.service.js',
+        serviceDirectoryName: 'api-gateway'
       }
     }
   }

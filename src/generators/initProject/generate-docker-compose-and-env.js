@@ -39,12 +39,12 @@ export const generateDockerComposeAndEnv = async (modules, outputDir) => {
         driver: 'bridge'
       }
     },
-    volumes: { mongodb_data: {} }
+    volumes: { db_data: {} }
   }
   const envContent = envLines.join('\n')
   const envExamplePath = path.join(outputDir, '.env.example')
   const envDevPath = path.join(outputDir, '.env.dev')
-  const composePath = path.join(outputDir, 'docker-compose.yml')
+  const composePath = path.join(outputDir, 'docker-compose.yaml')
 
   await Promise.all([
     writeYAML(composePath, dockerComposeDoc),

@@ -5,9 +5,13 @@ import path from 'path'
 import { mkdirp, writeFile } from '../../utils/fs-helpers.js'
 import { renderTemplate } from '../../utils/render-template.js'
 import { logger } from '../../utils/logger.js'
+import { updateMoleculerGenConfig } from './update-moleculer-gen-config.js'
+import { updateRoutesConfig } from './update-routes-config.js'
+import { updateDockerCompose } from './update-docker-compose.js'
 
 /**
  * Generate a new Moleculer service with optional CRUD model.
+ * @param {string} projectNameSanitized
  * @param {object} answers - User inputs from prompts
  * @param {string} templateDir - Path to templates directory
  * @param {string} outputDir - Root of /src in project
@@ -16,6 +20,7 @@ import { logger } from '../../utils/logger.js'
  * @param {boolean} [options.dryRun=false] - Simulate generation
  */
 export const generateNewService = async (
+  projectNameSanitized,
   answers,
   templateDir,
   outputDir,
@@ -31,6 +36,7 @@ export const generateNewService = async (
     modelName,
     modelVariableName,
     collectionName,
+    serviceDirectoryName,
     schemaName
   } = answers
 
@@ -52,14 +58,12 @@ export const generateNewService = async (
     templateDir,
     isCrud ? 'service-crud.mustache' : 'service.mustache'
   )
-
   const serviceRendered = await renderTemplate(serviceTemplatePath, {
     serviceName,
     modelVariableName,
     modelFileName,
     collectionName
   })
-
   const serviceFilePath = path.join(serviceDir, serviceFileName)
   await writeFile(serviceFilePath, serviceRendered)
 
@@ -75,11 +79,12 @@ export const generateNewService = async (
     await mkdirp(path.dirname(modelFilePath))
     await writeFile(modelFilePath, modelRendered)
   }
-
   // Generate new service in docker-compose
+  await updateDockerCompose(projectNameSanitized, serviceDirectoryName)
   // Generate new service in .moleculer-gen/config
+  await updateMoleculerGenConfig(answers)
   // Handle api-gateway route addition (placeholder for future)
   if (exposeApi) {
-    logger.warn('API route addition not yet implemented.')
+    await updateRoutesConfig(answers)
   }
 }

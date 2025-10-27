@@ -23,7 +23,7 @@ export const MongoDBModule: () => ModuleDefinition = (): ModuleDefinition => ({
       MONGO_INITDB_ROOT_PASSWORD: "${APP_DB_PASSWORD}",
     },
     networks: ["backend"],
-    volumes: ["mongodb_data:/data/db"],
+    volumes: ["db_data:/data/db"],
     ports: [],
     command: [],
     depends_on: [],
