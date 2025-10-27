@@ -1,7 +1,5 @@
 ![Status](https://img.shields.io/badge/status-WIP-yellow) ![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen) ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-
-
 # moleculer-gen
 
 > A **simple and modular CLI generator** to quickly create a functional **Node.js microservices project** with an operational API service, powered by [Moleculer.js](https://moleculer.services/). 
@@ -9,9 +7,9 @@
 
 Pick your **database**, message **transporter**, and optional infrastructure plugins like **Traefik** or **Prometheus**.  
 
-The generator produces a **ready-to-use Docker Compose setup** for development, so you can jump straight into coding your microservices.
+The generator produces a **ready-to-use Docker Compose setup** for development, so you can jump straight into coding your own microservices.
 
-💡 Perfect for developers who want a fast, opinionated setup to start building scalable Node.js microservices with Docker.
+💡 Perfect for developers who want a fast, lightly opinionated setup to start building scalable Node.js microservices with Docker.
 
 ## ⚡ Features
 
@@ -22,7 +20,7 @@ The generator produces a **ready-to-use Docker Compose setup** for development, 
 - Choose your **transporter**: NATS, Redis…
 - Optional **plugins**: Traefik, Prometheus…
 - Docker Compose ready for immediate dev
-Intuitive, modular CLI
+- Intuitive, modular CLI
 
 
 ⚠️ **Work In Progress (WIP)**  
@@ -141,9 +139,19 @@ All names follow consistent rules (singular/plural forms, kebab-case, PascalCase
 ✔ Collection/table name: articles
 ```
 
-
 ### Help
 ```sh
 # General CLI help
 moleculer-gen --help
 ```
+## 🤝 Contributing
+
+Contributions are welcome!  
+
+If you’d like to improve `moleculer-gen`, feel free to fork the repo and open a pull request.
+
+Suggestions, bug reports, and feature requests are also appreciated — open an issue to discuss ideas.
+
+## LICENSE
+
+This project is licensed under the MIT License — see the [LICENSE](./LICENSE) file for details.

@@ -1,7 +1,9 @@
-include .env.dev
-export
+# Active environment file
+ENV_FILE ?= .env.dev
 
-ENV_FILE=.env.dev
+# Load the selected environment variables
+include $(ENV_FILE)
+export
 
 .PHONY: build build-no-cache start stop logs restart
 

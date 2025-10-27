@@ -1,0 +1,68 @@
+# {{projectName}}
+
+🚀 A ready-to-use **Node.js microservices project** using [Moleculer.js](https://moleculer.services/), generated with [moleculer-gen](https://github.com/AssilemSDN/moleculer-gen).
+
+## 📦 Tech Stack
+
+- [Moleculer.js](https://moleculer.services/)
+- Docker & Docker Compose
+- Makefile-based workflow
+{{#database}}
+- {{database}} database integration
+{{/database}}
+{{#transporter}}
+- {{transporter}} transporter
+{{/transporter}}
+
+
+## ⚙️ Project structure
+
+> The project follows Moleculer’s recommended modular layout.  
+> Each service is self-contained within the `/services` directory.
+
+## 🐳 Run with Docker
+
+```bash
+# Build Docker image and start services
+$ make build
+$ make start
+
+# Stop containers
+$ make stop
+```
+
+## Create new service
+
+You can create a new service manually in the services/ directory, or use the CLI command from ``moleculer-gen`` :
+```bash
+$ npx moleculer-gen add-service
+```
+> 💡 **Tip**: The generator ensures consistent naming conventions and configuration defaults, but you remain free to adjust them afterward — nothing is locked.
+
+## ⚡ Environment variables
+
+The project uses environment files to configure your services. 
+
+- `.env.example` → Template generated automatically (based on your selected database, transporter, and plugins)
+- `.env.dev` → Default environment used for local development
+
+You can create your own file and use it with Docker.
+
+By default, the project uses `.env.dev`. To switch to another file, you can change it dynamically using the `ENV_FILE` variable in the **Makefile**:
+
+```bash
+make start     # Uses .env.dev by default
+ENV_FILE=.env.production make start  # Uses .env.production instead
+```
+Or you can directly update the following line in your **Makefile**:
+
+```makefile
+# Active environment file
+ENV_FILE ?= .env.dev
+
+# Load the selected environment variables
+include $(ENV_FILE)
+export
+```
+
+Then, all Docker commands automatically load that environment file.
