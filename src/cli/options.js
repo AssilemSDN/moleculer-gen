@@ -20,7 +20,9 @@ Generate Moleculer projects and Moleculer services easily.
 
 Usage examples:
   $ moleculer-gen init
-  $ moleculer-gen add module MyModule
+  $ moleculer-gen init --config projectConfig.json
+  $ moleculer-gen add-service
+  $ moleculer-gen add-service --config articlesConfig.json
 `)
 }
 
