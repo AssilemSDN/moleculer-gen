@@ -39,13 +39,17 @@ $ npx moleculer-gen [options] [command]
 
 ### Options
 
-| Option            | Description                                 |
-| ----------------- | ------------------------------------------- |
-| `-V`, `--version` | Show the CLI version                        |
-| `--debug`         | Enable debug logging                        |
-| `--verbose`       | Enable verbose logging (info level)         |
-| `--quiet`         | Show only errors                            |
-| `-h`, `--help`    | Show help for the CLI or a specific command |
+### Options
+
+| Option            | Description                                                      |
+| ----------------- | ---------------------------------------------------------------- |
+| `-V`, `--version` | Show the CLI version                                             |
+| `--debug`         | Enable debug logging                                             |
+| `--verbose`       | Enable verbose logging (info level)                              |
+| `--quiet`         | Show only errors                                                 |
+| `-h`, `--help`    | Show help for the CLI or a specific command                      |
+| `--config <file>` | Use a JSON config file instead of interactive prompts.           |
+| `--dry-run`       | Simulate actions without writing files. Useful for testing.      |
 
 ### Commands
 
@@ -91,6 +95,19 @@ At the end, a project summary can be displayed:
 | `database`             | Selected database (`mongodb`, `postgres`, etc.)    |
 | `transporter`          | Selected message broker (`nats`, `redis`, etc.)    |
 | `plugins`              | List of optional modules enabled (`traefik`, etc.) |
+
+💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the ``examples/config/init-project`` folder.
+
+```bash
+$ npx moleculer-gen init --config minimal.json
+```
+
+💡 For testing, you can use ``--dry-run`` option.
+
+```bash
+$ npx moleculer-gen init --config minimal.json --dry-run --debug
+```
+
 
 #### 2- ``add-service``
 
@@ -139,6 +156,18 @@ All names follow consistent rules (singular/plural forms, kebab-case, PascalCase
 ✔ Collection/table name: articles
 ```
 
+💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the ``examples/config/add-service`` folder.
+
+```bash
+$ npx moleculer-gen add-service --config crud_full.json
+```
+
+💡 For testing, you can use ``--dry-run`` option.
+
+```bash
+$ npx moleculer-gen add-service --config crud_full.json --dry-run --debug
+```
+
 ### Help
 ```sh
 # General CLI help
@@ -150,7 +179,7 @@ Contributions are welcome!
 
 If you’d like to improve `moleculer-gen`, feel free to fork the repo and open a pull request.
 
-Suggestions, bug reports, and feature requests are also appreciated — open an issue to discuss ideas.
+Suggestions, bug reports, and feature requests are also appreciated — open an issue to discuss ideas. See the [CONTRIBUTING](./CONTRIBUTING.md) file for details.
 
 ## LICENSE
 
