@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/AssilemSDN/moleculer-gen/compare/v0.4.0...v0.5.0) (2025-10-28)
+
+
+### Features
+
+* add GitHub issue template ([f4c0b4b](https://github.com/AssilemSDN/moleculer-gen/commit/f4c0b4bf7f3e8626cc394040bc344545942f37dc))
+* **add-service:** support JSON config file for non-interactive service creation ([8636173](https://github.com/AssilemSDN/moleculer-gen/commit/863617374591ca9869670d2950b36ceeb7b60fc5))
+
+
+### Bug Fixes
+
+* **add-service:** Fix prompt include for common-helpers ([63fb2ab](https://github.com/AssilemSDN/moleculer-gen/commit/63fb2ab4adf4ffeff389d4d019502c39ac9a26cd))
+* **add-service:** no more data model creation if no crud service ([20b6670](https://github.com/AssilemSDN/moleculer-gen/commit/20b66705bc6fd461475f7b0880a37b3d3fc77e04))
+
 ## [0.4.0](https://github.com/AssilemSDN/moleculer-gen/compare/v0.3.0...v0.4.0) (2025-10-27)
 
 
