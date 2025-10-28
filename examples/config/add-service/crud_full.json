@@ -1,0 +1,12 @@
+{
+  "serviceName": "articles",
+  "isCrud": true,
+  "exposeApi": true,
+  "serviceFileName": "my-articles.service.js",
+  "serviceDirectoryName": "my-articles",
+  "modelFileName": "custom-article.model.js",
+  "modelName": "CustomArticle",
+  "modelVariableName": "CustomArticleModel",
+  "collectionName": "custom-articles",
+  "schemaName": "customArticleSchema"
+}
