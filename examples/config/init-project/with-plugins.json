@@ -1,0 +1,7 @@
+{
+  "projectName": "super-app",
+  "projectNameSanitized": "super-app",
+  "database": "mongodb",
+  "transporter": "nats",
+  "plugins": ["traefik"]
+}
