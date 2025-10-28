@@ -2,22 +2,8 @@
   PATH  /src/prompts/add-service-prompts.js
 */
 import inquirer from 'inquirer'
-import { camelCase, kebabCase, pascalCase } from 'change-case'
-import pluralize from 'pluralize-esm'
-
-const generateDefaultNames = (serviceName) => {
-  const singular = pluralize.singular(serviceName)
-  const plural = pluralize.plural(serviceName)
-  return {
-    serviceFileName: `${kebabCase(plural)}.service.js`,
-    serviceDirectoryName: `${kebabCase(plural)}`,
-    modelFileName: `${kebabCase(singular)}.model.js`,
-    modelName: `${pascalCase(singular)}`,
-    modelVariableName: `${pascalCase(singular)}Model`,
-    collectionName: `${kebabCase(plural)}`,
-    schemaName: `${camelCase(singular)}Schema`
-  }
-}
+import { camelCase } from 'change-case'
+import { generateDefaultNames } from '../utils/common-helpers'
 
 export const addServicePrompts = async () => {
   const baseAnswers = await inquirer.prompt([
@@ -43,7 +29,7 @@ export const addServicePrompts = async () => {
   ])
 
   const defaults = generateDefaultNames(baseAnswers.serviceName)
-  
+
   const serviceAnswers = await inquirer.prompt([
     {
       type: 'input',
