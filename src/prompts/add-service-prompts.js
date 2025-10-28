@@ -20,7 +20,7 @@ const generateDefaultNames = (serviceName) => {
 }
 
 export const addServicePrompts = async () => {
-  const { serviceName } = await inquirer.prompt([
+  const baseAnswers = await inquirer.prompt([
     {
       type: 'input',
       name: 'serviceName',
@@ -33,9 +33,7 @@ export const addServicePrompts = async () => {
         return true
       },
       filter: input => camelCase(input.trim())
-    }
-  ])
-  const { isCrud } = await inquirer.prompt([
+    },
     {
       type: 'confirm',
       name: 'isCrud',
@@ -43,20 +41,10 @@ export const addServicePrompts = async () => {
       default: true
     }
   ])
-  let exposeApi = false
-  if (isCrud) {
-    const answer = await inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'exposeApi',
-        message: 'Expose CRUD operations via API Gateway?',
-        default: true
-      }
-    ])
-    exposeApi = answer.exposeApi
-  }
-  const defaults = generateDefaultNames(serviceName)
-  const otherAnswers = await inquirer.prompt([
+
+  const defaults = generateDefaultNames(baseAnswers.serviceName)
+  
+  const serviceAnswers = await inquirer.prompt([
     {
       type: 'input',
       name: 'serviceFileName',
@@ -68,42 +56,61 @@ export const addServicePrompts = async () => {
       name: 'serviceDirectoryName',
       message: 'Service directory name:',
       default: defaults.serviceDirectoryName
-    },
-    {
-      type: 'input',
-      name: 'modelFileName',
-      message: 'Model file name:',
-      default: defaults.modelFileName
-    },
-    {
-      type: 'input',
-      name: 'modelName',
-      message: 'Model name:',
-      default: defaults.modelName
-    },
-    {
-      type: 'input',
-      name: 'modelVariableName',
-      message: 'Model variable name:',
-      default: defaults.modelName
-    },
-    {
-      type: 'input',
-      name: 'schemaName',
-      message: 'Schema name:',
-      default: defaults.schemaName
-    },
-    {
-      type: 'input',
-      name: 'collectionName',
-      message: 'Collection/table name:',
-      default: defaults.collectionName
     }
   ])
+
+  let exposeApi = false
+  let crudAnswers = {}
+
+  if (baseAnswers.isCrud) {
+    const { exposeApi: exposeApiAnswer } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'exposeApi',
+        message: 'Expose CRUD operations via API Gateway?',
+        default: true
+      }
+    ])
+    exposeApi = exposeApiAnswer
+
+    crudAnswers = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'modelFileName',
+        message: 'Model file name:',
+        default: defaults.modelFileName
+      },
+      {
+        type: 'input',
+        name: 'modelName',
+        message: 'Model name:',
+        default: defaults.modelName
+      },
+      {
+        type: 'input',
+        name: 'modelVariableName',
+        message: 'Model variable name:',
+        default: defaults.modelVariableName
+      },
+      {
+        type: 'input',
+        name: 'schemaName',
+        message: 'Schema name:',
+        default: defaults.schemaName
+      },
+      {
+        type: 'input',
+        name: 'collectionName',
+        message: 'Collection/table name:',
+        default: defaults.collectionName
+      }
+    ])
+  }
+
   return {
-    serviceName,
-    isCrud,
+    ...baseAnswers,
     exposeApi,
-    ...otherAnswers
+    ...serviceAnswers,
+    ...crudAnswers
   }
 }
