@@ -3,7 +3,7 @@
 */
 import inquirer from 'inquirer'
 import { camelCase } from 'change-case'
-import { generateDefaultNames } from '../utils/common-helpers'
+import { generateDefaultNames } from '../utils/common-helpers.js'
 
 export const addServicePrompts = async () => {
   const baseAnswers = await inquirer.prompt([
