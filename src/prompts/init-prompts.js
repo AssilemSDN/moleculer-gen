@@ -2,11 +2,11 @@
   PATH  /src/core/prompts/init-prompts.js
 */
 import inquirer from 'inquirer'
-import { AppError } from '../errors/AppError.js'
 import { transporterMetas } from '../../dist/modules/transporters/index.js'
 import { databaseMetas } from '../../dist/modules/databases/index.js'
 import { pluginMetas } from '../../dist/modules/plugins/index.js'
-import slugify from 'slugify'
+import { sanitizeName } from '../utils/common-helpers.js'
+import path from 'path'
 
 /**
  * Ask the user interactive prompts to configure a new Moleculer project.
@@ -37,10 +37,8 @@ export const initPrompts = async () => {
     }
   ])
 
-  const projectNameSanitized = slugify(projectName, { lower: true, strict: true, trim: true })
-  if (!projectNameSanitized) {
-    throw new AppError('Project name invalid.', { code: 'INVALID_PROJECT_NAME' })
-  }
+  let projectNameSanitized = sanitizeName(projectName)
+  projectNameSanitized = path.basename(projectNameSanitized) // For security
 
   // Database
   const { database } = await inquirer.prompt([
