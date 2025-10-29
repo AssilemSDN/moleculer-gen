@@ -24,7 +24,6 @@ export const sanitizeName = (name) => {
     trim: true
   })
   sanitized = sanitized.replace(/\.\./g, '')
-  sanitized = sanitized.replace(/[\/\\]/g, '-')
   if (!sanitized) {
     throw new AppError('Name invalid after sanitization.', { code: 'INVALID_NAME' })
   }

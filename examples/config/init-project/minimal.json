@@ -1,7 +1,5 @@
 {
   "projectName": "My Project",
-  "projectNameSanitized": "my-project",
   "database": "mongodb",
-  "transporter": "nats",
-  "plugins": []
+  "transporter": "nats"
 }

@@ -1,0 +1,7 @@
+{
+  "projectName": "My super App",
+  "projectNameSanitized": "custom-super-app",
+  "database": "mongodb",
+  "transporter": "nats",
+  "plugins": []
+}

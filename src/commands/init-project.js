@@ -15,6 +15,7 @@ import { generate } from '../generators/initProject/generate.js'
 import { exists, readFile } from '../utils/fs-helpers.js'
 // Error
 import { AppError } from '../errors/AppError.js'
+import { sanitizeName } from '../utils/common-helpers.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -24,7 +25,7 @@ const TEMPLATE_DIR = path.join(__dirname, '../../templates')
  * Validate that a project config object has all required fields and valid module keys.
  * @param {Object} config - Configuration object to validate
  * @param {string} config.projectName - Project name
- * @param {string} config.projectNameSanitized - Sanitized project name for filesystem usage
+ * @param {string} config.projectNameSanitized - Optionnal. Sanitized project name for filesystem usage
  * @param {string} config.database - Database key to use
  * @param {string} config.transporter - Transporter key to use
  * @param {string[]} config.plugins - Array of plugin keys
@@ -32,11 +33,18 @@ const TEMPLATE_DIR = path.join(__dirname, '../../templates')
  * @returns {boolean} Returns true if config is valid
  */
 const validateConfig = (config) => {
-  const requiredFields = ['projectName', 'projectNameSanitized', 'database', 'transporter', 'plugins']
+  const requiredFields = ['projectName', 'database', 'transporter']
   for (const field of requiredFields) {
     if (!(field in config)) {
       throw new AppError(`Missing required config field: ${field}`, { code: 'INVALID_CONFIG' })
     }
+  }
+  if (!config.projectNameSanitized) {
+    const projectNameSanitized = sanitizeName(config.projectName)
+    config.projectNameSanitized = path.basename(projectNameSanitized)
+  }
+  if (!config.plugins) {
+    config.plugins = []
   }
   if (!databases[config.database]) {
     throw new AppError(`Invalid database key: ${config.database}`, { code: 'INVALID_CONFIG' })
