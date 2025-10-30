@@ -1,5 +1,5 @@
 /*
-  PATH  /src/core/commands/init-project.js
+  PATH  /src/commands/init-project.js
 */
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -23,16 +23,8 @@ const TEMPLATE_DIR = path.join(__dirname, '../../templates')
 
 /**
  * Validate that a project config object has all required fields and valid module keys.
- * @param {Object} config - Configuration object to validate
- * @param {string} config.projectName - Project name
- * @param {string} config.projectNameSanitized - Optionnal. Sanitized project name for filesystem usage
- * @param {string} config.database - Database key to use
- * @param {string} config.transporter - Transporter key to use
- * @param {string[]} config.plugins - Array of plugin keys
- * @throws {AppError} Throws if a required field is missing or an invalid module key is found
- * @returns {boolean} Returns true if config is valid
  */
-const validateConfig = (config) => {
+export const validateConfig = (config) => {
   const requiredFields = ['projectName', 'database', 'transporter']
   for (const field of requiredFields) {
     if (!(field in config)) {
@@ -61,45 +53,53 @@ const validateConfig = (config) => {
 }
 
 /**
+ * Load and validate a project configuration from a JSON file.
+ */
+export const loadConfigFromFile = async (configFile) => {
+  const configPath = path.resolve(process.cwd(), configFile)
+  if (!(await exists(configPath))) {
+    throw new AppError(`Config file not found: ${configPath}`, { code: 'CONFIG_NOT_FOUND' })
+  }
+  const content = await readFile(configPath)
+  let config
+  try {
+    config = JSON.parse(content)
+  } catch {
+    throw new AppError(`Invalid JSON in config file: ${configPath}`, { code: 'INVALID_JSON' })
+  }
+  validateConfig(config)
+  return config
+}
+
+/**
  * Command to initialize a Moleculer project.
- * @async
- * @function initProject
- * @param {boolean} [options.dryRun=false] - If true, generates project files without writing them
- * @param {string} [options.configFile] - Path to a JSON config file for non-interactive project initialization
- * @throws {AppError} - Throws if the config file is missing or invalid, or required modules/plugins are invalid
- * @returns {Promise<Object>} - Resolves with the final project configuration (answers from prompts or config file)
  */
 export const initProject = safeRun(async ({ dryRun = false, configFile } = {}) => {
-  // 1- Ask prompts
-  const answers = configFile
-    ? await (async () => {
-      const configPath = path.resolve(process.cwd(), configFile)
-      if (!(await exists(configPath))) {
-        throw new AppError(`Config file not found: ${configPath}`, { code: 'CONFIG_NOT_FOUND' })
-      }
-      const content = await readFile(configPath)
-      const config = JSON.parse(content)
-      validateConfig(config)
-      return config
-    })()
-    : await initPrompts()
-  const { projectNameSanitized, database, transporter, plugins: selectedPlugins } = answers
-
-  // 2- Factory chosen modules
+  // 1. Get config
+  const config = configFile ? await loadConfigFromFile(configFile) : await initPrompts()
+  const { projectNameSanitized, database, transporter, plugins: selectedPlugins } = config
+  // 2. Check if needing traefik labels
   const needsTraefikLabels = selectedPlugins.includes('traefik')
+  // 3. Build modules
   const modulesToGenerate = [
     ApiGatewayModule({ projectNameSanitized, needsTraefikLabels }),
     databases[database](projectNameSanitized),
     transporters[transporter](projectNameSanitized),
     ...selectedPlugins
-      .map(pluginKey => plugins[pluginKey])
-      .filter(Boolean) // in case if a key doesn't exist
+      .map(key => plugins[key])
+      .filter(Boolean)
       .map(factory => factory(projectNameSanitized))
   ]
-
-  // 3- Generate the project
-  const projectDir = path.join(process.cwd(), projectNameSanitized)
-  await generate(answers, { database }, modulesToGenerate, TEMPLATE_DIR, projectDir, { dryRun })
-
-  return answers
+  // 4. Define options for generate
+  const generateOptions = {
+    answers: config,
+    context: { database },
+    modules: modulesToGenerate,
+    templateDir: TEMPLATE_DIR,
+    projectDir: path.join(process.cwd(), projectNameSanitized),
+    options: { dryRun }
+  }
+  // 5. Generate
+  await generate(generateOptions)
+  return config
 })
