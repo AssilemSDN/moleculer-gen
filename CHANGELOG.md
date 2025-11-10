@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.6.0](https://github.com/AssilemSDN/moleculer-gen/compare/v0.5.0...v0.6.0) (2025-11-10)
+
+
+### Features
+
+* **init-project:** support optional projectNameSanitized and plugins in config ([a6ea537](https://github.com/AssilemSDN/moleculer-gen/commit/a6ea5373ef7253fec74338a1a6e02afe273855f4))
+
+
+### Bug Fixes
+
+* **init-project:** Fix dry-run option and default checked plugin option ([308901a](https://github.com/AssilemSDN/moleculer-gen/commit/308901a7803c0aa2dc9da43e262851c69832e9b1))
+
 ## [0.5.0](https://github.com/AssilemSDN/moleculer-gen/compare/v0.4.0...v0.5.0) (2025-10-28)
 
 

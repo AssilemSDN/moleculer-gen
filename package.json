@@ -1,6 +1,6 @@
 {
   "name": "moleculer-gen",
-  "version": "0.0.1",
+  "version": "0.6.0",
   "license": "MIT",
   "description": "A Moleculer.js project generator, to make a simple Moleculer-based microservices template with Docker Compose setup for development environment.",
   "scripts": {
