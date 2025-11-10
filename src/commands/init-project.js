@@ -93,6 +93,7 @@ export const initProject = safeRun(async ({ dryRun = false, configFile } = {}) =
   // 4. Define options for generate
   const generateOptions = {
     answers: config,
+    dryRun,
     context: { database },
     modules: modulesToGenerate,
     templateDir: TEMPLATE_DIR,

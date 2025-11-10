@@ -74,7 +74,8 @@ export const initPrompts = async () => {
       message: '⚙️ Select optional infrastructure modules:',
       choices: Object.values(pluginMetas).map(meta => ({
         name: `${meta.name} – ${meta.description}`,
-        value: meta.key
+        value: meta.key,
+        checked: meta.enabledByDefault
       }))
     }
   ])
