@@ -1,6 +1,6 @@
 {
-  "projectName": "My Project",
-  "projectNameSanitized": "my-project",
+  "projectName": "Demo Project",
+  "projectNameSanitized": "demo-project",
   "database": "mongodb",
   "transporter": "nats",
   "plugins": ["traefik"]

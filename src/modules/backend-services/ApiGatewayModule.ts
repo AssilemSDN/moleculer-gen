@@ -15,7 +15,7 @@ interface ApiGatewayModuleOptions {
 export const ApiGatewayModule = ({
   projectNameSanitized,
   port = '5000',
-  needsTraefikLabels,
+  needsTraefikLabels = false,
   dependsOn = []
 }: ApiGatewayModuleOptions): ModuleDefinition => {
   const base = ServiceModule({ projectNameSanitized, serviceName: 'Api Gateway', dependsOn, labels: 
