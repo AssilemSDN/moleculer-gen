@@ -2,7 +2,7 @@
   PATH  /src/core/modules/plugins/index.ts
 */
 import { ModuleRegistry, ModuleMeta } from "../types.js"
-import { PrometheusModuleMeta } from "./PrometheusModule.js"
+import { PrometheusModule, PrometheusModuleMeta } from "./PrometheusModule.js"
 import { TraefikModuleMeta, TraefikModule } from "./TraefikModule.js"
 
 /** 
@@ -10,7 +10,7 @@ import { TraefikModuleMeta, TraefikModule } from "./TraefikModule.js"
  * Used in init prompts and for display purposes.
  */
 export const pluginMetas: Record<string, ModuleMeta> = {
-  nats: TraefikModuleMeta,
+  traefik: TraefikModuleMeta,
   prometheus: PrometheusModuleMeta
 }
 
@@ -20,4 +20,5 @@ export const pluginMetas: Record<string, ModuleMeta> = {
  */
 export const plugins: ModuleRegistry = {
   traefik: TraefikModule,
+  prometheus: PrometheusModule
 }

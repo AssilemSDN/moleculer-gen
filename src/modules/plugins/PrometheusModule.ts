@@ -25,7 +25,9 @@ export const PrometheusModule = (
       "prometheus_data:/prometheus"
     ],
     labels: 
-      needsTraefikLabels ?[] : []
+      needsTraefikLabels ? [
+
+      ] : []
   },
   env: {}
 })
