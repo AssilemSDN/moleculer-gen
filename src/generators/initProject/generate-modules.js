@@ -12,7 +12,7 @@ import { ConvertModuleToDockerAndEnv } from './convert-module-to-docker-and-env.
  * @param {string} outputDir - Directory where files will be generated
  * @returns {Promise<void>}
  */
-export const generateDockerComposeAndEnv = async (modules, outputDir) => {
+export const generateModules = async (modules, outputDir) => {
   const services = {}
   const envLines = []
 

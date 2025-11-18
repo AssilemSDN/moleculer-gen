@@ -11,9 +11,17 @@ export const PrometheusModuleMeta: ModuleMeta = {
   enabledByDefault: false,
 }
 
-export const PrometheusModule = (
-  needsTraefikLabels = false
-): ModuleDefinition => ({
+
+interface PrometheusModuleOptions {
+  /** Slugified project name, e.g., "myapp" */
+  projectNameSanitized: string
+  needsTraefikLabels: boolean
+}
+
+export const PrometheusModule = ({
+  needsTraefikLabels = false,
+  projectNameSanitized
+}: PrometheusModuleOptions): ModuleDefinition => ({
   meta: PrometheusModuleMeta,
   docker: {
     serviceName: 'prometheus',
@@ -26,8 +34,22 @@ export const PrometheusModule = (
     ],
     labels: 
       needsTraefikLabels ? [
-
+      "traefik.enable=true",
+      "traefik.http.routers.prometheus.rule=Host(`${DOCKER_CONTAINER_NAME_MONITORING}.local`)",
+      "traefik.http.routers.prometheus.entrypoints=web",
+      "traefik.http.services.prometheus.loadbalancer.server.port=9090"
       ] : []
   },
-  env: {}
+  env: {
+    'DOCKER_CONTAINER_NAME_MONITORING': 'prometheus',
+    'DOCKER_IMAGE_NAME_MONITORING': 'prom/prometheus',
+    'DOCKER_IMAGE_TAG_MONITORING': 'v3.7.3'
+  },
+  templates: [
+    { 
+      templatePath: 'config/prometheus.mustache', 
+      outputPath: 'prometheus.yml',
+      data: { projectNameSanitized }
+    }
+  ]
 })

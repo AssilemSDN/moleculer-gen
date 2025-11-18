@@ -5,7 +5,7 @@ import path from 'path'
 import { mkdirp, copyDir, ensureEmptyDir } from '../../utils/fs-helpers.js'
 import { logger } from '../../utils/logger.js'
 import { generateConfig } from './generate-config.js'
-import { generateDockerComposeAndEnv } from './generate-docker-compose-and-env.js'
+import { generateModules } from './generate-modules.js'
 import { generatePackageJson } from './generate-package.json.js'
 import { renderTemplateToFile } from '../../utils/render-template.js'
 
@@ -45,7 +45,7 @@ export const generate = async ({
   await Promise.all([
     generateConfig(answers, projectDir),
     generatePackageJson(answers.projectNameSanitized, projectDir, context),
-    generateDockerComposeAndEnv(modules, projectDir),
+    generateModules(modules, projectDir),
     renderTemplateToFile(
       path.join(templateDir, 'README.mustache'),
       path.join(projectDir, 'README.md'),

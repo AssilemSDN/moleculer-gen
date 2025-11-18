@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s
+  
+scrape_configs:
+  - job_name: "{{projectNameSanitized}}-api-gateway"
+    static_configs:
+      - targets: ["{{projectNameSanitized}}-api-gateway:3030"]
+        labels:
+          app: "prometheus"

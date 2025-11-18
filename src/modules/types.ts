@@ -52,6 +52,12 @@ export interface DockerConfig {
   restart?: 'no' | 'on-failure' | 'always' | 'unless-stopped'
 }
 
+export interface ModuleTemplate  {
+  templatePath: string,
+  outputPath: string,
+  data?: Record<string, string>
+}
+
 /**
  * Complete module definition
  */
@@ -61,7 +67,8 @@ export interface ModuleDefinition {
   /** Docker configuration for this module */
   docker: DockerConfig
   /** Environment variables for the module, written to .env files */
-  env: Record<string, string>
+  env: Record<string, string>,
+  templates?: ModuleTemplate[]
 }
 
 /**
