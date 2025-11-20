@@ -7,7 +7,7 @@ import { logger } from '../../utils/logger.js'
 import { generateConfig } from './generate-config.js'
 import { generateModules } from './generate-modules.js'
 import { generatePackageJson } from './generate-package.json.js'
-import { renderTemplateToFile } from '../../utils/render-template.js'
+import { generateReadme } from './generate-readme.js'
 
 /**
  * Generate a new project skeleton.
@@ -36,9 +36,12 @@ export const generate = async ({
 
   // Ensure the output directory is clean
   await ensureEmptyDir(projectDir)
-  await mkdirp(path.join(projectDir, '.moleculer-gen/'))
-  await mkdirp(path.join(projectDir, 'docker/services/'))
-  await mkdirp(path.join(projectDir, 'docker/config/'))
+  const dirs = [
+    'moleculer-gen',
+    'docker/services',
+    'docker/config'
+  ]
+  await Promise.all(dirs.map(dir => mkdirp(path.join(projectDir, dir))))
 
   // Copy base template
   await copyDir(path.join(templateDir, 'base'), projectDir)
@@ -50,18 +53,8 @@ export const generate = async ({
     // Generate package.json project file
     generatePackageJson(answers.projectNameSanitized, projectDir, context),
     // Generate readme.md file
-    renderTemplateToFile(
-      path.join(templateDir, 'README.mustache'),
-      path.join(projectDir, 'README.md'),
-      {
-        projectName: answers.projectName,
-        database: answers.database,
-        transporter: answers.transporter
-      }
-    ),
-    // Generate minimal docker-compose.yml
-    // --- TODO ---
-    // Generate needed yml docker services, env, and files
-    generateModules(modules, templateDir, projectDir)
+    generateReadme(templateDir, projectDir, answers.projectName, answers.database, answers.transporter),
+    // Generate modules
+    generateModules(templateDir, projectDir, modules)
   ])
 }

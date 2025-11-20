@@ -40,5 +40,5 @@ export const generatePackageJson = async (projectNameSanitized, outputDir, optio
   if (database === 'mongodb') {
     pkg.dependencies.mongoose = '7.4.0'
   }
-  await writeFile(path.join(outputDir, 'package.json'), JSON.stringify(pkg, null, 2))
+  writeFile(path.join(outputDir, 'package.json'), JSON.stringify(pkg, null, 2))
 }

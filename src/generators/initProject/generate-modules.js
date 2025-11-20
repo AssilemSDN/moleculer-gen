@@ -14,10 +14,26 @@ const writeDockerService = async (service, serviceName, projectDir) => {
   writeYAML(dockerServicePath, doc)
 }
 
-const writeFiles = async (templates, templateDir, projectDir) => {
-  console.log(templates)
+const writeTemplateFiles = async (templates, templateDir, projectDir) => {
   templates?.map(template =>
     renderTemplateToFile(path.join(templateDir, template.templatePath), path.join(projectDir, template.outputPath), template.data))
+}
+
+let dockerComposeMinimalContent = {
+  // version: '3.9',
+  services: {},
+  networks: {
+    publique: {
+      name: 'publique',
+      driver: 'bridge'
+    },
+    backend: {
+      name: 'backend',
+      internal: true,
+      driver: 'bridge'
+    }
+  },
+  volumes: { db_data: {} }
 }
 
 /**
@@ -27,27 +43,12 @@ const writeFiles = async (templates, templateDir, projectDir) => {
  * @param {string} projectDir - Directory where files will be generated
  * @returns {Promise<void>}
  */
-export const generateModules = async (modules, templateDir, projectDir) => {
+export const generateModules = async (templateDir, projectDir, modules) => {
   const envLines = []
+  const promises = []
 
-  let dockerComposeMinimalContent = {
-    // version: '3.9',
-    services: {},
-    networks: {
-      publique: {
-        name: 'publique',
-        driver: 'bridge'
-      },
-      backend: {
-        name: 'backend',
-        internal: true,
-        driver: 'bridge'
-      }
-    },
-    volumes: { db_data: {} }
-  }
-  // Generate module files and build env content
   for (const module of modules) {
+    // --- Extract module docker service
     const service = {
       [module.docker.serviceName]: {
         image: module.docker.image,
@@ -64,14 +65,16 @@ export const generateModules = async (modules, templateDir, projectDir) => {
         restart: module.docker.restart
       }
     }
-    writeDockerService(service, module.meta.key, projectDir)
+    promises.push(writeDockerService(service, module.meta.key, projectDir))
 
+    // --- Merge global docker config needed by the module
     if (module.docker.global) {
       dockerComposeMinimalContent = merge(dockerComposeMinimalContent, module.docker.global)
     }
 
+    // --- Specified module templates
     if (module.templates?.length) {
-      writeFiles(module.templates, templateDir, projectDir)
+      promises.push(writeTemplateFiles(module.templates, templateDir, projectDir))
     }
 
     const moduleEnvLines = Object.entries(module.env).map(([k, v]) => `${k}=${v}`)
@@ -90,10 +93,11 @@ export const generateModules = async (modules, templateDir, projectDir) => {
   const composePath = path.join(projectDir, 'docker-compose.yaml')
 
   // --- Generate files
+  promises.push(
+    writeYAML(composePath, dockerComposeMinimalContent),
+    writeFile(envExamplePath, envContent),
+    writeFile(envDevPath, envContent)
+  )
 
-  // Write minimal docker compose
-  writeYAML(composePath, dockerComposeMinimalContent)
-  // Write env files
-  writeFile(envExamplePath, envContent)
-  writeFile(envDevPath, envContent)
+  await Promise.all(promises)
 }
