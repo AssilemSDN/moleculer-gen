@@ -18,6 +18,7 @@
     "commander": "14.0.1",
     "inquirer": "12.9.6",
     "js-yaml": "4.1.0",
+    "lodash": "4.17.21",
     "mustache": "4.2.0",
     "pluralize-esm": "9.0.5",
     "slugify": "1.6.6"

@@ -2,7 +2,6 @@ import path from 'path'
 import yaml from 'js-yaml'
 import { exists, readFile, writeYAML } from '../../utils/fs-helpers.js'
 import { ServiceModule } from '../../../dist/modules/backend-services/ServiceModule.js'
-import { ConvertModuleToDockerAndEnv } from '../initProject/convert-module-to-docker-and-env.js'
 import { AppError } from '../../errors/AppError.js'
 
 export const updateDockerCompose = async (projectNameSanitized, serviceDirectoryName) => {
@@ -24,7 +23,22 @@ export const updateDockerCompose = async (projectNameSanitized, serviceDirectory
   })
 
   // 4- Convert the module to docker-compose service + env lines
-  const { service: newService } = ConvertModuleToDockerAndEnv(module)
+  const newService = {
+    [module.docker.serviceName]: {
+      image: module.docker.image,
+      container_name: module.docker.container_name,
+      environment: module.docker.environment,
+      networks: module.docker.networks,
+      volumes: module.docker.volumes,
+      ports: module.docker.ports,
+      command: module.docker.command,
+      depends_on: module.docker.depends_on,
+      labels: module.docker.labels,
+      env_file: module.docker.env_file,
+      security_opt: module.docker.security_opt,
+      restart: module.docker.restart
+    }
+  }
   composeYaml.services = { ...composeYaml.services, ...newService }
 
   // 5- Write updated docker-compose.yml

@@ -88,7 +88,10 @@ export const initProject = safeRun(async ({ dryRun = false, configFile } = {}) =
     ...selectedPlugins
       .map(key => plugins[key])
       .filter(Boolean)
-      .map(factory => factory(projectNameSanitized))
+      .map(factory => factory({
+        projectNameSanitized,
+        needsTraefikLabels
+      }))
   ]
   // 4. Define options for generate
   const generateOptions = {

@@ -3,6 +3,13 @@
 */
 import { ModuleDefinition, ModuleMeta } from "../types"
 
+interface TraefikModuleOptions {
+  /** Slugified project name, e.g., "myapp" */
+  projectNameSanitized: string
+  enableDashboard: boolean,
+  enableTLS: boolean
+}
+
 export const TraefikModuleMeta: ModuleMeta = {
   key: "traefik",
   name: "Traefik Reverse Proxy",
@@ -20,11 +27,11 @@ export const TraefikModuleMeta: ModuleMeta = {
  * @param enableTLS - Whether to enable HTTPS/TLS (default: false)
  * @returns {ModuleDefinition} Complete module definition for Docker and .env
  */
-export const TraefikModule = (
-  projectNameSanitized: string,
+export const TraefikModule = ({
+  projectNameSanitized,
   enableDashboard = false,
   enableTLS = false
-): ModuleDefinition => ({
+}: TraefikModuleOptions): ModuleDefinition => ({
   meta: TraefikModuleMeta,
 
   docker: {
