@@ -49,7 +49,8 @@ export interface DockerConfig {
   /** Security options for the container */
   security_opt?: string[]
   /** Restart policy for the container */
-  restart?: 'no' | 'on-failure' | 'always' | 'unless-stopped'
+  restart?: 'no' | 'on-failure' | 'always' | 'unless-stopped',
+  global?: object
 }
 
 export interface ModuleTemplate  {

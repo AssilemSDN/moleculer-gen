@@ -29,7 +29,7 @@ export const PrometheusModule = ({
     container_name: '${DOCKER_CONTAINER_NAME_MONITORING}',
     networks: [ 'backend' ],
     volumes: [
-      "./prometheus.yml:/etc/prometheus/prometheus.yml:ro",
+      "./docker/config/prometheus.yml:/etc/prometheus/prometheus.yml:ro",
       "prometheus_data:/prometheus"
     ],
     labels: 
@@ -38,7 +38,10 @@ export const PrometheusModule = ({
       "traefik.http.routers.prometheus.rule=Host(`${DOCKER_CONTAINER_NAME_MONITORING}.local`)",
       "traefik.http.routers.prometheus.entrypoints=web",
       "traefik.http.services.prometheus.loadbalancer.server.port=9090"
-      ] : []
+      ] : [],
+    global: {
+      volumes: { prometheus_data: {} }
+    }
   },
   env: {
     'DOCKER_CONTAINER_NAME_MONITORING': 'prometheus',
@@ -48,7 +51,7 @@ export const PrometheusModule = ({
   templates: [
     { 
       templatePath: 'config/prometheus.mustache', 
-      outputPath: 'prometheus.yml',
+      outputPath: 'docker/config/prometheus.yml',
       data: { projectNameSanitized }
     }
   ]

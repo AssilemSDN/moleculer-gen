@@ -21,7 +21,7 @@ start:
 	docker compose --env-file $(ENV_FILE) $(compose_arg) up --build --force-recreate --detach --remove-orphans
 
 stop: 
-	docker compose --env-file $(ENV_FILE) down
+	docker compose --env-file $(ENV_FILE) $(compose_arg) down
 
 logs:
 	docker compose --env-file $(ENV_FILE) logs -f

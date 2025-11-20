@@ -4,6 +4,7 @@
 import { writeFile, writeYAML } from '../../utils/fs-helpers.js'
 import path from 'path'
 import { renderTemplateToFile } from '../../utils/render-template.js'
+import merge from 'lodash.merge'
 
 const writeDockerService = async (service, serviceName, projectDir) => {
   const dockerServicePath = path.join(projectDir, `docker/services/${serviceName}.yaml`)
@@ -29,6 +30,22 @@ const writeFiles = async (templates, templateDir, projectDir) => {
 export const generateModules = async (modules, templateDir, projectDir) => {
   const envLines = []
 
+  let dockerComposeMinimalContent = {
+    // version: '3.9',
+    services: {},
+    networks: {
+      publique: {
+        name: 'publique',
+        driver: 'bridge'
+      },
+      backend: {
+        name: 'backend',
+        internal: true,
+        driver: 'bridge'
+      }
+    },
+    volumes: { db_data: {} }
+  }
   // Generate module files and build env content
   for (const module of modules) {
     const service = {
@@ -48,9 +65,15 @@ export const generateModules = async (modules, templateDir, projectDir) => {
       }
     }
     writeDockerService(service, module.meta.key, projectDir)
+
+    if (module.docker.global) {
+      dockerComposeMinimalContent = merge(dockerComposeMinimalContent, module.docker.global)
+    }
+
     if (module.templates?.length) {
       writeFiles(module.templates, templateDir, projectDir)
     }
+
     const moduleEnvLines = Object.entries(module.env).map(([k, v]) => `${k}=${v}`)
     // Build .env file lines content
     envLines.push(`# ${module.meta.name}`)
@@ -61,22 +84,6 @@ export const generateModules = async (modules, templateDir, projectDir) => {
   // --- Prepare files to generate
 
   const envContent = envLines.join('\n')
-  const dockerComposeMinimalContent = {
-    // version: '3.9',
-    services: {},
-    networks: {
-      publique: {
-        name: 'publique',
-        driver: 'bridge'
-      },
-      backend: {
-        name: 'backend',
-        internal: true,
-        driver: 'bridge'
-      }
-    },
-    volumes: { db_data: {} }
-  }
 
   const envExamplePath = path.join(projectDir, '.env.example')
   const envDevPath = path.join(projectDir, '.env.dev')

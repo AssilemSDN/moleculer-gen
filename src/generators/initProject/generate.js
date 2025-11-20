@@ -38,6 +38,7 @@ export const generate = async ({
   await ensureEmptyDir(projectDir)
   await mkdirp(path.join(projectDir, '.moleculer-gen/'))
   await mkdirp(path.join(projectDir, 'docker/services/'))
+  await mkdirp(path.join(projectDir, 'docker/config/'))
 
   // Copy base template
   await copyDir(path.join(templateDir, 'base'), projectDir)
