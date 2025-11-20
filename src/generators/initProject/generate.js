@@ -37,15 +37,18 @@ export const generate = async ({
   // Ensure the output directory is clean
   await ensureEmptyDir(projectDir)
   await mkdirp(path.join(projectDir, '.moleculer-gen/'))
+  await mkdirp(path.join(projectDir, 'docker/services/'))
 
   // Copy base template
   await copyDir(path.join(templateDir, 'base'), projectDir)
 
   // Run generation tasks in parallel
   await Promise.all([
+    // Generate moleculer-gen config file
     generateConfig(answers, projectDir),
+    // Generate package.json project file
     generatePackageJson(answers.projectNameSanitized, projectDir, context),
-    generateModules(modules, projectDir),
+    // Generate readme.md file
     renderTemplateToFile(
       path.join(templateDir, 'README.mustache'),
       path.join(projectDir, 'README.md'),
@@ -54,6 +57,10 @@ export const generate = async ({
         database: answers.database,
         transporter: answers.transporter
       }
-    )
+    ),
+    // Generate minimal docker-compose.yml
+    // --- TODO ---
+    // Generate needed yml docker services, env, and files
+    generateModules(modules, templateDir, projectDir)
   ])
 }
