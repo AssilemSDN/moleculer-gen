@@ -2,10 +2,9 @@
 
 # moleculer-gen
 
-> A **simple and modular CLI generator** to quickly create a functional **Node.js microservices project** with an operational API service, powered by [Moleculer.js](https://moleculer.services/). 
+> A **simple and modular CLI generator** to quickly create a functional **Node.js microservices project** with an operational API service, powered by [Moleculer.js](https://moleculer.services/).
 
-
-Pick your **database**, message **transporter**, and optional infrastructure plugins like **Traefik** or **Prometheus**.  
+Pick your **database**, message **transporter**, and optional infrastructure plugins like **Traefik** or **Prometheus**.
 
 The generator produces a **ready-to-use Docker Compose setup** for development, so you can jump straight into coding your own microservices.
 
@@ -22,54 +21,65 @@ The generator produces a **ready-to-use Docker Compose setup** for development, 
 - Docker Compose ready for immediate dev
 - Intuitive, modular CLI
 
-
-⚠️ **Work In Progress (WIP)**  
+⚠️ **Work In Progress (WIP)**
 Some features are still under development.
 
 ## 🚀 Installation
+
 ```sh
-# Run via npx
+# Run via npx (no installation required)
 $ npx moleculer-gen
+
+# Or install globally
+$ yarn global add moleculer-gen
+```
+
+> **Note for contributors**: this project uses **yarn** as its package manager.
+> Please use `yarn` instead of `npm` to avoid lockfile conflicts.
+
+```sh
+$ yarn install
 ```
 
 ## 💻 Usage
+
 ```sh
 $ npx moleculer-gen [options] [command]
 ```
 
 ### Options
 
-### Options
-
-| Option            | Description                                                      |
-| ----------------- | ---------------------------------------------------------------- |
-| `-V`, `--version` | Show the CLI version                                             |
-| `--debug`         | Enable debug logging                                             |
-| `--verbose`       | Enable verbose logging (info level)                              |
-| `--quiet`         | Show only errors                                                 |
-| `-h`, `--help`    | Show help for the CLI or a specific command                      |
-| `--config <file>` | Use a JSON config file instead of interactive prompts.           |
-| `--dry-run`       | Simulate actions without writing files. Useful for testing.      |
+| Option            | Description                                                |
+| ----------------- | ---------------------------------------------------------- |
+| `-V`, `--version` | Show the CLI version                                       |
+| `--debug`         | Enable debug logging                                       |
+| `--verbose`       | Enable verbose logging (info level)                        |
+| `--quiet`         | Show only errors                                           |
+| `-h`, `--help`    | Show help for the CLI or a specific command                |
+| `--config <file>` | Use a JSON config file instead of interactive prompts      |
+| `--dry-run`       | Simulate actions without writing files. Useful for testing |
 
 ### Commands
 
-Currently, ``moleculer-gen`` supports the following commands :
+Currently, `moleculer-gen` supports the following commands:
 
-#### 1- ``init`` 
+#### 1- `init`
 
-``init`` Initialize a **new Moleculer project**
+`init` Initialize a **new Moleculer project**
+
 ```sh
 # In the current folder
-$ moleculer-gen init
+$ npx moleculer-gen init
 ```
 
 **Steps during initialization**:
 1. Enter project name
-2. Choose a database (``mongodb``, ``postgres``, …)
-3. Choose a transporter (``nats``, ``redis``, …)
-4. Select optional infrastructure modules (``traefik, prometheus``, …)
+2. Choose a database (`mongodb`, `postgres`, …)
+3. Choose a transporter (`nats`, `redis`, …)
+4. Select optional infrastructure modules (`traefik`, `prometheus`, …)
 
 **Example output**:
+
 ```sh
 [INFO] 🚀 Starting project initialization...
 ✔ 🧱 Project name: My Project
@@ -77,7 +87,9 @@ $ moleculer-gen init
 ✔ 📦 Choose a transporter: NATS Message Broker
 ✔ ⚙️ Select optional infrastructure modules: Traefik Reverse Proxy
 ```
+
 At the end, a project summary can be displayed:
+
 ```json
 {
   "projectName": "My Project",
@@ -91,45 +103,44 @@ At the end, a project summary can be displayed:
 | Setting                | Description                                        |
 | ---------------------- | -------------------------------------------------- |
 | `projectName`          | Name of the project as entered by the user         |
-| `projectNameSanitized` | “Safe” name for files/folders (lowercase, hyphens) |
+| `projectNameSanitized` | "Safe" name for files/folders (lowercase, hyphens) |
 | `database`             | Selected database (`mongodb`, `postgres`, etc.)    |
 | `transporter`          | Selected message broker (`nats`, `redis`, etc.)    |
 | `plugins`              | List of optional modules enabled (`traefik`, etc.) |
 
-💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the ``examples/config/init-project`` folder.
+💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the `examples/config/init-project` folder.
 
 ```bash
 $ npx moleculer-gen init --config minimal.json
 ```
 
-💡 For testing, you can use ``--dry-run`` option.
+💡 For testing, you can use the `--dry-run` option.
 
 ```bash
 $ npx moleculer-gen init --config minimal.json --dry-run --debug
 ```
 
+#### 2- `add-service`
 
-#### 2- ``add-service``
-
-``add-service`` Add a **new service** to your **generated project**
+`add-service` Add a **new service** to your **generated project**
 
 ```sh
 $ npx moleculer-gen add-service
 ```
 
 **Steps during service creation**:
-1- Enter the service name (e.g., articles)
-2- Is this a CRUD service? (Yes / No)
-3- Expose CRUD operations via API Gateway? (Yes / No)
+1. Enter the service name (e.g., `articles`)
+2. Is this a CRUD service? (Yes / No)
+3. Expose CRUD operations via API Gateway? (Yes / No)
 
-> 💡 **Automatic name generation**:
-The CLI generates default names for the service file, model file, model, schema, and collection based on the service name you provide. This ensures **consistent naming** across your project. 
+> 💡 **Automatic name generation**: The CLI generates default names for the service file, model file, model, schema, and collection based on the service name you provide. This ensures **consistent naming** across your project.
+>
+> All names follow consistent rules (singular/plural forms, kebab-case, PascalCase, camelCase).
 
-All names follow consistent rules (singular/plural forms, kebab-case, PascalCase, camelCase).
+> ✨ **Flexibility**: You can keep the generated names or modify them manually before finalizing, giving you full control over your project structure.
 
->✨ **Flexibility**: You can keep the generated names or modify them manually before finalizing, giving you full control over your project structure.
+**Example of generated default names**:
 
-**Example of generated default names** :
 | Key                    | Generated Name        |
 | ---------------------- | --------------------- |
 | `serviceFileName`      | `articles.service.js` |
@@ -140,10 +151,9 @@ All names follow consistent rules (singular/plural forms, kebab-case, PascalCase
 | `collectionName`       | `articles`            |
 | `schemaName`           | `articleSchema`       |
 
+**Example output**:
 
-**Example output** :
 ```sh
-# All default names
 [INFO] 🚀 Starting service addition...
 ✔ Service name: articles
 ✔ Is this a CRUD service? Yes
@@ -156,28 +166,60 @@ All names follow consistent rules (singular/plural forms, kebab-case, PascalCase
 ✔ Collection/table name: articles
 ```
 
-💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the ``examples/config/add-service`` folder.
+💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the `examples/config/add-service` folder.
 
 ```bash
 $ npx moleculer-gen add-service --config crud_full.json
 ```
 
-💡 For testing, you can use ``--dry-run`` option.
+💡 For testing, you can use the `--dry-run` option.
 
 ```bash
 $ npx moleculer-gen add-service --config crud_full.json --dry-run --debug
 ```
 
 ### Help
+
 ```sh
 # General CLI help
 moleculer-gen --help
 ```
+
+## 🛠️ Development
+
+```sh
+# Clone the repo
+$ git clone https://github.com/AssilemSDN/moleculer-gen.git
+$ cd moleculer-gen
+
+# Install dependencies
+$ yarn install
+
+# Build TypeScript modules
+$ yarn build
+
+# Link the CLI locally for testing
+$ yarn link
+
+# Run commands directly
+$ moleculer-gen init
+$ moleculer-gen add-service
+
+# Run tests
+$ yarn test
+
+# Simulate without writing files
+$ moleculer-gen init --dry-run --debug
+
+# Unlink when done
+$ yarn unlink moleculer-gen
+```
+
 ## 🤝 Contributing
 
-Contributions are welcome!  
+Contributions are welcome!
 
-If you’d like to improve `moleculer-gen`, feel free to fork the repo and open a pull request.
+If you'd like to improve `moleculer-gen`, feel free to fork the repo and open a pull request.
 
 Suggestions, bug reports, and feature requests are also appreciated — open an issue to discuss ideas. See the [CONTRIBUTING](./CONTRIBUTING.md) file for details.
 
