@@ -23,6 +23,7 @@ const TEMPLATE_DIR = path.join(__dirname, '../../templates')
 
 /**
  * Validate that a project config object has all required fields and valid module keys.
+ * Returns a new enriched config object (does not mutate the input).
  */
 export const validateConfig = (config) => {
   const requiredFields = ['projectName', 'database', 'transporter']
@@ -31,25 +32,26 @@ export const validateConfig = (config) => {
       throw new AppError(`Missing required config field: ${field}`, { code: 'INVALID_CONFIG' })
     }
   }
-  if (!config.projectNameSanitized) {
-    const projectNameSanitized = sanitizeName(config.projectName)
-    config.projectNameSanitized = path.basename(projectNameSanitized)
-  }
-  if (!config.plugins) {
-    config.plugins = []
-  }
+
   if (!databases[config.database]) {
     throw new AppError(`Invalid database key: ${config.database}`, { code: 'INVALID_CONFIG' })
   }
   if (!transporters[config.transporter]) {
     throw new AppError(`Invalid transporter key: ${config.transporter}`, { code: 'INVALID_CONFIG' })
   }
-  for (const pluginKey of config.plugins) {
-    if (!plugins[pluginKey]) {
+
+  const pluginKeys = config.plugins ?? []
+  for (const pluginKey of pluginKeys) {
+    if (!plugins[pluginKey]) { 
       throw new AppError(`Invalid plugin key: ${pluginKey}`, { code: 'INVALID_CONFIG' })
     }
   }
-  return true
+
+  return {
+    ...config,
+    projectNameSanitized: config.projectNameSanitized ?? path.basename(sanitizeName(config.projectName)),
+    plugins: pluginKeys
+  }
 }
 
 /**
@@ -67,8 +69,7 @@ export const loadConfigFromFile = async (configFile) => {
   } catch {
     throw new AppError(`Invalid JSON in config file: ${configPath}`, { code: 'INVALID_JSON' })
   }
-  validateConfig(config)
-  return config
+  return validateConfig(config)
 }
 
 /**
@@ -100,8 +101,7 @@ export const initProject = safeRun(async ({ dryRun = false, configFile } = {}) =
     context: { database },
     modules: modulesToGenerate,
     templateDir: TEMPLATE_DIR,
-    projectDir: path.join(process.cwd(), projectNameSanitized),
-    options: { dryRun }
+    projectDir: path.join(process.cwd(), projectNameSanitized)
   }
   // 5. Generate
   await generate(generateOptions)
