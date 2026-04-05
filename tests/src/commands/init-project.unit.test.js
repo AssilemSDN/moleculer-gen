@@ -92,7 +92,7 @@ describe('initProject', () => {
       )
       expect(generateCall.templateDir).toContain('templates')
       expect(generateCall.projectDir).toBe(path.join(fakeCwd, 'my-super-project-yay'))
-      expect(generateCall.options.dryRun).toBe(true)
+      expect(generateCall.dryRun).toBe(true)
 
       expect(ApiGatewayModule).toHaveBeenCalledWith(
         expect.objectContaining({ needsTraefikLabels: true })
