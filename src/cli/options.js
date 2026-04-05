@@ -1,5 +1,5 @@
 /*
-  PATH  /src/core/cli/options.js
+  PATH  /src/cli/options.js
 */
 import { logger } from '../utils/logger.js'
 

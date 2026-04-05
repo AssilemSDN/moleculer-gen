@@ -1,5 +1,5 @@
 /*
-  PATH  /src/core/utils/safe-run.js
+  PATH  /src/utils/safe-run.js
 */
 import { ExitCodes } from './exit-codes.js'
 import { logger } from './logger.js'

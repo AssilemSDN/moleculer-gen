@@ -1,5 +1,5 @@
 /*
-  PATH  /src/core/utils/logger.js
+  PATH  /src/utils/logger.js
 */
 import chalk from 'chalk'
 
