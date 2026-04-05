@@ -37,7 +37,7 @@ export const generate = async ({
   // Ensure the output directory is clean
   await ensureEmptyDir(projectDir)
   const dirs = [
-    'moleculer-gen',
+    '.moleculer-gen',
     'docker/services',
     'docker/config'
   ]
