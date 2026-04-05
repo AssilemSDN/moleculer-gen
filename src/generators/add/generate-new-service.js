@@ -1,5 +1,5 @@
 /*
-  PATH: /src/core/generators/generate-new-service.js
+  PATH: /src/generators/add/generate-new-service.js
 */
 import path from 'path'
 import { mkdirp, writeFile } from '../../utils/fs-helpers.js'
