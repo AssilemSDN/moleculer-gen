@@ -1,3 +1,6 @@
+/*
+  PATH  /src/utils/command-runner.js
+*/
 import { logger } from './logger.js'
 
 export const runCommand = async (commandName, commandFn, options) => {
@@ -6,7 +9,7 @@ export const runCommand = async (commandName, commandFn, options) => {
     const result = await commandFn(options)
     if (result.success) {
       logger.info(`🎉 ${commandName} completed successfully!`)
-      if (result.data) logger.info('Result:\n', result.data)
+      if (result.data !== undefined) logger.info('Result:\n', result.data)
     } else {
       logger.error(`❌ ${commandName} failed.`)
       process.exitCode ||= 1
