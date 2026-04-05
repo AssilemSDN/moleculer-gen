@@ -1,8 +1,8 @@
 /*
-  PATH  /src/core/modules/transporters/NatsModule.ts
+  PATH  /src/modules/transporters/NatsModule.ts
 */
 
-import { ModuleMeta, ModuleDefinition } from "../types"
+import { ModuleMeta, ModuleDefinition } from "../types.js"
 
 export const NatsModuleMeta: ModuleMeta = {
   key: "nats",

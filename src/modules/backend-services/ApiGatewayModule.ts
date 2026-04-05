@@ -1,4 +1,7 @@
-import { ModuleDefinition } from "../types";
+/*
+  PATH  /src/modules/backend-services/ApiGatewayModule.ts
+*/
+import { ModuleDefinition } from "../types.js";
 import { ServiceModule } from "./ServiceModule.js";
 
 interface ApiGatewayModuleOptions {

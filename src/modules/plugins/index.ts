@@ -1,5 +1,5 @@
 /*
-  PATH  /src/core/modules/plugins/index.ts
+  PATH  /src/modules/plugins/index.ts
 */
 import { ModuleRegistry, ModuleMeta } from "../types.js"
 import { PrometheusModule, PrometheusModuleMeta } from "./PrometheusModule.js"

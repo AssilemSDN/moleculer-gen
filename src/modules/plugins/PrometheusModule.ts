@@ -1,7 +1,7 @@
 /*
-  PATH  /src/core/modules/plugins/PrometheusModule.ts
+  PATH  /src/modules/plugins/PrometheusModule.ts
 */
-import { ModuleDefinition, ModuleMeta } from "../types"
+import { ModuleDefinition, ModuleMeta } from "../types.js"
 
 export const PrometheusModuleMeta: ModuleMeta = {
   key: "prometheus",

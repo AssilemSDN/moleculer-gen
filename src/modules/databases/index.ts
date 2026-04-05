@@ -1,5 +1,5 @@
 /*
-  PATH  /src/core/modules/transporters/index.ts
+  PATH  /src/modules/transporters/index.ts
 */
 import { ModuleRegistry, ModuleMeta } from "../types.js"
 import { MongoDBModule, MongoDBModuleMeta } from "./MongoDBModule.js"

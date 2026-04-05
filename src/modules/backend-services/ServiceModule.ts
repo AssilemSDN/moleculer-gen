@@ -1,8 +1,8 @@
 /*
-  PATH  /src/core/modules/backend-services/ServiceModule.ts
+  PATH  /src/modules/backend-services/ServiceModule.ts
 */
-import slugify from "slugify"
-import { ModuleDefinition, ModuleMeta, DockerConfig } from "../types"
+import { default as slugify } from "slugify"
+import { ModuleDefinition, ModuleMeta, DockerConfig } from "../types.js"
 
 interface ServiceModuleOptions {
   /** Slugified project name, e.g., "myapp" */
@@ -28,6 +28,7 @@ export const ServiceModule = ({
   dependsOn = [],
   labels = []
 }: ServiceModuleOptions): ModuleDefinition => {
+  // @ts-expect-error - slugify type mismatch
   const serviceNameSanitized = slugify(serviceName, { lower: true, strict: true, trim: true })
 
   const meta: ModuleMeta = {

@@ -1,7 +1,7 @@
 /*
-  PATH  /src/core/modules/databases/MongoDBModule.ts
+  PATH  /src/modules/databases/MongoDBModule.ts
 */
-import { ModuleDefinition, ModuleMeta } from "../types"
+import { ModuleDefinition, ModuleMeta } from "../types.js"
 
 export const MongoDBModuleMeta: ModuleMeta = {
   key: "mongodb",
