@@ -42,7 +42,7 @@ export const validateConfig = (config) => {
 
   const pluginKeys = config.plugins ?? []
   for (const pluginKey of pluginKeys) {
-    if (!plugins[pluginKey]) { 
+    if (!plugins[pluginKey]) {
       throw new AppError(`Invalid plugin key: ${pluginKey}`, { code: 'INVALID_CONFIG' })
     }
   }
