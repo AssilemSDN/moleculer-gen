@@ -12,7 +12,7 @@ vi.mock('../../../src/prompts/init-prompts.js', () => ({
   initPrompts: vi.fn()
 }))
 
-vi.mock('../../../src/generators/initProject/generate.js', () => ({
+vi.mock('../../../src/generators/init-project/generate.js', () => ({
   generate: vi.fn().mockResolvedValue(undefined)
 }))
 
@@ -49,7 +49,7 @@ describe('initProject', () => {
     vi.clearAllMocks()
     cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(fakeCwd)
     ;({ initPrompts } = await import('../../../src/prompts/init-prompts.js'))
-    ;({ generate } = await import('../../../src/generators/initProject/generate.js'))
+    ;({ generate } = await import('../../../src/generators/init-project/generate.js'))
 
     vi.spyOn(fsHelpers, 'exists')
     vi.spyOn(fsHelpers, 'readFile')
