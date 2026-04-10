@@ -1,5 +1,5 @@
 /*
-  PATH  /src/modules/plugins/index.ts
+  PATH /src/modules/plugins/index.ts
 */
 import { ModuleRegistry, ModuleMeta } from "../types.js"
 import { PrometheusModule, PrometheusModuleMeta } from "./PrometheusModule.js"
@@ -16,7 +16,7 @@ export const pluginMetas: Record<string, ModuleMeta> = {
 
 /** 
  * Registry of all plugins factories.
- * Each key corresponds to a transporter factory that returns a ModuleDefinition.
+ * Each key corresponds to a plugin factory that returns a ModuleDefinition.
  */
 export const plugins: ModuleRegistry = {
   traefik: TraefikModule,

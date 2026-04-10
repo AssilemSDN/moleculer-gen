@@ -1,5 +1,5 @@
 /*
-  PATH  /src/utils/fs-helpers.js
+  PATH /src/utils/fs-helpers.js
 */
 import fs from 'fs/promises'
 import yaml from 'js-yaml'

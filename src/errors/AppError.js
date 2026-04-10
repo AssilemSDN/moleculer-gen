@@ -1,5 +1,5 @@
 /*
-  PATH  /src/core/commands/AppError.js
+  PATH /src/errors/AppError.js
 */
 
 /**

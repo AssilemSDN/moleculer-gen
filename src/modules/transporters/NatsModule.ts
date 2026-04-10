@@ -1,5 +1,5 @@
 /*
-  PATH  /src/modules/transporters/NatsModule.ts
+  PATH /src/modules/transporters/NatsModule.ts
 */
 
 import { ModuleMeta, ModuleDefinition } from "../types.js"

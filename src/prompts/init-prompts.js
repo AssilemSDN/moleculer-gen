@@ -1,5 +1,5 @@
 /*
-  PATH  /src/prompts/init-prompts.js
+  PATH /src/prompts/init-prompts.js
 */
 import inquirer from 'inquirer'
 import { transporterMetas } from '../../dist/modules/transporters/index.js'

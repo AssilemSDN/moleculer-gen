@@ -1,5 +1,5 @@
 /*
-  PATH  /src/commands/add-service.js
+  PATH /src/commands/add-service.js
 */
 import path from 'path'
 import { fileURLToPath } from 'url'

@@ -1,5 +1,5 @@
 /*
-  PATH  /src/utils/command-helpers.js
+  PATH /src/utils/common-helpers.js
 */
 import { camelCase, kebabCase, pascalCase } from 'change-case'
 import pluralize from 'pluralize-esm'

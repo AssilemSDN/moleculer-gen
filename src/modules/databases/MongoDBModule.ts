@@ -1,5 +1,5 @@
 /*
-  PATH  /src/modules/databases/MongoDBModule.ts
+  PATH /src/modules/databases/MongoDBModule.ts
 */
 import { ModuleDefinition, ModuleMeta } from "../types.js"
 
@@ -27,8 +27,7 @@ export const MongoDBModule: () => ModuleDefinition = (): ModuleDefinition => ({
     ports: [],
     command: [],
     depends_on: [],
-    security_opt: [],
-    restart: "always",
+    restart: "always"
   },
 
   env: {
@@ -38,6 +37,6 @@ export const MongoDBModule: () => ModuleDefinition = (): ModuleDefinition => ({
     APP_DB_USERNAME: "root",
     APP_DB_PASSWORD: "rootpassword",
     DOCKER_IMAGE_NAME_DB: "mongo",
-    DOCKER_IMAGE_TAG_DB: "8.0.6",
+    DOCKER_IMAGE_TAG_DB: "8.0.6"
   },
 })

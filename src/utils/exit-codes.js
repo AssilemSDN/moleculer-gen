@@ -1,5 +1,5 @@
 /*
-  PATH  /src/utils/exit-codes.js
+  PATH /src/utils/exit-codes.js
 */
 export const ExitCodes = {
   SUCCESS: { code: 0, label: 'SUCCESS', desc: 'Everything went fine' },

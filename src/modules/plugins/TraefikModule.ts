@@ -1,5 +1,5 @@
 /*
-  PATH  /src/modules/plugins/TraefikModule.ts
+  PATH /src/modules/plugins/TraefikModule.ts
 */
 import { ModuleDefinition, ModuleMeta } from "../types.js"
 

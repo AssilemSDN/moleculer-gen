@@ -1,5 +1,5 @@
 /*
-  PATH  /src/modules/types.ts
+  PATH /src/modules/types.ts
 */
 
 /**

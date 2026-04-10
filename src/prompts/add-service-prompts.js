@@ -1,5 +1,5 @@
 /*
-  PATH  /src/prompts/add-service-prompts.js
+  PATH /src/prompts/add-service-prompts.js
 */
 import inquirer from 'inquirer'
 import { camelCase } from 'change-case'

@@ -1,5 +1,5 @@
 /*
-  PATH  /src/utils/command-runner.js
+  PATH /src/utils/command-runner.js
 */
 import { logger } from './logger.js'
 

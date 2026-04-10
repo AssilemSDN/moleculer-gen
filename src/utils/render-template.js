@@ -1,5 +1,5 @@
 /*
-  PATH  /src/utils/render-template.js
+  PATH /src/utils/render-template.js
 */
 import Mustache from 'mustache'
 import { readFile, writeFile } from './fs-helpers.js'

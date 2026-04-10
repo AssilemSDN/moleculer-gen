@@ -1,5 +1,5 @@
 /*
-  PATH  /src/modules/plugins/PrometheusModule.ts
+  PATH /src/modules/plugins/PrometheusModule.ts
 */
 import { ModuleDefinition, ModuleMeta } from "../types.js"
 

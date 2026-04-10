@@ -1,5 +1,5 @@
 /*
-  PATH  /src/modules/backend-services/ApiGatewayModule.ts
+  PATH /src/modules/backend-services/ApiGatewayModule.ts
 */
 import { ModuleDefinition } from "../types.js";
 import { ServiceModule } from "./ServiceModule.js";

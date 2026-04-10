@@ -1,5 +1,5 @@
 /*
-  PATH  /src/cli/commands.js
+  PATH /src/cli/commands.js
 */
 import { addService } from '../commands/add-service.js'
 import { initProject } from '../commands/init-project.js'

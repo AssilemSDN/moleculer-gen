@@ -1,5 +1,5 @@
 /*
-  PATH  /src/modules/backend-services/ServiceModule.ts
+  PATH /src/modules/backend-services/ServiceModule.ts
 */
 import { default as slugify } from "slugify"
 import { ModuleDefinition, ModuleMeta, DockerConfig } from "../types.js"
