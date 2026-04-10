@@ -1,3 +1,6 @@
+/*
+  PATH /src/generators/init-project/generate-config.js
+*/
 import path from 'path'
 import { writeFile } from '../../utils/fs-helpers.js'
 

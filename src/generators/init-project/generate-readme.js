@@ -1,8 +1,11 @@
+/*
+  PATH /src/generators/init-project/generate-readme.js
+*/
 import path from 'path'
 import { renderTemplateToFile } from '../../utils/render-template.js'
 
 export const generateReadme = async (templateDir, projectDir, projectName, database, transporter) => {
-  renderTemplateToFile(
+  await renderTemplateToFile(
     path.join(templateDir, 'README.mustache'),
     path.join(projectDir, 'README.md'),
     {

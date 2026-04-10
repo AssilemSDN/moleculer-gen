@@ -1,5 +1,5 @@
 /*
-  PATH  /src/commands/init-project.js
+  PATH /src/commands/init-project.js
 */
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -11,7 +11,7 @@ import { transporters } from '../../dist/modules/transporters/index.js'
 import { plugins } from '../../dist/modules/plugins/index.js'
 import { ApiGatewayModule } from '../../dist/modules/backend-services/ApiGatewayModule.js'
 // Generator
-import { generate } from '../generators/initProject/generate.js'
+import { generate } from '../generators/init-project/generate.js'
 import { exists, readFile } from '../utils/fs-helpers.js'
 // Error
 import { AppError } from '../errors/AppError.js'

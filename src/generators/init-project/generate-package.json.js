@@ -1,5 +1,5 @@
 /*
-  PATH  /src/core/generator/generate-package.json.js
+  PATH /src/generators/init-project/generate-package.json.js
 */
 import path from 'path'
 import { writeFile } from '../../utils/fs-helpers.js'
@@ -30,8 +30,7 @@ export const generatePackageJson = async (projectNameSanitized, outputDir, optio
       'moleculer-db-adapter-mongoose': '0.10.0',
       'moleculer-repl': '0.7.4',
       'moleculer-web': '0.10.8',
-      nats: '2.29.3',
-      slugify: '1.6.6'
+      nats: '2.29.3'
     },
     devDependencies: {
       standard: '17.1.2'
@@ -40,5 +39,5 @@ export const generatePackageJson = async (projectNameSanitized, outputDir, optio
   if (database === 'mongodb') {
     pkg.dependencies.mongoose = '7.4.0'
   }
-  writeFile(path.join(outputDir, 'package.json'), JSON.stringify(pkg, null, 2))
+  await writeFile(path.join(outputDir, 'package.json'), JSON.stringify(pkg, null, 2))
 }

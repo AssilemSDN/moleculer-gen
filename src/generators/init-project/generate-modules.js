@@ -1,39 +1,24 @@
 /*
-  PATH  /src/core/generator/generate-docker-compose-and-env.js
+  PATH /src/generators/init-project/generate-modules.js
 */
 import { writeFile, writeYAML } from '../../utils/fs-helpers.js'
 import path from 'path'
 import { renderTemplateToFile } from '../../utils/render-template.js'
-import merge from 'lodash.merge'
+import merge from 'lodash/merge.js'
+import { buildDockerService } from '../../utils/docker-helpers.js'
 
 const writeDockerService = async (service, serviceName, projectDir) => {
   const dockerServicePath = path.join(projectDir, `docker/services/${serviceName}.yaml`)
   const doc = {
     services: service
   }
-  writeYAML(dockerServicePath, doc)
+  await writeYAML(dockerServicePath, doc)
 }
 
 const writeTemplateFiles = async (templates, templateDir, projectDir) => {
-  templates?.map(template =>
-    renderTemplateToFile(path.join(templateDir, template.templatePath), path.join(projectDir, template.outputPath), template.data))
-}
-
-let dockerComposeMinimalContent = {
-  // version: '3.9',
-  services: {},
-  networks: {
-    publique: {
-      name: 'publique',
-      driver: 'bridge'
-    },
-    backend: {
-      name: 'backend',
-      internal: true,
-      driver: 'bridge'
-    }
-  },
-  volumes: { db_data: {} }
+  if (!templates?.length) return
+  await Promise.all(templates.map(template =>
+    renderTemplateToFile(path.join(templateDir, template.templatePath), path.join(projectDir, template.outputPath), template.data)))
 }
 
 /**
@@ -44,27 +29,29 @@ let dockerComposeMinimalContent = {
  * @returns {Promise<void>}
  */
 export const generateModules = async (templateDir, projectDir, modules) => {
+  let dockerComposeMinimalContent = {
+    // version: '3.9',
+    services: {},
+    networks: {
+      publique: {
+        name: 'publique',
+        driver: 'bridge'
+      },
+      backend: {
+        name: 'backend',
+        internal: true,
+        driver: 'bridge'
+      }
+    },
+    volumes: { db_data: {} }
+  }
+
   const envLines = []
   const promises = []
 
   for (const module of modules) {
     // --- Extract module docker service
-    const service = {
-      [module.docker.serviceName]: {
-        image: module.docker.image,
-        container_name: module.docker.container_name,
-        environment: module.docker.environment,
-        networks: module.docker.networks,
-        volumes: module.docker.volumes,
-        ports: module.docker.ports,
-        command: module.docker.command,
-        depends_on: module.docker.depends_on,
-        labels: module.docker.labels,
-        env_file: module.docker.env_file,
-        security_opt: module.docker.security_opt,
-        restart: module.docker.restart
-      }
-    }
+    const service = buildDockerService(module.docker)
     promises.push(writeDockerService(service, module.meta.key, projectDir))
 
     // --- Merge global docker config needed by the module

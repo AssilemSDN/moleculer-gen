@@ -1,5 +1,5 @@
 /*
-  PATH  /src/core/generator/generate.js
+  PATH /src/generators/init-project/generate.js
 */
 import path from 'path'
 import { mkdirp, copyDir, ensureEmptyDir } from '../../utils/fs-helpers.js'
