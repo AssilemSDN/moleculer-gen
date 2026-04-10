@@ -1,3 +1,6 @@
+/*
+  PATH /src/generators/add/update-routes-config.js
+*/
 import path from 'path'
 import { AppError } from '../../errors/AppError.js'
 import { exists, writeFile } from '../../utils/fs-helpers.js'
@@ -39,14 +42,25 @@ export const updateRoutesConfig = async (answers) => {
   if (!answers.isCrud || !answers.exposeApi) return
 
   // 1- Check if routes config file exists
-  const routesConfigPath = path.join(process.cwd(), 'src/config/routes.config.js')
+  const routesConfigPath = path.join(process.cwd(), 'src', 'config', 'routes.config.js')
   if (!await exists(routesConfigPath)) {
     throw new AppError(`Config file not found: ${routesConfigPath}`, { code: 'CONFIG_NOT_FOUND' })
   }
 
   // 2- Extract routes from common js file routes.config.js
   const require = createRequire(import.meta.url)
-  const routesConfig = require(routesConfigPath)
+  // Invalidate cache so re-reads always get the latest file from disk
+  delete require.cache[routesConfigPath]
+  let routesConfig
+  try {
+    routesConfig = require(routesConfigPath)
+  } catch {
+    throw new AppError(`Failed to load routes config: ${routesConfigPath}`, { code: 'INVALID_ROUTES_CONFIG' })
+  }
+
+  if (!routesConfig || !Array.isArray(routesConfig.routes)) {
+    throw new AppError('routes.config.js must export an object with a "routes" array', { code: 'INVALID_ROUTES_CONFIG' })
+  }
 
   // 3- Update routes config
   routesConfig.routes.push({
@@ -56,7 +70,7 @@ export const updateRoutesConfig = async (answers) => {
       'GET /': `${answers.serviceDirectoryName}.list`,
       'GET /:id': `${answers.serviceDirectoryName}.get`,
       'PUT /:id': `${answers.serviceDirectoryName}.update`,
-      'DELETE /:slug': `${answers.serviceDirectoryName}.remove`
+      'DELETE /:id': `${answers.serviceDirectoryName}.remove`
     },
     bodyParsers: { json: true }
   })

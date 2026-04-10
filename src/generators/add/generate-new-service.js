@@ -1,5 +1,5 @@
 /*
-  PATH: /src/generators/add/generate-new-service.js
+  PATH /src/generators/add/generate-new-service.js
 */
 import path from 'path'
 import { mkdirp, writeFile } from '../../utils/fs-helpers.js'
@@ -14,7 +14,7 @@ import { updateDockerCompose } from './update-docker-compose.js'
  * @param {string} projectNameSanitized
  * @param {object} answers - User inputs from prompts
  * @param {string} templateDir - Path to templates directory
- * @param {string} outputDir - Root of /src in project
+ * @param {string} outputDir - Project root directory
  * @param {string} serviceDir - Directory for the service
  * @param {object} [options]
  * @param {boolean} [options.dryRun=false] - Simulate generation
@@ -75,7 +75,7 @@ export const generateNewService = async (
       modelName,
       schemaName
     })
-    const modelFilePath = path.join(outputDir, `src/data/model/${modelFileName}`)
+    const modelFilePath = path.join(outputDir, 'src', 'data', 'model', modelFileName)
     await mkdirp(path.dirname(modelFilePath))
     await writeFile(modelFilePath, modelRendered)
   }

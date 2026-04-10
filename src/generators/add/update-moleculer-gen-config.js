@@ -1,3 +1,6 @@
+/*
+  PATH /src/generators/add/update-moleculer-gen-config.js
+*/
 import path from 'path'
 import { readFile, writeFile } from '../../utils/fs-helpers.js'
 
