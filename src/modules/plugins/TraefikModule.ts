@@ -60,7 +60,7 @@ export const TraefikModule = ({
   env: {
     DOCKER_CONTAINER_NAME_REVERSE_PROXY: "traefik",
     DOCKER_IMAGE_NAME_REVERSE_PROXY: "traefik",
-    DOCKER_IMAGE_TAG_REVERSE_PROXY: "v3.3",
+    DOCKER_IMAGE_TAG_REVERSE_PROXY: "v3.6",
     APP_MOLECULER_API_DOMAIN: `${projectNameSanitized}.local`,
   },
 })
