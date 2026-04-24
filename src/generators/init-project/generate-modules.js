@@ -52,7 +52,7 @@ export const generateModules = async (templateDir, projectDir, modules) => {
   for (const module of modules) {
     // --- Extract module docker service
     const service = buildDockerService(module.docker)
-    promises.push(writeDockerService(service, module.meta.key, projectDir))
+    promises.push(writeDockerService(service, path.basename(module.meta.key), projectDir))
 
     // --- Merge global docker config needed by the module
     if (module.docker.global) {

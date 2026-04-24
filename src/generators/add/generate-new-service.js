@@ -75,7 +75,7 @@ export const generateNewService = async (
       modelName,
       schemaName
     })
-    const modelFilePath = path.join(outputDir, 'src', 'data', 'model', modelFileName)
+    const modelFilePath = path.join(outputDir, 'src', 'data', 'model', path.basename(modelFileName))
     await mkdirp(path.dirname(modelFilePath))
     await writeFile(modelFilePath, modelRendered)
   }
