@@ -15,14 +15,34 @@ The generator produces a **ready-to-use Docker Compose setup** for development, 
 - Full scaffold for a **Moleculer.js** project
 - Quickly add **CRUD services** with automatic model and API route generation
 - **Auto-generates service**, **model**, **schema**, and **collection names** following consistent naming conventions
-- Choose your **database**: MongoDB, PostgreSQL…
-- Choose your **transporter**: NATS, Redis…
+- Choose your **database**: MongoDB *(PostgreSQL coming soon)*
+- Choose your **transporter**: NATS *(Redis coming soon)*
 - Optional **plugins**: Traefik, Prometheus…
 - Docker Compose ready for immediate dev
 - Intuitive, modular CLI
 
 ⚠️ **Work In Progress (WIP)**
 Some features are still under development.
+
+## Prerequisites
+
+### For end users
+
+| Requirement | Version | Notes |
+| ----------- | ------- | ----- |
+| [Node.js](https://nodejs.org/) | >= 20 | Required to run the CLI |
+| [Docker](https://www.docker.com/) | 29 | To run the generated project |
+| [Docker Compose](https://docs.docker.com/compose/) | v2+ | Bundled with Docker Desktop |
+| [Make](https://www.gnu.org/software/make/) | any | Used to build and run the generated project (`make build`, `make start`) |
+
+### For contributors / developers
+
+Everything above, plus:
+
+| Requirement | Version | Notes |
+| ----------- | ------- | ----- |
+| [Yarn](https://classic.yarnpkg.com/) | 1.x | Package manager (`yarn install`, `yarn test`) |
+| [TypeScript](https://www.typescriptlang.org/) | >= 5 | Installed via devDependencies (`yarn build`) |
 
 ## 🚀 Installation
 
@@ -47,17 +67,22 @@ $ yarn install
 $ npx moleculer-gen [options] [command]
 ```
 
-### Options
+### Global options
+
+| Option            | Description                                 |
+| ----------------- | ------------------------------------------- |
+| `-V`, `--version` | Show the CLI version                        |
+| `--debug`         | Enable debug logging                        |
+| `--verbose`       | Enable verbose logging (info level)         |
+| `--quiet`         | Show only errors                            |
+| `-h`, `--help`    | Show help for the CLI or a specific command |
+
+The following options are available **per command** (`init`, `add-service`):
 
 | Option            | Description                                                |
 | ----------------- | ---------------------------------------------------------- |
-| `-V`, `--version` | Show the CLI version                                       |
-| `--debug`         | Enable debug logging                                       |
-| `--verbose`       | Enable verbose logging (info level)                        |
-| `--quiet`         | Show only errors                                           |
-| `-h`, `--help`    | Show help for the CLI or a specific command                |
 | `--config <file>` | Use a JSON config file instead of interactive prompts      |
-| `--dry-run`       | Simulate actions without writing files. Useful for testing |
+| `--dry-run`       | Simulate actions without writing files                     |
 
 ### Commands
 
@@ -74,9 +99,9 @@ $ npx moleculer-gen init
 
 **Steps during initialization**:
 1. Enter project name
-2. Choose a database (`mongodb`, `postgres`, …)
-3. Choose a transporter (`nats`, `redis`, …)
-4. Select optional infrastructure modules (`traefik`, `prometheus`, …)
+2. Choose a database (`mongodb`)
+3. Choose a transporter (`nats`)
+4. Select optional infrastructure plugins (`traefik`, `prometheus`)
 
 **Example output**:
 
@@ -104,20 +129,20 @@ At the end, a project summary can be displayed:
 | ---------------------- | -------------------------------------------------- |
 | `projectName`          | Name of the project as entered by the user         |
 | `projectNameSanitized` | "Safe" name for files/folders (lowercase, hyphens) |
-| `database`             | Selected database (`mongodb`, `postgres`, etc.)    |
-| `transporter`          | Selected message broker (`nats`, `redis`, etc.)    |
+| `database`             | Selected database (`mongodb`)                      |
+| `transporter`          | Selected message broker (`nats`)                   |
 | `plugins`              | List of optional modules enabled (`traefik`, etc.) |
 
 💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the `examples/config/init-project` folder.
 
 ```bash
-$ npx moleculer-gen init --config minimal.json
+$ npx moleculer-gen init --config examples/config/init-project/minimal.json
 ```
 
 💡 For testing, you can use the `--dry-run` option.
 
 ```bash
-$ npx moleculer-gen init --config minimal.json --dry-run --debug
+$ npx moleculer-gen init --config examples/config/init-project/minimal.json --dry-run --debug
 ```
 
 #### 2- `add-service`
@@ -169,13 +194,13 @@ $ npx moleculer-gen add-service
 💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the `examples/config/add-service` folder.
 
 ```bash
-$ npx moleculer-gen add-service --config crud_full.json
+$ npx moleculer-gen add-service --config examples/config/add-service/crud_full.json
 ```
 
 💡 For testing, you can use the `--dry-run` option.
 
 ```bash
-$ npx moleculer-gen add-service --config crud_full.json --dry-run --debug
+$ npx moleculer-gen add-service --config examples/config/add-service/crud_full.json --dry-run --debug
 ```
 
 ### Help
