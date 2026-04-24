@@ -2,6 +2,7 @@
   PATH /src/utils/fs-helpers.js
 */
 import fs from 'fs/promises'
+import path from 'path'
 import yaml from 'js-yaml'
 import { AppError } from '../errors/AppError.js'
 
@@ -80,6 +81,7 @@ export const ensureEmptyDir = async (dirPath) => {
  */
 export const writeFile = handleFsError(
   async (filePath, content, opts = {}) => {
+    await fs.mkdir(path.dirname(filePath), { recursive: true })
     await fs.writeFile(filePath, content, opts)
   },
   'Impossible to write the file',

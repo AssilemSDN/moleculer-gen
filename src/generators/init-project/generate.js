@@ -38,8 +38,7 @@ export const generate = async ({
   await ensureEmptyDir(projectDir)
   const dirs = [
     '.moleculer-gen',
-    'docker/services',
-    'docker/config'
+    'docker/services'
   ]
   await Promise.all(dirs.map(dir => mkdirp(path.join(projectDir, dir))))
 
