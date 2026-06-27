@@ -44,15 +44,25 @@ export const PrometheusModule = ({
     }
   },
   env: {
-    'DOCKER_CONTAINER_NAME_MONITORING': 'prometheus',
-    'DOCKER_IMAGE_NAME_MONITORING': 'prom/prometheus',
-    'DOCKER_IMAGE_TAG_MONITORING': 'v3.7.3'
+    DOCKER_CONTAINER_NAME_MONITORING: 'prometheus',
+    DOCKER_IMAGE_NAME_MONITORING: 'prom/prometheus',
+    DOCKER_IMAGE_TAG_MONITORING: 'v3.7.3',
+
+    APP_METRICS_ENABLED: 'true',
+    APP_PROMETHEUS_PORT: '3030',
+    APP_PROMETHEUS_PATH: '/metrics'
   },
   templates: [
-    { 
-      templatePath: 'config/prometheus.mustache', 
+    {
+      kind: 'file',
+      templatePath: 'docker/config/prometheus.yml.mustache',
       outputPath: 'docker/config/prometheus.yml',
       data: { projectNameSanitized }
+    },
+    {
+      kind: 'moleculer-config',
+      templatePath: 'src/config/modules/prometheus.config.js.mustache',
+      outputPath: 'src/config/modules/prometheus.config.js'
     }
   ]
 })

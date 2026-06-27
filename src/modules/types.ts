@@ -53,10 +53,13 @@ export interface DockerConfig {
   global?: object
 }
 
-export interface ModuleTemplate  {
-  templatePath: string,
-  outputPath: string,
-  data?: Record<string, string>
+export interface ModuleTemplate {
+  /** Type of template: 'file' for file generation (render only), 
+   * 'moleculer-config' (render + include in application.config.js) Moleculer config fragments */
+  kind?: 'file' | 'moleculer-config'
+  templatePath: string
+  outputPath: string
+  data?: Record<string, unknown>
 }
 
 /**
@@ -69,6 +72,7 @@ export interface ModuleDefinition {
   docker: DockerConfig
   /** Environment variables for the module, written to .env files */
   env: Record<string, string>,
+  /** Templates for generating files */
   templates?: ModuleTemplate[]
 }
 

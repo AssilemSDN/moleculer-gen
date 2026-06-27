@@ -7,6 +7,7 @@ import { logger } from '../../utils/logger.js'
 import { generateConfig } from './generate-config.js'
 import { generateModules } from './generate-modules.js'
 import { generatePackageJson } from './generate-package.json.js'
+import { generateApplicationConfig } from './generate-application-config.js'
 import { generateReadme } from './generate-readme.js'
 
 /**
@@ -43,7 +44,7 @@ export const generate = async ({
   await Promise.all(dirs.map(dir => mkdirp(path.join(projectDir, dir))))
 
   // Copy base template
-  await copyDir(path.join(templateDir, 'base'), projectDir)
+  await copyDir(path.join(templateDir, 'static'), projectDir)
 
   // Run generation tasks in parallel
   await Promise.all([
@@ -53,6 +54,8 @@ export const generate = async ({
     generatePackageJson(answers.projectNameSanitized, projectDir, context),
     // Generate readme.md file
     generateReadme(templateDir, projectDir, answers.projectName, answers.database, answers.transporter),
+    // Generate application config file
+    generateApplicationConfig(templateDir, projectDir, modules),
     // Generate modules
     generateModules(templateDir, projectDir, modules)
   ])

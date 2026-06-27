@@ -32,5 +32,5 @@ export const NatsModule: () => ModuleDefinition = () => ({
     DOCKER_CONTAINER_NAME_TRANSPORTER: "nats",
     DOCKER_IMAGE_NAME_TRANSPORTER: "nats",
     DOCKER_IMAGE_TAG_TRANSPORTER: "2.11.1-alpine",
-  },
+  }
 })

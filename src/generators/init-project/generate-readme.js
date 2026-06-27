@@ -6,7 +6,7 @@ import { renderTemplateToFile } from '../../utils/render-template.js'
 
 export const generateReadme = async (templateDir, projectDir, projectName, database, transporter) => {
   await renderTemplateToFile(
-    path.join(templateDir, 'README.mustache'),
+    path.join(templateDir, 'dynamic/README.md.mustache'),
     path.join(projectDir, 'README.md'),
     {
       projectName,

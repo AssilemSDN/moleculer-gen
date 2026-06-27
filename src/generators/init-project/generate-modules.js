@@ -15,12 +15,17 @@ const writeDockerService = async (service, serviceName, projectDir) => {
   await writeYAML(dockerServicePath, doc)
 }
 
-const writeTemplateFiles = async (templates, templateDir, projectDir) => {
-  if (!templates?.length) return
-  await Promise.all(templates.map(template =>
-    renderTemplateToFile(path.join(templateDir, template.templatePath), path.join(projectDir, template.outputPath), template.data)))
-}
+const writeTemplateFiles = async (templates = [], templateDir, projectDir) => {
+  if (!templates.length) return
 
+  await Promise.all(templates.map(template =>
+    renderTemplateToFile(
+      path.join(templateDir, 'dynamic', template.templatePath),
+      path.join(projectDir, template.outputPath),
+      template.data ?? {}
+    )
+  ))
+}
 /**
  * Generate `docker-compose.yml` and `.env.example` for a list of modules.
  * @async

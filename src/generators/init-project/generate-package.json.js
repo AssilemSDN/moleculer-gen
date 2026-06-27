@@ -24,6 +24,7 @@ export const generatePackageJson = async (projectNameSanitized, outputDir, optio
       dev: 'moleculer-runner -E .env.dev --repl --hot --config ./src/config/moleculer.config.js ./src/services'
     },
     dependencies: {
+      deepmerge: '4.3.1',
       dotenv: '16.4.5',
       moleculer: '0.14.35',
       'moleculer-db': '0.8.28',
