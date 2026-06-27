@@ -1,0 +1,22 @@
+/*
+  PATH      /src/config/application.config.js
+*/
+require('dotenv').config()
+
+const deepmerge = require('deepmerge')
+
+const coreConfig = require('./modules/core.config')
+const databaseConfig = require('./modules/database.config')
+const transporterConfig = require('./modules/transporter.config')
+{{#moleculerConfigs}}
+const {{importName}}Config = require('./modules/{{file}}')
+{{/moleculerConfigs}}
+
+module.exports = deepmerge.all([
+  coreConfig(),
+  databaseConfig(),
+  transporterConfig(),
+  {{#moleculerConfigs}}
+  {{importName}}Config(),
+  {{/moleculerConfigs}}
+])

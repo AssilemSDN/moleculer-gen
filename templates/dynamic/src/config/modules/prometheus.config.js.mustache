@@ -1,0 +1,31 @@
+/*
+  PATH      /src/config/modules/prometheus.config.js
+  Purpose   Exports Prometheus metrics configuration for Moleculer.
+*/
+
+module.exports = () => {
+  const enabled = process.env.APP_METRICS_ENABLED === 'true'
+  const port = Number(process.env.APP_PROMETHEUS_PORT || 3030)
+  const path = process.env.APP_PROMETHEUS_PATH || '/metrics'
+
+  return {
+    moleculer: {
+      metrics: {
+        enabled,
+        reporter: [
+          {
+            type: 'Prometheus',
+            options: {
+              port,
+              path,
+              defaultLabels: registry => ({
+                namespace: registry.broker.namespace,
+                nodeID: registry.broker.nodeID
+              })
+            }
+          }
+        ]
+      }
+    }
+  }
+}
