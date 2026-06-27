@@ -23,6 +23,9 @@ start:
 stop: 
 	docker compose --env-file $(ENV_FILE) $(compose_arg) down
 
+ps:
+	docker compose --env-file $(ENV_FILE) $(compose_arg) ps
+	
 logs:
 	docker compose --env-file $(ENV_FILE) logs -f
 
