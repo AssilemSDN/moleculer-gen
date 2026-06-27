@@ -28,14 +28,11 @@ export const generateNewService = async (
   { dryRun = false } = {}
 ) => {
   const {
-    serviceName,
     isCrud,
     exposeApi,
     serviceFileName,
     modelFileName,
     modelName,
-    modelVariableName,
-    collectionName,
     serviceDirectoryName,
     schemaName
   } = answers
@@ -56,20 +53,24 @@ export const generateNewService = async (
   // 3- Render service template
   const serviceTemplatePath = path.join(
     templateDir,
-    isCrud ? 'service-crud.mustache' : 'service.mustache'
+    isCrud
+      ? 'dynamic/src/services/service-crud.js.mustache'
+      : 'dynamic/src/services/service.js.mustache'
   )
+
   const serviceRendered = await renderTemplate(serviceTemplatePath, {
-    serviceName,
-    modelVariableName,
-    modelFileName,
-    collectionName
+    ...answers,
+    servicePath: `src/services/${serviceDirectoryName}/${serviceFileName}`
   })
   const serviceFilePath = path.join(serviceDir, serviceFileName)
   await writeFile(serviceFilePath, serviceRendered)
 
   // 4- Generate model if CRUD
   if (isCrud) {
-    const modelTemplatePath = path.join(templateDir, 'model.mustache')
+    const modelTemplatePath = path.join(
+      templateDir,
+      'dynamic/src/data/model/model.js.mustache'
+    )
     const modelRendered = await renderTemplate(modelTemplatePath, {
       modelFileName,
       modelName,
