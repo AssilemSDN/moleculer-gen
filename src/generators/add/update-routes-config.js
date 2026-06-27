@@ -66,11 +66,11 @@ export const updateRoutesConfig = async (answers) => {
   routesConfig.routes.push({
     path: `/api/v1/${answers.serviceDirectoryName}`,
     aliases: {
-      'POST /': `${answers.serviceDirectoryName}.create`,
-      'GET /': `${answers.serviceDirectoryName}.list`,
-      'GET /:id': `${answers.serviceDirectoryName}.get`,
-      'PUT /:id': `${answers.serviceDirectoryName}.update`,
-      'DELETE /:id': `${answers.serviceDirectoryName}.remove`
+      'POST /': `${answers.serviceName}.create`,
+      'GET /': `${answers.serviceName}.list`,
+      'GET /:id': `${answers.serviceName}.get`,
+      'PUT /:id': `${answers.serviceName}.update`,
+      'DELETE /:id': `${answers.serviceName}.remove`
     },
     bodyParsers: { json: true }
   })

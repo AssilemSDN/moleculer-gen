@@ -80,11 +80,11 @@ export const generateNewService = async (
     await mkdirp(path.dirname(modelFilePath))
     await writeFile(modelFilePath, modelRendered)
   }
-  // Generate new service in docker-compose
+  // 5- Generate new service in docker-compose
   await updateDockerCompose(projectNameSanitized, serviceDirectoryName)
-  // Generate new service in .moleculer-gen/config
+  // 6- Generate new service in .moleculer-gen/config
   await updateMoleculerGenConfig(answers)
-  // Handle api-gateway route addition (placeholder for future)
+  // 7- Handle api-gateway route addition
   if (exposeApi) {
     await updateRoutesConfig(answers)
   }
