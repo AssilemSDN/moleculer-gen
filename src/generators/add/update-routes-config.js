@@ -75,5 +75,5 @@ export const updateRoutesConfig = async (answers) => {
     bodyParsers: { json: true }
   })
   const updatedContent = `module.exports = ${JSON.stringify(routesConfig, null, 2)}\n`
-  await writeFile(routesConfigPath, updatedContent, 'utf-8')
+  await writeFile(routesConfigPath, updatedContent, { encoding: 'utf8' })
 }

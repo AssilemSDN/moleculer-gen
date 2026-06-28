@@ -7,12 +7,15 @@ import yaml from 'js-yaml'
 import { AppError } from '../errors/AppError.js'
 
 /**
- * Generic wrapper to handle FS errors
+ * Generic wrapper to handle FS errors.
  */
 const handleFsError = (fn, msg, code) => async (...args) => {
   try {
     return await fn(...args)
   } catch (err) {
+    if (err instanceof AppError) {
+      throw err
+    }
     throw new AppError(`${msg}: ${args[0]}`, {
       code,
       details: err
@@ -23,7 +26,7 @@ const handleFsError = (fn, msg, code) => async (...args) => {
 /**
  * Create a directory recursively.
  * @param {string} dirPath - Path to create
- * @returns {Promise<boolean>} - Resolves true on success
+ * @returns {Promise<void>}
  * @throws {AppError} FS_MKDIR_ERROR if creation fails
  */
 export const mkdirp = handleFsError(
@@ -39,14 +42,14 @@ export const mkdirp = handleFsError(
  * @param {string} srcDir - Source directory
  * @param {string} destDir - Destination directory
  * @param {object} [opts] - Optional fs.cp options
- * @returns {Promise<boolean>} - Resolves true on success
+ * @returns {Promise<void>}
  * @throws {AppError} FS_COPYDIR_ERROR if copy fails
  */
 export const copyDir = handleFsError(
   async (srcDir, destDir, opts = {}) => {
     await fs.cp(srcDir, destDir, { recursive: true, ...opts })
   },
-  'Impossible to copy files into',
+  'Impossible to copy files from',
   'FS_COPYDIR_ERROR'
 )
 
@@ -76,12 +79,12 @@ export const ensureEmptyDir = async (dirPath) => {
  * @param {string} filePath
  * @param {string} content
  * @param {object} [opts] - Optional fs.writeFile options
- * @returns {Promise<boolean>} - Resolves true on success
+ * @returns {Promise<void>}
  * @throws {AppError} FS_WRITE_ERROR if writing fails
  */
 export const writeFile = handleFsError(
   async (filePath, content, opts = {}) => {
-    await fs.mkdir(path.dirname(filePath), { recursive: true })
+    await mkdirp(path.dirname(filePath))
     await fs.writeFile(filePath, content, opts)
   },
   'Impossible to write the file',
@@ -102,17 +105,57 @@ export const readFile = handleFsError(
 )
 /**
  * Check if a path exists.
- * @param {string} path
+ * @param {string} filePath
  * @returns {Promise<boolean>}
  */
-export const exists = async (path) => fs.access(path).then(() => true).catch(() => false)
+export const exists = async filePath =>
+  fs.access(filePath).then(() => true).catch(() => false)
+/**
+ * Read a JSON file and parse its content.
+ * @param {*} filePath
+ * @returns the parsed JSON content
+ * @throws {AppError} FS_READ_ERROR if reading fails
+ * @throws {AppError} FS_INVALID_JSON if JSON parsing fails
+ */
+export const readJsonFile = async filePath => {
+  const content = await readFile(filePath)
+
+  try {
+    return JSON.parse(content)
+  } catch (err) {
+    throw new AppError(`Invalid JSON file: ${filePath}`, {
+      code: 'FS_INVALID_JSON',
+      details: err
+    })
+  }
+}
+
+/**
+ * Read a YAML file and parse its content.
+ * @param {string} filePath
+ * @returns {Promise<any>} - Parsed YAML content
+ * @throws {AppError} FS_READ_ERROR if reading fails
+ * @throws {AppError} FS_INVALID_YAML if YAML parsing fails
+ */
+export const readYAML = async filePath => {
+  const content = await readFile(filePath)
+
+  try {
+    return yaml.load(content)
+  } catch (err) {
+    throw new AppError(`Invalid YAML file: ${filePath}`, {
+      code: 'FS_INVALID_YAML',
+      details: err
+    })
+  }
+}
 
 /**
  * Write a YAML file.
  * @param {string} filePath
  * @param {any} data - Object to dump to YAML
  * @param {object} [opts] - Optional fs.writeFile options
- * @returns {Promise<boolean>} - Resolves true on success
+ * @returns {Promise<any>} - Resolves true on success
  * @throws {AppError} FS_WRITE_ERROR if writing fails
  */
 export const writeYAML = async (filePath, data, opts = {}) => {
