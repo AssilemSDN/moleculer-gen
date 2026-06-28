@@ -29,7 +29,7 @@ describe('addService', () => {
     expect(result.error).toBeInstanceOf(Error)
   }
 
-  it('✅ should add a service via prompts', async () => {
+  it('OK : Should add a service via prompts', async () => {
     vi.spyOn(fsHelpers, 'exists').mockResolvedValue(true)
     vi.spyOn(fsHelpers, 'readFile').mockResolvedValue(JSON.stringify({ projectNameSanitized: 'my-app' }))
     vi.spyOn(fsHelpers, 'ensureEmptyDir').mockResolvedValue(undefined)
@@ -65,7 +65,7 @@ describe('addService', () => {
     )
   })
 
-  it('💥 should fail if project is not initialized', async () => {
+  it('KO : Should fail if project is not initialized', async () => {
     vi.spyOn(fsHelpers, 'exists').mockResolvedValue(false)
 
     const result = await addService()
@@ -73,7 +73,7 @@ describe('addService', () => {
     expectFailure(result, 'PROJECT_NOT_INITIALIZED')
   })
 
-  it('✅ should load configFile instead of prompting', async () => {
+  it('OK : Should load configFile instead of prompting', async () => {
     vi.spyOn(fsHelpers, 'exists')
       .mockImplementationOnce(() => Promise.resolve(true))
       .mockImplementationOnce(() => Promise.resolve(true))
@@ -97,7 +97,7 @@ describe('addService', () => {
     expect(generateNewService).toHaveBeenCalled()
   })
 
-  it('💥 should fail on invalid service config', async () => {
+  it('KO : Should fail on invalid service config', async () => {
     vi.spyOn(fsHelpers, 'exists')
       .mockImplementationOnce(() => Promise.resolve(true))
       .mockImplementationOnce(() => Promise.resolve(true))

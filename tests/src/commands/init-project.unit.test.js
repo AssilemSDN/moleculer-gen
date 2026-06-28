@@ -73,7 +73,7 @@ describe('initProject', () => {
   // == INTERACTIVE MODE (PROMPTS) ==
   // ================================
   describe('interactive mode (via prompts)', () => {
-    it('✅ should generate project with selected modules and dry run', async () => {
+    it('OK : Should generate project with selected modules and dry run', async () => {
       initPrompts.mockResolvedValue({
         projectName: 'My Super Project YAY',
         projectNameSanitized: 'my-super-project-yay',
@@ -99,7 +99,7 @@ describe('initProject', () => {
       )
     })
 
-    it('⚠️ should ignore unknown plugins', async () => {
+    it('OK : Should ignore unknown plugins', async () => {
       initPrompts.mockResolvedValue({
         projectName: 'Test Project',
         projectNameSanitized: 'test-project',
@@ -117,7 +117,7 @@ describe('initProject', () => {
       expect(keys).not.toContain('unknown-plugin')
     })
 
-    it('✅ should handle multiple plugins correctly', async () => {
+    it('OK : Should handle multiple plugins correctly', async () => {
       initPrompts.mockResolvedValue({
         projectName: 'Multi Plugin',
         projectNameSanitized: 'multi-plugin',
@@ -136,7 +136,7 @@ describe('initProject', () => {
       )
     })
 
-    it('💥 should return a handled error when prompts fail', async () => {
+    it('KO : should return a handled error when prompts fail', async () => {
       initPrompts.mockRejectedValue(new Error('Prompt failed'))
       const { initProject } = await import('../../../src/commands/init-project.js')
       const result = await initProject({ dryRun: true })
@@ -144,7 +144,7 @@ describe('initProject', () => {
       expect(result.error.message).toBe('Prompt failed')
     })
 
-    it('✅ should work when no plugin is selected', async () => {
+    it('OK : should work when no plugin is selected', async () => {
       initPrompts.mockResolvedValue({
         projectName: 'Bare Project',
         projectNameSanitized: 'bare-project',
@@ -169,7 +169,7 @@ describe('initProject', () => {
   // == NON-INTERACTIVE MODE (CONFIG FILE) ==
   // ========================================
   describe('non-interactive mode (via configFile)', () => {
-    it('✅ should load minimal config file correctly', async () => {
+    it('OK : Should load minimal config file correctly', async () => {
       fsHelpers.exists.mockResolvedValue(true)
       fsHelpers.readFile.mockResolvedValue(JSON.stringify({
         projectName: 'My Project',
@@ -182,7 +182,7 @@ describe('initProject', () => {
       expect(result.data.projectNameSanitized).toBe('my-project')
     })
 
-    it('💥 should fail if config file does not exist', async () => {
+    it('KO : Should fail if config file does not exist', async () => {
       fsHelpers.exists.mockResolvedValue(false)
       const { initProject } = await import('../../../src/commands/init-project.js')
       const result = await initProject({ configFile: 'missing.json' })
@@ -190,7 +190,7 @@ describe('initProject', () => {
       expect(result.error.message).toMatch(/Config file not found/)
     })
 
-    it('💥 should fail if config file contains invalid JSON', async () => {
+    it('KO : Should fail if config file contains invalid JSON', async () => {
       fsHelpers.exists.mockResolvedValue(true)
       fsHelpers.readFile.mockResolvedValue('{ invalid json ')
       const { initProject } = await import('../../../src/commands/init-project.js')
@@ -199,7 +199,7 @@ describe('initProject', () => {
       expect(result.error.message).toMatch(/Invalid JSON/)
     })
 
-    it('💥 should fail if config file has an invalid database key', async () => {
+    it('KO : Should fail if config file has an invalid database key', async () => {
       fsHelpers.exists.mockResolvedValue(true)
       fsHelpers.readFile.mockResolvedValue(JSON.stringify({
         projectName: 'Bad DB',
@@ -212,7 +212,7 @@ describe('initProject', () => {
       expect(result.error.message).toMatch(/Invalid database key/)
     })
 
-    it('✅ should load config file with plugins correctly', async () => {
+    it('OK : Should load config file with plugins correctly', async () => {
       fsHelpers.exists.mockResolvedValue(true)
       fsHelpers.readFile.mockResolvedValue(JSON.stringify({
         projectName: 'super-app',
