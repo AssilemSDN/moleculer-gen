@@ -4,13 +4,29 @@
   "license": "MIT",
   "description": "A Moleculer.js project generator, to make a simple Moleculer-based microservices template with Docker Compose setup for development environment.",
   "scripts": {
+    "prepack": "yarn build",
+    "pretest": "yarn build",
     "init": "node ./bin/cli.js init",
     "lint": "standard",
     "build": "tsc",
-    "test": "vitest run --reporter=dot"
+    "test": "vitest run --reporter=dot",
+    "test:integration": "vitest run tests/integration --reporter=dot"
   },
   "bin": {
     "moleculer-gen": "./bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "dist",
+    "templates",
+    "examples",
+    "README.md",
+    "LICENSE"
+  ],
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "chalk": "5.6.2",
