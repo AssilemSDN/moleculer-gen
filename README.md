@@ -29,7 +29,7 @@ Some features are still under development.
 - [moleculer-gen](#moleculer-gen)
   - [Features](#features)
   - [Table of contents](#table-of-contents)
-  - [Demo: A ready-to-use development setup](#demo-a-ready-to-use-development-setup)
+  - [Demo: CRUD microservice stack in under one minute](#demo-crud-microservice-stack-in-under-one-minute)
   - [Prerequisites](#prerequisites)
     - [For end users](#for-end-users)
     - [For contributors / developers](#for-contributors--developers)
@@ -48,9 +48,9 @@ Some features are still under development.
   - [Contributing](#contributing)
   - [LICENSE](#license)
 
-## Demo: A ready-to-use development setup
+## Demo: CRUD microservice stack in under one minute
 
-This demo shows how `moleculer-gen` can generate and start a full Moleculer.js CRUD microservice stack in under a minute, without writing boilerplate code, under a minute.
+This demo shows how `moleculer-gen` can generate and start a full Moleculer.js CRUD microservice stack in under a minute, without writing boilerplate code.
 
 The generated setup includes:
 - `API Gateway`
@@ -84,7 +84,7 @@ Prometheus is available at [http://prometheus.local/](http://prometheus.local/).
 
 https://github.com/user-attachments/assets/c72a0a86-f531-432b-8a43-87d69540788a
 
-A generated demo project is available here: [wiwiki-backend-demo](https://github.com/AssilemSDN/todo)
+A generated demo project is available [here](https://github.com/AssilemSDN/moleculer-gen-demo).
 
 ## Prerequisites
 
