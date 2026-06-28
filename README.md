@@ -29,11 +29,12 @@ Some features are still under development.
 - [moleculer-gen](#moleculer-gen)
   - [Features](#features)
   - [Table of contents](#table-of-contents)
+  - [Demo: A ready-to-use development setup](#demo-a-ready-to-use-development-setup)
   - [Prerequisites](#prerequisites)
     - [For end users](#for-end-users)
     - [For contributors / developers](#for-contributors--developers)
-  - [🚀 Installation](#-installation)
-  - [💻 Usage](#-usage)
+  - [Installation](#installation)
+  - [Usage](#usage)
     - [Quick command summary](#quick-command-summary)
       - [Examples](#examples)
     - [Global options](#global-options)
@@ -44,9 +45,46 @@ Some features are still under development.
         - [3- `validate` (WIP)](#3--validate-wip)
     - [Help](#help)
   - [Development](#development)
-  - [🤝 Contributing](#-contributing)
+  - [Contributing](#contributing)
   - [LICENSE](#license)
 
+## Demo: A ready-to-use development setup
+
+This demo shows how `moleculer-gen` can generate and start a full Moleculer.js CRUD microservice stack in under a minute, without writing boilerplate code, under a minute.
+
+The generated setup includes:
+- `API Gateway`
+- CRUD `articles` service
+- `MongoDB`
+- `Traefik`
+- `Prometheus`
+- `Docker Compose` setup
+- 
+The demo uses the `demo.json` config files from:
+```
+./examples/config/init-project
+./examples/config/add-service
+```
+
+Before starting the stack, add the following entries to your /etc/hosts file:
+```
+127.0.0.1       localhost wiwiki-backend.local prometheus.local
+```
+
+TODO : add demo..
+
+Once the stack is running, you can test the API routes with `curl` or `Postman`.
+- Base API URL: [http://wiwiki-backend.local/api/v1/](http://wiwiki-backend.local/api/v1/)
+
+By default, generated entities do not include custom fields
+
+TODO : add demo...
+
+Prometheus is available at [http://prometheus.local/](http://prometheus.local/). You can see all metrics exposed by Moleculer.js.
+
+TODO : add demo...
+
+A generated demo project is available here: [wiwiki-backend-demo](https://github.com/AssilemSDN/todo)
 
 ## Prerequisites
 
@@ -68,7 +106,7 @@ Everything above, plus:
 | [Yarn](https://classic.yarnpkg.com/) | 1.x | Package manager (`yarn install`, `yarn test`) |
 | [TypeScript](https://www.typescriptlang.org/) | >= 5 | Installed via devDependencies (`yarn build`) |
 
-## 🚀 Installation
+## Installation
 
 ```sh
 # Run via npx (no installation required)
@@ -85,7 +123,7 @@ $ yarn global add moleculer-gen
 $ yarn install
 ```
 
-## 💻 Usage
+## Usage
 
 ```sh
 $ npx moleculer-gen [options] [command]
@@ -333,7 +371,7 @@ $ moleculer-gen init --dry-run --debug
 $ yarn unlink moleculer-gen
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome!
 
