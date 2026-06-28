@@ -59,7 +59,7 @@ The generated setup includes:
 - `Traefik`
 - `Prometheus`
 - `Docker Compose` setup
-- 
+
 The demo uses the `demo.json` config files from:
 ```
 ./examples/config/init-project
@@ -71,18 +71,18 @@ Before starting the stack, add the following entries to your /etc/hosts file:
 127.0.0.1       localhost wiwiki-backend.local prometheus.local
 ```
 
-TODO : add demo..
+https://github.com/user-attachments/assets/40c787a0-6d7d-4102-956e-3c1f3135e6b5
 
 Once the stack is running, you can test the API routes with `curl` or `Postman`.
 - Base API URL: [http://wiwiki-backend.local/api/v1/](http://wiwiki-backend.local/api/v1/)
 
 By default, generated entities do not include custom fields
 
-TODO : add demo...
+https://github.com/user-attachments/assets/70ff4b98-9b3b-40d7-a79d-e0dca275ac82
 
 Prometheus is available at [http://prometheus.local/](http://prometheus.local/). You can see all metrics exposed by Moleculer.js.
 
-TODO : add demo...
+https://github.com/user-attachments/assets/c72a0a86-f531-432b-8a43-87d69540788a
 
 A generated demo project is available here: [wiwiki-backend-demo](https://github.com/AssilemSDN/todo)
 
