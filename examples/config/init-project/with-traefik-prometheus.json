@@ -1,6 +1,6 @@
 {
-  "projectName": "Wiwiki",
-  "projectNameSanitized": "wiwiki-backend",
+  "projectName": "My Project",
+  "projectNameSanitized": "my-project",
   "database": "mongodb",
   "transporter": "nats",
   "plugins": ["traefik", "prometheus"]

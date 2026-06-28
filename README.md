@@ -10,7 +10,7 @@ The generator produces a **ready-to-use Docker Compose setup** for development, 
 
 💡 Perfect for developers who want a fast, lightly opinionated setup to start building scalable Node.js microservices with Docker.
 
-## ⚡ Features
+## Features
 
 - Full scaffold for a **Moleculer.js** project
 - Quickly add **CRUD services** with automatic model and API route generation
@@ -24,6 +24,30 @@ The generator produces a **ready-to-use Docker Compose setup** for development, 
 ⚠️ **Work In Progress (WIP)**
 Some features are still under development.
 
+## Table of contents
+
+- [moleculer-gen](#moleculer-gen)
+  - [Features](#features)
+  - [Table of contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+    - [For end users](#for-end-users)
+    - [For contributors / developers](#for-contributors--developers)
+  - [🚀 Installation](#-installation)
+  - [💻 Usage](#-usage)
+    - [Quick command summary](#quick-command-summary)
+      - [Examples](#examples)
+    - [Global options](#global-options)
+    - [Command arguments and options](#command-arguments-and-options)
+      - [Commands](#commands)
+        - [1- `init`](#1--init)
+        - [2- `add-service`](#2--add-service)
+        - [3- `validate` (WIP)](#3--validate-wip)
+    - [Help](#help)
+  - [Development](#development)
+  - [🤝 Contributing](#-contributing)
+  - [LICENSE](#license)
+
+
 ## Prerequisites
 
 ### For end users
@@ -31,7 +55,7 @@ Some features are still under development.
 | Requirement | Version | Notes |
 | ----------- | ------- | ----- |
 | [Node.js](https://nodejs.org/) | >= 20 | Required to run the CLI |
-| [Docker](https://www.docker.com/) | 29 | To run the generated project |
+| [Docker](https://www.docker.com/) | >= 24 | To run the generated project |
 | [Docker Compose](https://docs.docker.com/compose/) | v2+ | Bundled with Docker Desktop |
 | [Make](https://www.gnu.org/software/make/) | any | Used to build and run the generated project (`make build`, `make start`) |
 
@@ -48,7 +72,7 @@ Everything above, plus:
 
 ```sh
 # Run via npx (no installation required)
-$ npx moleculer-gen
+$ npx moleculer-gen init
 
 # Or install globally
 $ yarn global add moleculer-gen
@@ -67,28 +91,64 @@ $ yarn install
 $ npx moleculer-gen [options] [command]
 ```
 
+
+### Quick command summary
+
+| Command                                   | Mode        | Description                                                                 |
+| ----------------------------------------- | ----------- | --------------------------------------------------------------------------- |
+| `moleculer-gen init`                      | Interactive | Create a new Moleculer project using prompts                                |
+| `moleculer-gen init <config-file>`        | Config file | Create a new project from a JSON config file                                |
+| `moleculer-gen add-service`               | Interactive | Add one service using prompts                                               |
+| `moleculer-gen add-service <config-file>` | Config file | Add one service from a JSON config file                                     |
+| `moleculer-gen validate`                  | Validation  | Check whether the current folder looks like a valid `moleculer-gen` project |
+
+#### Examples
+
+```sh
+# Create a project interactively
+$ npx moleculer-gen init
+
+# Create a project from config
+$ npx moleculer-gen init examples/config/init-project/minimal.json
+
+# Add a service interactively
+$ npx moleculer-gen add-service
+
+# Add a service from config
+$ npx moleculer-gen add-service examples/config/add-service/crud_full.json
+
+# Validate the generated project
+$ npx moleculer-gen validate
+```
+
 ### Global options
 
 | Option            | Description                                 |
 | ----------------- | ------------------------------------------- |
 | `-V`, `--version` | Show the CLI version                        |
 | `--debug`         | Enable debug logging                        |
-| `--verbose`       | Enable verbose logging (info level)         |
 | `--quiet`         | Show only errors                            |
 | `-h`, `--help`    | Show help for the CLI or a specific command |
 
-The following options are available **per command** (`init`, `add-service`):
+### Command arguments and options
 
-| Option            | Description                                                |
-| ----------------- | ---------------------------------------------------------- |
-| `--config <file>` | Use a JSON config file instead of interactive prompts      |
-| `--dry-run`       | Simulate actions without writing files                     |
+The following positional argument can be used to skip interactive prompts (config-based generation):
 
-### Commands
+| Argument        | Commands              | Description                                           |
+| --------------- | --------------------- | ----------------------------------------------------- |
+| `[config-file]` | `init`, `add-service` | Optional JSON config file used instead of prompts     |
+
+The following option is available per generation command:
+
+| Option      | Commands              | Description                            |
+| ----------- | --------------------- | -------------------------------------- |
+| `--dry-run` | `init`, `add-service` | Simulate actions without writing files |
+
+#### Commands
 
 Currently, `moleculer-gen` supports the following commands:
 
-#### 1- `init`
+##### 1- `init`
 
 `init` Initialize a **new Moleculer project**
 
@@ -136,16 +196,16 @@ At the end, a project summary can be displayed:
 💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the `examples/config/init-project` folder.
 
 ```bash
-$ npx moleculer-gen init --config examples/config/init-project/minimal.json
+$ npx moleculer-gen init examples/config/init-project/minimal.json
 ```
 
 💡 For testing, you can use the `--dry-run` option.
 
 ```bash
-$ npx moleculer-gen init --config examples/config/init-project/minimal.json --dry-run --debug
+$ npx moleculer-gen init examples/config/init-project/minimal.json --dry-run --debug
 ```
 
-#### 2- `add-service`
+##### 2- `add-service`
 
 `add-service` Add a **new service** to your **generated project**
 
@@ -194,13 +254,45 @@ $ npx moleculer-gen add-service
 💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the `examples/config/add-service` folder.
 
 ```bash
-$ npx moleculer-gen add-service --config examples/config/add-service/crud_full.json
+$ npx moleculer-gen add-service examples/config/add-service/crud_full.json
 ```
 
 💡 For testing, you can use the `--dry-run` option.
 
 ```bash
-$ npx moleculer-gen add-service --config examples/config/add-service/crud_full.json --dry-run --debug
+$ npx moleculer-gen add-service examples/config/add-service/crud_full.json --dry-run --debug
+```
+
+##### 3- `validate` (WIP)
+
+`validate` checks whether the current folder looks like a valid project generated by `moleculer-gen`.
+
+```sh
+$ npx moleculer-gen validate
+```
+
+Current checks:
+- `.moleculer-gen/config.json` exists
+- The config file is readable and valid JSON
+- The config file has the expected basic structure
+
+**Example outputs:**
+
+- Successful check
+```sh
+[INFO] 🚀 Starting project validation...
+[INFO] Checking .moleculer-gen/config.json...
+[INFO] .moleculer-gen/config.json structure is valid
+[INFO] Project validation completed successfully.
+```
+
+- Failed check
+```sh                                            
+[INFO] 🚀 Starting project validation...
+[INFO] Checking .moleculer-gen/config.json...
+[ERROR] Missing .moleculer-gen/config.json. Are you inside a project generated by moleculer-gen?
+[ERROR] Project validation failed with 1 error(s).
+[ERROR] ❌ project validation failed.
 ```
 
 ### Help
@@ -210,7 +302,7 @@ $ npx moleculer-gen add-service --config examples/config/add-service/crud_full.j
 moleculer-gen --help
 ```
 
-## 🛠️ Development
+## Development
 
 ```sh
 # Clone the repo
@@ -229,6 +321,7 @@ $ yarn link
 # Run commands directly
 $ moleculer-gen init
 $ moleculer-gen add-service
+$ moleculer-gen validate
 
 # Run tests
 $ yarn test
