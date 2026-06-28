@@ -10,7 +10,6 @@ import { logger } from '../utils/logger.js'
 export const registerGlobalOptions = (program) => {
   program
     .option('--debug', 'Enable debug logging')
-    .option('--verbose', 'Enable verbose logging (info level)')
     .option('--quiet', 'Only show errors')
 
   program
@@ -28,13 +27,12 @@ Usage examples:
 
 export const applyLoggerLevel = (program) => {
   const opts = program.opts()
+
   logger.level = opts.debug
     ? 'debug'
-    : opts.verbose
-      ? 'info'
-      : opts.quiet
-        ? 'error'
-        : 'warn'
+    : opts.quiet
+      ? 'error'
+      : 'info'
 
   logger.debug('🔧 Logger level set to:', logger.level)
 }

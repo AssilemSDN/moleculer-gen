@@ -3,6 +3,7 @@
 */
 import { addService } from '../commands/add-service.js'
 import { initProject } from '../commands/init-project.js'
+import { validateProject } from '../commands/validate-project.js'
 import { runCommand } from '../utils/command-runner.js'
 
 /**
@@ -23,4 +24,9 @@ export const registerCommands = (program) => {
     .option('--dry-run', 'Simulate service generation without creating files')
     .option('--config <file>', 'Path to a JSON config file')
     .action(async (opts) => runCommand('service addition', addService, { dryRun: opts.dryRun, configFile: opts.config }))
+
+  program
+    .command('validate')
+    .description('Validate the generated Moleculer project consistency')
+    .action(async () => runCommand('project validation', validateProject, {}))
 }

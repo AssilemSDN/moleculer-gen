@@ -20,6 +20,6 @@ program
 registerGlobalOptions(program)
 // init commands
 registerCommands(program)
-program.hook('preAction', (thisCommand) => applyLoggerLevel(thisCommand))
+program.hook('preAction', () => applyLoggerLevel(program))
 
 program.parse()
