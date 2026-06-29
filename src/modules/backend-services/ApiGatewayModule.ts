@@ -7,10 +7,12 @@ import { ServiceModule } from "./ServiceModule.js";
 interface ApiGatewayModuleOptions {
   /** Slugified project name, e.g., "myapp" */
   projectNameSanitized: string
-  /** Exposed port e.g., "5000" */
-  port: string
+  /** Internal API Gateway port, e.g., "5000" */
+  port?: string
+  /** Host port used when Traefik is disabled, e.g., "5000" */
+  hostPort?: string
   /** If needs traefik labels */
-  needsTraefikLabels: boolean
+  needsTraefikLabels?: boolean
   /** Optional array of Docker service names this service depends on */
   dependsOn?: string[]
 }
@@ -18,6 +20,7 @@ interface ApiGatewayModuleOptions {
 export const ApiGatewayModule = ({
   projectNameSanitized,
   port = '5000',
+  hostPort = '5000',
   needsTraefikLabels = false,
   dependsOn = []
 }: ApiGatewayModuleOptions): ModuleDefinition => {
@@ -30,7 +33,18 @@ export const ApiGatewayModule = ({
     ]:[]
   })
   base.docker.expose = "${APP_MOLECULER_API_GATEWAY_PORT}"
+  // If traefik labels are not needed, we need to expose the port directly
+  if (!needsTraefikLabels) {
+    base.docker.networks = [
+      'public',
+      'backend'
+    ]
+    base.docker.ports = [
+      '127.0.0.1:${APP_MOLECULER_API_GATEWAY_HOST_PORT}:${APP_MOLECULER_API_GATEWAY_PORT}'
+    ]
+  }
   base.env.APP_MOLECULER_API_GATEWAY_PORT = port
+  base.env.APP_MOLECULER_API_GATEWAY_HOST_PORT = hostPort
   base.env.DOCKER_ENV_FILE_APP = '.env.dev'
   return { meta: base.meta, docker: base.docker, env: base.env }
 }

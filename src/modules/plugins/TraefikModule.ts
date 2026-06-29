@@ -38,7 +38,7 @@ export const TraefikModule = ({
     serviceName: "traefik",
     image: "${DOCKER_IMAGE_NAME_REVERSE_PROXY}:${DOCKER_IMAGE_TAG_REVERSE_PROXY}",
     container_name: "${DOCKER_CONTAINER_NAME_REVERSE_PROXY}",
-    networks: ["publique", "backend"],
+    networks: ["public", "backend"],
     volumes: ["/var/run/docker.sock:/var/run/docker.sock:ro"],
     ports: ([] as string[]).concat(
       "80:80",

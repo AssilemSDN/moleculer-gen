@@ -38,8 +38,8 @@ export const generateModules = async (templateDir, projectDir, modules) => {
     // version: '3.9',
     services: {},
     networks: {
-      publique: {
-        name: 'publique',
+      public: {
+        name: 'public',
         driver: 'bridge'
       },
       backend: {
