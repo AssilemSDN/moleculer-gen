@@ -6,10 +6,9 @@ import { fileURLToPath } from 'url'
 
 import { safeRun } from '../utils/safe-run.js'
 import { addServicePrompts } from '../prompts/add-service-prompts.js'
-import { generateNewService } from '../generators/add/generate-new-service.js'
+import { addNewServiceToProject } from '../generators/add-service/add-new-service-to-project.js'
 
 import {
-  ensureEmptyDir,
   exists,
   readJsonFile
 } from '../utils/fs-helpers.js'
@@ -155,24 +154,14 @@ export const addService = safeRun(
       ? await loadServiceConfigFromFile(configFile)
       : await addServicePrompts()
 
-    // 5. Ensure the target service directory is empty
-    const serviceDir = path.join(
-      projectDir,
-      'src/services',
-      answers.serviceDirectoryName
-    )
-
-    await ensureEmptyDir(serviceDir)
-
-    // 6. Generate service files
-    await generateNewService(
+    await addNewServiceToProject({
       projectNameSanitized,
-      answers,
-      TEMPLATE_DIR,
+      serviceConfig: answers,
+      templateDir: TEMPLATE_DIR,
       projectDir,
-      serviceDir,
-      { dryRun }
-    )
+      dryRun
+    })
+
     return answers
   }
 )
