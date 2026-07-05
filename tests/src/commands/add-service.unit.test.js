@@ -3,15 +3,16 @@ import * as fsHelpers from '../../../src/utils/fs-helpers.js'
 
 import { addService } from '../../../src/commands/add-service.js'
 import { addServicePrompts } from '../../../src/prompts/add-service-prompts.js'
-import { generateNewService } from '../../../src/generators/add/generate-new-service.js'
 import { AppError } from '../../../src/errors/AppError.js'
+
+import { addNewServiceToProject } from '../../../src/generators/add-service/add-new-service-to-project.js'
 
 vi.mock('../../../src/prompts/add-service-prompts.js', () => ({
   addServicePrompts: vi.fn()
 }))
 
-vi.mock('../../../src/generators/add/generate-new-service.js', () => ({
-  generateNewService: vi.fn()
+vi.mock('../../../src/generators/add-service/add-new-service-to-project.js', () => ({
+  addNewServiceToProject: vi.fn()
 }))
 
 // --- Tests ---
@@ -24,9 +25,13 @@ describe('addService', () => {
     expect(result).toEqual(expect.objectContaining({ success: true }))
   }
 
-  const expectFailure = result => {
+  const expectFailure = (result, code) => {
     expect(result.success).toBe(false)
     expect(result.error).toBeInstanceOf(Error)
+
+    if (code) {
+      expect(result.error.code).toBe(code)
+    }
   }
 
   // ---------------------------
@@ -39,8 +44,6 @@ describe('addService', () => {
       projectNameSanitized: 'my-app'
     })
 
-    vi.spyOn(fsHelpers, 'ensureEmptyDir').mockResolvedValue(undefined)
-
     addServicePrompts.mockResolvedValue({
       serviceName: 'My Service',
       serviceDirectoryName: 'my-service-dir',
@@ -48,24 +51,23 @@ describe('addService', () => {
       exposeApi: true
     })
 
-    generateNewService.mockResolvedValue(undefined)
+    addNewServiceToProject.mockResolvedValue(undefined)
 
     const result = await addService({ dryRun: true })
 
     expectSuccess(result)
     expect(result.data.serviceName).toBe('My Service')
 
-    expect(generateNewService).toHaveBeenCalledWith(
-      'my-app',
-      expect.objectContaining({
+    expect(addNewServiceToProject).toHaveBeenCalledWith({
+      projectNameSanitized: 'my-app',
+      serviceConfig: expect.objectContaining({
         serviceName: 'My Service',
         serviceDirectoryName: 'my-service-dir'
       }),
-      expect.any(String),
-      expect.any(String),
-      expect.any(String),
-      expect.objectContaining({ dryRun: true })
-    )
+      templateDir: expect.any(String),
+      projectDir: expect.any(String),
+      dryRun: true
+    })
   })
   // ---------------------------
   // Project not initialized
@@ -92,15 +94,14 @@ describe('addService', () => {
         serviceName: 'ServiceFromFile',
         isCrud: false
       })
-    vi.spyOn(fsHelpers, 'ensureEmptyDir').mockResolvedValue(undefined)
 
-    generateNewService.mockResolvedValue(undefined)
+    addNewServiceToProject.mockResolvedValue(undefined)
 
     const result = await addService({ configFile: 'service.json', dryRun: true })
 
     expectSuccess(result)
     expect(result.data.serviceName).toBe('ServiceFromFile')
-    expect(generateNewService).toHaveBeenCalled()
+    expect(addNewServiceToProject).toHaveBeenCalled()
   })
 
   // ---------------------------
