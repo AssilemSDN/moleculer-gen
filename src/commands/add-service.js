@@ -7,87 +7,20 @@ import { fileURLToPath } from 'url'
 import { safeRun } from '../utils/safe-run.js'
 import { addServicePrompts } from '../prompts/add-service-prompts.js'
 import { addNewServiceToProject } from '../generators/add-service/add-new-service-to-project.js'
+import { validateAddServiceConfig } from '../validators/config/validate-add-service-config.js'
+
+import { AppError } from '../errors/AppError.js'
 
 import {
   exists,
   readJsonFile
 } from '../utils/fs-helpers.js'
 
-import { generateDefaultNames } from '../utils/common-helpers.js'
 import { loadJsonConfigFile } from '../utils/config-helpers.js'
-import { AppError } from '../errors/AppError.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const TEMPLATE_DIR = path.join(__dirname, '../../templates')
-
-/**
- * Validate and normalize a service configuration.
- * Fills missing fields with default values.
- *
- * @param {object} config Service configuration.
- * @returns {object} Validated and normalized configuration.
- * @throws {AppError} If the configuration is invalid.
- */
-export const validateConfig = (config) => {
-  if (!config || typeof config !== 'object' || Array.isArray(config)) {
-    throw new AppError(
-      'Invalid service config: must be a JSON object',
-      { code: 'INVALID_CONFIG' }
-    )
-  }
-
-  if (!config.serviceName || typeof config.serviceName !== 'string') {
-    throw new AppError(
-      'Missing required field: serviceName',
-      { code: 'INVALID_CONFIG' }
-    )
-  }
-
-  // Default values
-  const defaults = generateDefaultNames(config.serviceName)
-
-  const isCrud = !!config.isCrud
-  const exposeApi = !!config.exposeApi
-
-  // Normalized values
-  const normalized = {
-    serviceName: config.serviceName,
-    isCrud,
-    exposeApi,
-    serviceFileName:
-      config.serviceFileName ||
-      defaults.serviceFileName,
-    serviceDirectoryName:
-      config.serviceDirectoryName ||
-      defaults.serviceDirectoryName
-  }
-
-  // Add required values for CRUD services
-  if (isCrud) {
-    normalized.modelFileName =
-      config.modelFileName ||
-      defaults.modelFileName
-
-    normalized.modelName =
-      config.modelName ||
-      defaults.modelName
-
-    normalized.modelVariableName =
-      config.modelVariableName ||
-      defaults.modelVariableName
-
-    normalized.collectionName =
-      config.collectionName ||
-      defaults.collectionName
-
-    normalized.schemaName =
-      config.schemaName ||
-      defaults.schemaName
-  }
-
-  return normalized
-}
 
 /**
  * Load and validate a service configuration from a JSON file.
@@ -101,7 +34,7 @@ export const loadServiceConfigFromFile = async (configFile) => {
     label: 'Service config'
   })
 
-  return validateConfig(config)
+  return validateAddServiceConfig(config)
 }
 
 /**
