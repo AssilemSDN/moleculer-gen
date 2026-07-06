@@ -1,5 +1,5 @@
-import { generateDefaultNames } from '../utils/common-helpers.js'
-import { AppError } from '../errors/AppError.js'
+import { generateDefaultNames } from '../../utils/common-helpers.js'
+import { AppError } from '../../errors/AppError.js'
 /**
  * Validate and normalize a service configuration.
  * Fills missing fields with default values.

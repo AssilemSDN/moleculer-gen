@@ -1,13 +1,13 @@
 import path from 'path'
 
-import { AppError } from '../errors/AppError.js'
+import { AppError } from '../../errors/AppError.js'
 
-import { sanitizeName } from '../utils/common-helpers.js'
+import { sanitizeName } from '../../utils/common-helpers.js'
 
 // Modules Factory
-import { databases } from '../../dist/modules/databases/index.js'
-import { transporters } from '../../dist/modules/transporters/index.js'
-import { plugins } from '../../dist/modules/plugins/index.js'
+import { databases } from '../../../dist/modules/databases/index.js'
+import { transporters } from '../../../dist/modules/transporters/index.js'
+import { plugins } from '../../../dist/modules/plugins/index.js'
 
 /**
  * Validate and normalize a project configuration.
