@@ -34,6 +34,18 @@ export const registerCommands = (program) => {
         configFile
       })
     )
+  
+  program
+    .command('add-services')
+    .description('Add multiple services to an existing Moleculer.js project')
+    .argument('[config-file]', 'Path to a JSON config file')
+    .option('--dry-run', 'Simulate service generation without creating files')
+    .action(async (configFile, opts) =>
+      runCommand('service addition', addService, {
+        dryRun: opts.dryRun,
+        configFile
+      })
+    )
 
   program
     .command('validate')
