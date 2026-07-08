@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 
 import { safeRun } from '../utils/safe-run.js'
 import { loadJsonConfigFile } from '../utils/config-helpers.js'
-import { validateServicesConfig } from '../validators/config/validate-services-config.js'
+import { validateAddServicesConfig } from '../validators/config/validate-add-services-config.js'
 import { AppError } from '../errors/AppError.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -25,7 +25,7 @@ const loadServicesConfigFromFile = async (configFile) => {
     label: 'Services config'
   })
 
-  return validateServicesConfig(config)
+  return validateAddServicesConfig(config)
 }
 
 /**
@@ -41,7 +41,6 @@ export const addServices = safeRun(
     }
 
     const config = await loadServicesConfigFromFile(configFile)
-    console.log(config)
     return config
   }
 )

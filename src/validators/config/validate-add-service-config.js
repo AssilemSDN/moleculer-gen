@@ -15,7 +15,6 @@ export const validateAddServiceConfig = (config) => {
       { code: 'INVALID_CONFIG' }
     )
   }
-
   if (!config.serviceName || typeof config.serviceName !== 'string') {
     throw new AppError(
       'Missing required field: serviceName',

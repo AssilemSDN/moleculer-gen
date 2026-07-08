@@ -2,6 +2,7 @@
   PATH /src/cli/commands.js
 */
 import { addService } from '../commands/add-service.js'
+import { addServices } from '../commands/add-services.js'
 import { initProject } from '../commands/init-project.js'
 import { validateProject } from '../commands/validate-project.js'
 import { runCommand } from '../utils/command-runner.js'
@@ -41,7 +42,7 @@ export const registerCommands = (program) => {
     .argument('[config-file]', 'Path to a JSON config file')
     .option('--dry-run', 'Simulate service generation without creating files')
     .action(async (configFile, opts) =>
-      runCommand('service addition', addService, {
+      runCommand('service addition', addServices, {
         dryRun: opts.dryRun,
         configFile
       })

@@ -1,10 +1,11 @@
 /*
-  PATH /src/validators/config/validate-services-config.js
+  PATH /src/validators/config/validate-add-services-config.js
 */
 import { AppError } from '../../errors/AppError.js'
-import { validateServiceConfig } from './validate-service-config.js'
+import { validateAddServiceConfig } from './validate-add-service-config.js'
 
-export const validateServicesConfig = (config) => {
+export const validateAddServicesConfig = (config) => {
+  console.log('validateAddServicesConfig', config)
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
     throw new AppError(
       'Invalid services config: must be a JSON object',
@@ -18,9 +19,8 @@ export const validateServicesConfig = (config) => {
       { code: 'INVALID_SERVICES_CONFIG' }
     )
   }
-
   return {
     ...config,
-    services: config.services.map(validateServiceConfig)
+    services: config.services.map(validateAddServiceConfig)
   }
 }
