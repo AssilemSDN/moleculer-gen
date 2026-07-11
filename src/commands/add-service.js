@@ -92,6 +92,7 @@ export const addService = safeRun(
       serviceConfig: answers,
       templateDir: TEMPLATE_DIR,
       projectDir,
+      moleculerGenConfig,
       dryRun
     })
 
