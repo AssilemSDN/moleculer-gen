@@ -41,7 +41,8 @@ describe('addService', () => {
     vi.spyOn(fsHelpers, 'exists').mockResolvedValue(true)
 
     vi.spyOn(fsHelpers, 'readJsonFile').mockResolvedValue({
-      projectNameSanitized: 'my-app'
+      projectNameSanitized: 'my-app',
+      services: {}
     })
 
     addServicePrompts.mockResolvedValue({
@@ -58,16 +59,18 @@ describe('addService', () => {
     expectSuccess(result)
     expect(result.data.serviceName).toBe('My Service')
 
-    expect(addNewServiceToProject).toHaveBeenCalledWith({
-      projectNameSanitized: 'my-app',
-      serviceConfig: expect.objectContaining({
-        serviceName: 'My Service',
-        serviceDirectoryName: 'my-service-dir'
-      }),
-      templateDir: expect.any(String),
-      projectDir: expect.any(String),
-      dryRun: true
-    })
+    expect(addNewServiceToProject).toHaveBeenCalledWith(
+      expect.objectContaining({
+        projectNameSanitized: 'my-app',
+        serviceConfig: expect.objectContaining({
+          serviceName: 'My Service',
+          serviceDirectoryName: 'my-service-dir'
+        }),
+        templateDir: expect.any(String),
+        projectDir: expect.any(String),
+        dryRun: true
+      })
+    )
   })
   // ---------------------------
   // Project not initialized
