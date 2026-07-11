@@ -35,7 +35,7 @@ export const registerCommands = (program) => {
         configFile
       })
     )
-  
+
   program
     .command('add-services')
     .description('Add multiple services to an existing Moleculer.js project')
