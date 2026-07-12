@@ -87,6 +87,12 @@ export const addServices = safeRun(
 
     // 4. Load services configuration
     const config = await loadServicesConfigFromFile(configFile)
+    if (config.services.length === 0) {
+      throw new AppError(
+        'Invalid services config: services must not be empty',
+        { code: 'INVALID_SERVICES_CONFIG' }
+      )
+    }
 
     const created = []
     const skipped = []

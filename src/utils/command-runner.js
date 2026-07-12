@@ -35,4 +35,3 @@ export const runCommand = async (commandName, commandFn, options) => {
     process.exitCode ||= 1
   }
 }
-

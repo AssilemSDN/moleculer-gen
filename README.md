@@ -29,7 +29,7 @@ Some features are still under development.
 - [moleculer-gen](#moleculer-gen)
   - [Features](#features)
   - [Table of contents](#table-of-contents)
-  - [Demo: CRUD microservice stack in under one minute](#demo-crud-microservice-stack-in-under-one-minute)
+  - [Demo: CRUD microservice stack in under one minute - v0.0.6](#demo-crud-microservice-stack-in-under-one-minute---v006)
   - [Prerequisites](#prerequisites)
     - [For end users](#for-end-users)
     - [For contributors / developers](#for-contributors--developers)
@@ -42,13 +42,14 @@ Some features are still under development.
       - [Commands](#commands)
         - [1- `init`](#1--init)
         - [2- `add-service`](#2--add-service)
+        - [3- `add-services`](#3--add-services)
         - [3- `validate` (WIP)](#3--validate-wip)
     - [Help](#help)
   - [Development](#development)
   - [Contributing](#contributing)
   - [LICENSE](#license)
 
-## Demo: CRUD microservice stack in under one minute
+## Demo: CRUD microservice stack in under one minute - v0.0.6
 
 This demo shows how `moleculer-gen` can generate and start a full Moleculer.js CRUD microservice stack in under a minute, without writing boilerplate code.
 
@@ -300,6 +301,114 @@ $ npx moleculer-gen add-service examples/config/add-service/crud_full.json
 ```bash
 $ npx moleculer-gen add-service examples/config/add-service/crud_full.json --dry-run --debug
 ```
+
+**Behavior with existing services**:
+
+If a service already exists, `add-service` throws an error.
+
+The existence guard checks:
+- existing service declaration in `.moleculer-gen/config.json`
+- existing service directory: `src/services/<serviceDirectoryName>/`
+- existing Docker service file: `docker/services/<serviceName>.yaml`
+- existing model file for CRUD services: `src/data/model/<modelFileName>`
+
+```sh
+[INFO] 🚀 Starting service addition...
+[ERROR] Service "articles" already declared in .moleculer-gen/config.json
+[ERROR] ❌ service addition failed.
+```
+
+##### 3- `add-services`
+
+> **Availability**: this command will be available in the next release. 
+
+`add-services` adds **multiple services** to your **generated project** from a single JSON config file.
+
+Unlike `add-service`, this command is **config-file only**. It does not provide an interactive prompt mode, to keep batch generation simple and predictable.
+
+
+```sh
+$ npx moleculer-gen add-services examples/config/add-services/demo.json
+[2026-07-12T10:35:26.125Z] [INFO] 🚀 Starting batch services addition...
+[2026-07-12T10:35:26.191Z] [INFO] 🎉 batch services addition completed successfully!
+[2026-07-12T10:35:26.191Z] [INFO] Result:
+ {
+  createdCount: 2,
+  skippedCount: 0,
+  created: [ 'articles', 'categories' ],
+  skipped: []
+}
+```
+
+**Expected config format**:
+
+```json
+{
+  "services": [
+    {
+      "serviceName": "articles",
+      "serviceDirectoryName": "articles",
+      "isCrud": true,
+      "exposeApi": true
+    },
+    {
+      "serviceName": "comments",
+      "serviceDirectoryName": "comments",
+      "isCrud": true,
+      "exposeApi": true
+    }
+  ]
+}
+```
+
+Each entry in `services` uses the same service configuration rules as `add-service`.
+
+| Key                    | Required | Description                                              |
+| ---------------------- | -------- | -------------------------------------------------------- |
+| `serviceName`          | Yes      | Name of the service to generate                          |
+| `serviceDirectoryName` | No       | Target directory name under `src/services/`              |
+| `isCrud`               | No       | Whether to generate CRUD-related files                   |
+| `exposeApi`            | No       | Whether to expose CRUD operations through the API Gateway |
+
+When optional names are omitted, `moleculer-gen` generates default names using the same naming conventions as `add-service`.
+
+**Behavior with existing services**:
+
+If a service already exists, `add-services` skips it and continues with the next service.
+
+Unexpected errors still stop the command.
+
+The existence guard checks are the same as for `add-service`.
+
+```sh
+[2026-07-12T10:37:35.020Z] [INFO] 🚀 Starting batch services addition...
+[2026-07-12T10:37:35.041Z] [WARN] Service "articles" already exists, skipping
+[2026-07-12T10:37:35.041Z] [WARN] Service "categories" already exists, skipping
+[2026-07-12T10:37:35.041Z] [WARN] No service was added. All services were skipped.
+[2026-07-12T10:37:35.041Z] [INFO] ⚠️ batch services addition completed with warnings.
+[2026-07-12T10:37:35.041Z] [INFO] Result:
+ {
+  createdCount: 0,
+  skippedCount: 2,
+  created: [],
+  skipped: [ 'articles', 'categories' ]
+}
+```
+
+```sh
+[2026-07-12T10:37:09.864Z] [INFO] 🚀 Starting batch services addition...
+[2026-07-12T10:37:09.886Z] [WARN] Service "articles" already exists, skipping
+[2026-07-12T10:37:09.899Z] [WARN] Some services were skipped because they already exist: articles
+[2026-07-12T10:37:09.899Z] [INFO] ⚠️ batch services addition completed with warnings.
+[2026-07-12T10:37:09.899Z] [INFO] Result:
+ {
+  createdCount: 1,
+  skippedCount: 1,
+  created: [ 'categories' ],
+  skipped: [ 'articles' ]
+}
+```
+
 
 ##### 3- `validate` (WIP)
 

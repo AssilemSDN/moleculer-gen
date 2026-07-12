@@ -12,7 +12,8 @@ export const validateServiceCanBeAdded = async ({
   moleculerGenConfig
 }) => {
   // Check if service already declared in moleculer-gen config
-  const existingService = moleculerGenConfig.services[serviceConfig.serviceName]
+  const existingServices = moleculerGenConfig.services ?? {}
+  const existingService = existingServices[serviceConfig.serviceName]
 
   if (existingService !== undefined && existingService !== null) {
     throw new AppError(
@@ -41,13 +42,13 @@ export const validateServiceCanBeAdded = async ({
     projectDir,
     'docker',
     'services',
-    `${serviceConfig.serviceName}.yaml`
+    `${serviceConfig.serviceDirectoryName}.yaml`
   )
 
   if (await exists(dockerServicePath)) {
     throw new AppError(
-      `Docker service file already exists: ${dockerServicePath}`,
-      { code: 'SERVICE_ALREADY_EXISTS' }
+      `Docker service YAML already exists: ${dockerServicePath}`,
+      { code: 'DOCKER_SERVICE_ALREADY_EXISTS' }
     )
   }
 
