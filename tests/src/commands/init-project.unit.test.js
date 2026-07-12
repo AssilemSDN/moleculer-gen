@@ -1,11 +1,16 @@
 /*
   PATH  /tests/src/commands/init-project.test.js
 */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import path from 'path'
-import { ApiGatewayModule } from '../../../dist/modules/backend-services/ApiGatewayModule.js'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+
+// utils
 import { logger } from '../../../src/utils/logger.js'
 import * as fsHelpers from '../../../src/utils/fs-helpers.js'
+import { AppError } from '../../../src/errors/AppError.js'
+
+// modules
+import { ApiGatewayModule } from '../../../dist/modules/backend-services/ApiGatewayModule.js'
 
 // ---- Global mocks ----
 vi.mock('../../../src/prompts/init-prompts.js', () => ({
@@ -52,7 +57,7 @@ describe('initProject', () => {
     ;({ generate } = await import('../../../src/generators/init-project/generate.js'))
 
     vi.spyOn(fsHelpers, 'exists')
-    vi.spyOn(fsHelpers, 'readFile')
+    vi.spyOn(fsHelpers, 'readJsonFile')
   })
 
   afterEach(() => {
@@ -171,11 +176,11 @@ describe('initProject', () => {
   describe('non-interactive mode (via configFile)', () => {
     it('OK : Should load minimal config file correctly', async () => {
       fsHelpers.exists.mockResolvedValue(true)
-      fsHelpers.readFile.mockResolvedValue(JSON.stringify({
+      fsHelpers.readJsonFile.mockResolvedValue({
         projectName: 'My Project',
         database: 'mongodb',
         transporter: 'nats'
-      }))
+      })
       const { initProject } = await import('../../../src/commands/init-project.js')
       const result = await initProject({ configFile: 'test.json' })
       expectSuccess(result)
@@ -192,7 +197,11 @@ describe('initProject', () => {
 
     it('KO : Should fail if config file contains invalid JSON', async () => {
       fsHelpers.exists.mockResolvedValue(true)
-      fsHelpers.readFile.mockResolvedValue('{ invalid json ')
+      fsHelpers.readJsonFile.mockRejectedValue(
+        new AppError('Invalid JSON', {
+          code: 'FS_INVALID_JSON'
+        })
+      )
       const { initProject } = await import('../../../src/commands/init-project.js')
       const result = await initProject({ configFile: 'invalid.json' })
       expectFailure(result)
@@ -201,11 +210,11 @@ describe('initProject', () => {
 
     it('KO : Should fail if config file has an invalid database key', async () => {
       fsHelpers.exists.mockResolvedValue(true)
-      fsHelpers.readFile.mockResolvedValue(JSON.stringify({
+      fsHelpers.readJsonFile.mockResolvedValue({
         projectName: 'Bad DB',
         database: 'unknown',
         transporter: 'nats'
-      }))
+      })
       const { initProject } = await import('../../../src/commands/init-project.js')
       const result = await initProject({ configFile: 'bad-db.json' })
       expectFailure(result)
@@ -214,13 +223,13 @@ describe('initProject', () => {
 
     it('OK : Should load config file with plugins correctly', async () => {
       fsHelpers.exists.mockResolvedValue(true)
-      fsHelpers.readFile.mockResolvedValue(JSON.stringify({
+      fsHelpers.readJsonFile.mockResolvedValue({
         projectName: 'super-app',
         projectNameSanitized: 'super-app',
         database: 'mongodb',
         transporter: 'nats',
         plugins: ['traefik']
-      }))
+      })
       const { initProject } = await import('../../../src/commands/init-project.js')
       const result = await initProject({ configFile: 'plugins.json' })
       expectSuccess(result)

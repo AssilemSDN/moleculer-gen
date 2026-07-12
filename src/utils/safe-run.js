@@ -10,8 +10,33 @@ import { logger } from './logger.js'
 export const safeRun = (fn) => async (...args) => {
   try {
     const result = await fn(...args)
+
+    if (
+      result &&
+      typeof result === 'object' &&
+      !Array.isArray(result)
+    ) {
+      const {
+        warning,
+        warnings = [],
+        ...data
+      } = result
+
+      const normalizedWarnings = [
+        ...(warning ? [warning] : []),
+        ...(Array.isArray(warnings) ? warnings : [warnings])
+      ].filter(Boolean)
+
+      return {
+        success: true,
+        warnings: normalizedWarnings,
+        data
+      }
+    }
+
     return {
       success: true,
+      warnings: [],
       data: result
     }
   } catch (err) {
@@ -24,6 +49,7 @@ export const safeRun = (fn) => async (...args) => {
       logger.debug(err)
       process.exitCode = ExitCodes.INTERNAL_ERROR.code
     }
+
     return {
       success: false,
       error: err

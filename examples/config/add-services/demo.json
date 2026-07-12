@@ -1,0 +1,14 @@
+{
+  "services": [
+    {
+      "serviceName": "articles",
+      "isCrud": true,
+      "exposeApi": true
+    },
+    {
+      "serviceName": "categories",
+      "isCrud": true,
+      "exposeApi": true
+    }
+  ]
+}

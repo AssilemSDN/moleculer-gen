@@ -2,6 +2,7 @@
   PATH /src/cli/commands.js
 */
 import { addService } from '../commands/add-service.js'
+import { addServices } from '../commands/add-services.js'
 import { initProject } from '../commands/init-project.js'
 import { validateProject } from '../commands/validate-project.js'
 import { runCommand } from '../utils/command-runner.js'
@@ -30,6 +31,18 @@ export const registerCommands = (program) => {
     .option('--dry-run', 'Simulate service generation without creating files')
     .action(async (configFile, opts) =>
       runCommand('service addition', addService, {
+        dryRun: opts.dryRun,
+        configFile
+      })
+    )
+
+  program
+    .command('add-services')
+    .description('Add multiple services to an existing Moleculer.js project')
+    .argument('[config-file]', 'Path to a JSON config file')
+    .option('--dry-run', 'Simulate service generation without creating files')
+    .action(async (configFile, opts) =>
+      runCommand('batch services addition', addServices, {
         dryRun: opts.dryRun,
         configFile
       })
