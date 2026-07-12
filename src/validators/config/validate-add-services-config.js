@@ -5,7 +5,6 @@ import { AppError } from '../../errors/AppError.js'
 import { validateAddServiceConfig } from './validate-add-service-config.js'
 
 export const validateAddServicesConfig = (config) => {
-  console.log('validateAddServicesConfig', config)
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
     throw new AppError(
       'Invalid services config: must be a JSON object',

@@ -42,7 +42,7 @@ export const registerCommands = (program) => {
     .argument('[config-file]', 'Path to a JSON config file')
     .option('--dry-run', 'Simulate service generation without creating files')
     .action(async (configFile, opts) =>
-      runCommand('service addition', addServices, {
+      runCommand('batch services addition', addServices, {
         dryRun: opts.dryRun,
         configFile
       })

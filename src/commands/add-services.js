@@ -82,6 +82,8 @@ export const addServices = safeRun(
     // 4. Load services configuration
     const config = await loadServicesConfigFromFile(configFile)
 
+    const created = []
+    const skipped = []
     // 5. Add services sequentially
     for (const serviceConfig of config.services) {
       try {
@@ -93,8 +95,10 @@ export const addServices = safeRun(
           moleculerGenConfig,
           dryRun
         })
+        created.push(serviceConfig.serviceName)
       } catch (error) {
         if (error.code === 'SERVICE_ALREADY_EXISTS') {
+          skipped.push(serviceConfig.serviceName)
           logger.warn(
             `Service "${serviceConfig.serviceName}" already exists, skipping`
           )
@@ -104,6 +108,21 @@ export const addServices = safeRun(
       }
     }
 
-    return config
+    const warnings = []
+    if (created.length === 0 && skipped.length > 0) {
+      warnings.push('No service was added. All services were skipped.')
+    } else if (created.length > 0 && skipped.length > 0) {
+      warnings.push(
+        `Some services were skipped because they already exist: ${skipped.join(', ')}`
+      )
+    }
+
+    return {
+      createdCount: created.length,
+      skippedCount: skipped.length,
+      created,
+      skipped,
+      warnings
+    }
   }
 )
