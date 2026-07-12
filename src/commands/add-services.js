@@ -19,6 +19,12 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const TEMPLATE_DIR = path.join(__dirname, '../../templates')
 
+const skippableErrorCodes = new Set([
+  'SERVICE_ALREADY_EXISTS',
+  'MODEL_ALREADY_EXISTS',
+  'DOCKER_SERVICE_ALREADY_EXISTS'
+])
+
 /**
  * Load and validate multiple service configurations from a JSON file.
  *
@@ -97,7 +103,7 @@ export const addServices = safeRun(
         })
         created.push(serviceConfig.serviceName)
       } catch (error) {
-        if (error.code === 'SERVICE_ALREADY_EXISTS') {
+        if (skippableErrorCodes.has(error.code)) {
           skipped.push(serviceConfig.serviceName)
           logger.warn(
             `Service "${serviceConfig.serviceName}" already exists, skipping`

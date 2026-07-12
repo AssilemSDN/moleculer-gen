@@ -24,8 +24,8 @@ export const safeRun = (fn) => async (...args) => {
 
       const normalizedWarnings = [
         ...(warning ? [warning] : []),
-        ...warnings
-      ]
+        ...(Array.isArray(warnings) ? warnings : [warnings])
+      ].filter(Boolean)
 
       return {
         success: true,
