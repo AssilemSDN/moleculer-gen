@@ -1,3 +1,7 @@
+/*
+  PATH /tests/integration/init-project-validation.integration.test.js
+*/
+
 import {
   afterEach,
   beforeEach,
