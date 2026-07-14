@@ -27,7 +27,6 @@ import {
 const buildRequiredGeneratedPaths = config => {
   const requiredPaths = []
 
-  // Add required database files
   if (config.database) {
     requiredPaths.push(
       {
@@ -43,7 +42,6 @@ const buildRequiredGeneratedPaths = config => {
     )
   }
 
-  // Add required transporter file
   if (config.transporter) {
     requiredPaths.push({
       path: 'src/config/modules/transporter.config.js',
@@ -52,7 +50,6 @@ const buildRequiredGeneratedPaths = config => {
     })
   }
 
-  // Add required service files and directories
   for (const service of Object.values(config.services ?? {})) {
     const serviceDirectoryPath = path.join(
       'src',
@@ -75,7 +72,7 @@ const buildRequiredGeneratedPaths = config => {
         severity: 'error'
       }
     )
-    // Add required model file if the service is a CRUD service (entity needed for database operations)
+
     if (service.isCrud) {
       requiredPaths.push({
         path: path.join(
@@ -94,19 +91,18 @@ const buildRequiredGeneratedPaths = config => {
 }
 
 /**
- * DEPENDS ON : validateMoleculerConfig
+ * DEPENDS ON: validateMoleculerConfig
  *
  * Validates dynamically required generated files and directories.
- *
- * Required paths are built only from configuration entries previously
- * validated by validateMoleculerConfig.
  *
  * @param {string} projectDir Project root directory.
  * @param {object} config Validated Moleculer Gen configuration.
  * @returns {Promise<{
  *   valid: boolean,
  *   errors: string[],
- *   warnings: string[]
+ *   warnings: string[],
+ *   nbErrors: number,
+ *   nbWarnings: number
  * }>}
  */
 export const validateRequiredDynamicFiles = async (
@@ -116,50 +112,55 @@ export const validateRequiredDynamicFiles = async (
   const errors = []
   const warnings = []
 
-  const requiredPaths = buildRequiredGeneratedPaths(config)
+  const requiredPaths = buildRequiredGeneratedPaths(
+    config ?? {}
+  )
 
   for (const requiredPath of requiredPaths) {
-    logger.info(`> Checking ${requiredPath.type}: ${requiredPath.path}`)
+    logger.info(
+      `> Checking ${requiredPath.type}: ${requiredPath.path}`
+    )
 
-    // 1. Check if the path is not outside the project
     const segments = requiredPath.path.split(/[\\/]+/)
+
     if (segments.includes('..')) {
       errors.push(
         `Path is outside the project: ${requiredPath.path}`
       )
+
       continue
     }
 
-    // Here the absolute path is safe
     const absolutePath = path.join(
       projectDir,
       requiredPath.path
     )
 
-    // 2. Check if the path exists and has the expected type (file or directory)
-    const hasExpectedType = requiredPath.type === 'file'
-      ? await isFile(absolutePath)
-      : await isDirectory(absolutePath)
+    const hasExpectedType =
+      requiredPath.type === 'file'
+        ? await isFile(absolutePath)
+        : await isDirectory(absolutePath)
+
     if (hasExpectedType) {
       continue
     }
 
-    // Here, path is missing or has the wrong type
+    const message =
+      'Path is missing or has the wrong type: ' +
+      `${requiredPath.type}: ${requiredPath.path}`
+
     if (requiredPath.severity === 'warning') {
-      logger.error(`Path is missing or has the wrong type : ${requiredPath.type}: ${requiredPath.path}`)
-      warnings.push(
-        `Path is missing or has the wrong type : ${requiredPath.type}: ${requiredPath.path}`
-      )
+      warnings.push(message)
     } else {
-      errors.push(
-        `Path is missing or has the wrong type : ${requiredPath.type}: ${requiredPath.path}`
-      )
+      errors.push(message)
     }
   }
 
   return {
     valid: errors.length === 0,
     errors,
-    warnings
+    warnings,
+    nbErrors: errors.length,
+    nbWarnings: warnings.length
   }
 }

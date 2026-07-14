@@ -23,9 +23,8 @@ import {
 /**
  * Validates the structure of a Moleculer project.
  *
- * Fatal errors stop validation immediately.
- * Recoverable validation errors are accumulated so that all possible
- * issues can be reported in a single execution.
+ * Fatal errors stop dependent validations.
+ * Recoverable validation errors are accumulated.
  *
  * @param {string} projectDir Project root directory.
  * @returns {Promise<{
@@ -59,19 +58,36 @@ export const projectValidator = async (
   })
 
   let dynamicResult = {
+    valid: true,
     errors: [],
-    warnings: []
+    warnings: [],
+    nbErrors: 0,
+    nbWarnings: 0
   }
-  if(configResult.canContinue === true) {
+
+  const canValidateDynamicFiles =
+    configResult.validatedConfig &&
+    (
+      configResult.valid === true ||
+      configResult.canContinue === true
+    )
+
+  if (canValidateDynamicFiles) {
     dynamicResult = await runValidator({
       name: 'Required generated files and directories',
       validator: validateRequiredDynamicFiles,
-      args: [projectDir, configResult.validatedConfig],
+      args: [
+        projectDir,
+        configResult.validatedConfig
+      ],
       formatError: error =>
         `Unable to validate required generated files and directories: ${error.message}`
     })
-  } else { 
-    logger.warn('⚠️ Required generated files and directories validation skipped. No usable validated configuration is available.')
+  } else {
+    logger.warn(
+      '⚠️ Required generated files and directories validation skipped. ' +
+      'No usable validated configuration is available.'
+    )
   }
 
   errors.push(
@@ -79,12 +95,20 @@ export const projectValidator = async (
     ...configResult.errors,
     ...dynamicResult.errors
   )
-  
+
   warnings.push(
     ...staticResult.warnings,
     ...configResult.warnings,
     ...dynamicResult.warnings
   )
+
+  for (const error of errors) {
+    logger.error(error)
+  }
+
+  for (const warning of warnings) {
+    logger.warn(warning)
+  }
 
   if (errors.length > 0) {
     logger.error(
