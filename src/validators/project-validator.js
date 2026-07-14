@@ -133,14 +133,6 @@ export const projectValidator = async (
     ...dynamicResult.warnings
   )
 
-  for (const error of errors) {
-    logger.error(error)
-  }
-
-  for (const warning of warnings) {
-    logger.warn(warning)
-  }
-
   if (errors.length > 0) {
     logger.error(
       `❌ ${errors.length} validation error(s) found in project structure.`
@@ -155,6 +147,14 @@ export const projectValidator = async (
     logger.warn(
       `⚠️ ${warnings.length} validation warning(s) found in project structure.`
     )
+  }
+
+  for (const error of errors) {
+    logger.error(`error: ${error}`)
+  }
+
+  for (const warning of warnings) {
+    logger.warn(`warning: ${warning}`)
   }
 
   return {
