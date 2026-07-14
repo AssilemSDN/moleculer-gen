@@ -58,19 +58,28 @@ export const projectValidator = async (
       `Unable to validate .moleculer-gen/config.json structure: ${error.message}`
   })
 
-  const dynamicResult = await runValidator({
-    name: 'Required generated files and directories',
-    validator: validateRequiredDynamicFiles,
-    args: [projectDir, configResult.config],
-    formatError: error =>
-      `Unable to validate required generated files and directories: ${error.message}`
-  })
+  let dynamicResult = {
+    errors: [],
+    warnings: []
+  }
+  if(configResult.canContinue === true) {
+    dynamicResult = await runValidator({
+      name: 'Required generated files and directories',
+      validator: validateRequiredDynamicFiles,
+      args: [projectDir, configResult.validatedConfig],
+      formatError: error =>
+        `Unable to validate required generated files and directories: ${error.message}`
+    })
+  } else { 
+    logger.warn('⚠️ Required generated files and directories validation skipped. No usable validated configuration is available.')
+  }
 
   errors.push(
     ...staticResult.errors,
     ...configResult.errors,
     ...dynamicResult.errors
   )
+  
   warnings.push(
     ...staticResult.warnings,
     ...configResult.warnings,

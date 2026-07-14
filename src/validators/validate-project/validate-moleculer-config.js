@@ -261,6 +261,7 @@ export const validateMoleculerConfig = async projectDir => {
     )
   }
 
+  // Determine if subsequent validators can continue based on the validated configuration.
   const canContinue =
     validatedConfig.database !== undefined ||
     validatedConfig.transporter !== undefined ||
@@ -271,7 +272,6 @@ export const validateMoleculerConfig = async projectDir => {
     valid: errors.length === 0,
     errors,
     warnings,
-    config: moleculerConfig,
     validatedConfig,
     canContinue
   }
