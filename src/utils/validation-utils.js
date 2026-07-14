@@ -36,7 +36,6 @@ export const runValidator = async ({
       `❌ ${name} validation could not be completed.`
     )
     return normalizeValidationResult({
-      ...result,
       valid: false,
       fatal: fatalOnThrow,
       executionFailed: true,
