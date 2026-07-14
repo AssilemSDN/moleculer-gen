@@ -19,11 +19,15 @@ export const runValidator = async ({
       )
     } else if (result.canContinue === true) {
       logger.warn(
-        `⚠️ ${name} contains validation errors. Continuing with valid configuration entries.`
+        `⚠️ ${name} contains validation errors. Continuing with valid entries.`
+      )
+    } else if (result.canContinue === false) {
+      logger.error(
+        `❌ ${name} contains validation errors. Dependent validations cannot continue.`
       )
     } else {
       logger.error(
-        `❌ ${name} contains validation errors with no valid configuration entries. Cannot continue.`
+        `❌ ${name} contains ${result.nbErrors} validation error(s).`
       )
     }
     return result
@@ -44,12 +48,19 @@ export const runValidator = async ({
   }
 }
 
+const normalizeMessages = messages =>
+  Array.isArray(messages)
+    ? messages.filter(Boolean)
+    : messages
+      ? [messages]
+      : []
+
 const normalizeValidationResult = (
   result = {}
 ) => {
   return {
-    errors: result.errors || [],
-    warnings: result.warnings || [],
+    errors: normalizeMessages(result.errors),
+    warnings: normalizeMessages(result.warnings),
     nbErrors: result.errors?.length || 0,
     nbWarnings: result.warnings?.length || 0,
     valid: typeof result.valid === 'boolean'
