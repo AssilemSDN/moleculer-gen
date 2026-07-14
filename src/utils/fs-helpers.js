@@ -16,6 +16,7 @@ const handleFsError = (fn, msg, code) => async (...args) => {
     if (err instanceof AppError) {
       throw err
     }
+
     throw new AppError(`${msg}: ${args[0]}`, {
       code,
       details: err
@@ -72,6 +73,39 @@ export const ensureEmptyDir = async (dirPath) => {
       throw err
     }
   }
+}
+
+const getPathStats = async targetPath => {
+  try {
+    return await fs.stat(targetPath)
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      throw error
+    }
+  }
+}
+/**
+ * Checks whether a path exists and is a regular file.
+ *
+ * @param {string} targetPath Path to inspect.
+ * @returns {Promise<boolean>}
+ */
+export const isFile = async targetPath => {
+  const stats = await getPathStats(targetPath)
+
+  return stats?.isFile() ?? false
+}
+
+/**
+ * Checks whether a path exists and is a directory.
+ *
+ * @param {string} targetPath Path to inspect.
+ * @returns {Promise<boolean>}
+ */
+export const isDirectory = async targetPath => {
+  const stats = await getPathStats(targetPath)
+
+  return stats?.isDirectory() ?? false
 }
 
 /**

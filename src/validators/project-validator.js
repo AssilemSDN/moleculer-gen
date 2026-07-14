@@ -3,44 +3,101 @@
 */
 
 import { logger } from '../utils/logger.js'
-import { validateMoleculerConfig } from './validate-moleculer-config.js'
+
+import {
+  validateMoleculerConfig
+} from './validate-project/validate-moleculer-config.js'
+
+import {
+  validateRequiredDynamicFiles
+} from './validate-project/validate-required-dynamic-files.js'
+
+import {
+  validateRequiredStaticFiles
+} from './validate-project/validate-required-static-files.js'
+
+import {
+  runValidator
+} from '../utils/validation-utils.js'
 
 /**
- * Validates the structure of a Moleculer project to ensure it adheres to expected conventions.
- * This includes checking for the presence of essential directories and files.
+ * Validates the structure of a Moleculer project.
  *
- * WIP: This function may be expanded to include additional validation checks in the future.
+ * Fatal errors stop validation immediately.
+ * Recoverable validation errors are accumulated so that all possible
+ * issues can be reported in a single execution.
  *
- * @param {string} projectDir - The root directory of the Moleculer project to validate.
+ * @param {string} projectDir Project root directory.
+ * @returns {Promise<{
+ *   valid: boolean,
+ *   errors: string[],
+ *   warnings: string[],
+ *   nbErrors: number,
+ *   nbWarnings: number
+ * }>}
  */
-export const projectValidator = async (projectDir = process.cwd()) => {
+export const projectValidator = async (
+  projectDir = process.cwd()
+) => {
   const errors = []
   const warnings = []
 
-  logger.info('Checking .moleculer-gen/config.json...')
+  const staticResult = await runValidator({
+    name: 'Required static files and directories',
+    validator: validateRequiredStaticFiles,
+    args: [projectDir],
+    formatError: error =>
+      `Unable to validate required static files and directories: ${error.message}`
+  })
 
-  try {
-    const result = await validateMoleculerConfig(projectDir)
+  const configResult = await runValidator({
+    name: 'Moleculer config.json structure',
+    validator: validateMoleculerConfig,
+    args: [projectDir],
+    formatError: error =>
+      `Unable to validate .moleculer-gen/config.json structure: ${error.message}`
+  })
 
-    errors.push(...result.errors)
-    warnings.push(...result.warnings)
-  } catch (err) {
-    errors.push(err.message)
+  const dynamicResult = await runValidator({
+    name: 'Required generated files and directories',
+    validator: validateRequiredDynamicFiles,
+    args: [projectDir, configResult.config],
+    formatError: error =>
+      `Unable to validate required generated files and directories: ${error.message}`
+  })
+
+  errors.push(
+    ...staticResult.errors,
+    ...configResult.errors,
+    ...dynamicResult.errors
+  )
+  warnings.push(
+    ...staticResult.warnings,
+    ...configResult.warnings,
+    ...dynamicResult.warnings
+  )
+
+  if (errors.length > 0) {
+    logger.error(
+      `❌ ${errors.length} validation error(s) found in project structure.`
+    )
+  } else {
+    logger.info(
+      '✅ Project structure validation completed with no errors.'
+    )
   }
 
-  // Logging errors and warnings
-
-  for (const error of errors) {
-    logger.error(`${error}`)
-  }
-
-  for (const warning of warnings) {
-    logger.warn(`${warning}`)
+  if (warnings.length > 0) {
+    logger.warn(
+      `⚠️ ${warnings.length} validation warning(s) found in project structure.`
+    )
   }
 
   return {
     valid: errors.length === 0,
     errors,
-    warnings
+    warnings,
+    nbErrors: errors.length,
+    nbWarnings: warnings.length
   }
 }
