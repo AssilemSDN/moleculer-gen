@@ -144,7 +144,7 @@ export const validateMoleculerConfig = async projectDir => {
       'Unable to read .moleculer-gen/config.json',
       {
         code: 'PROJECT_CONFIG_READ_FAILED',
-        cause: error
+        details: error
       }
     )
   }
