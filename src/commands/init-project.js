@@ -9,6 +9,13 @@ import { safeRun } from '../utils/safe-run.js'
 import { loadJsonConfigFile } from '../utils/config-helpers.js'
 import { validateInitProjectConfig } from '../validators/config/validate-init-project-config.js'
 
+import {
+  ensurePathInside,
+  sanitizeName,
+  validateProjectName,
+  validateSanitizedName
+} from '../utils/common-helpers.js'
+
 // Modules Factory
 import { databases } from '../../dist/modules/databases/index.js'
 import { transporters } from '../../dist/modules/transporters/index.js'
@@ -47,8 +54,18 @@ export const initProject = safeRun(
       ? await loadInitConfigFromFile(configFile)
       : await initPrompts()
 
+    const projectName = validateProjectName(config.projectName)
+    const projectNameSanitized = config.projectNameSanitized !== undefined
+      ? validateSanitizedName('projectNameSanitized', config.projectNameSanitized)
+      : sanitizeName(projectName)
+
+    const currentDir = process.cwd()
+    const projectDir = ensurePathInside(
+      currentDir,
+      path.join(currentDir, projectNameSanitized)
+    )
+
     const {
-      projectNameSanitized,
       database,
       transporter,
       plugins: selectedPlugins
@@ -79,23 +96,26 @@ export const initProject = safeRun(
         )
     ]
 
+    const normalizedConfig = {
+      ...config,
+      projectName,
+      projectNameSanitized
+    }
+
     // 4. Define generation options
     const generateOptions = {
-      answers: config,
+      answers: normalizedConfig,
       dryRun,
       context: {
         database
       },
       modules: modulesToGenerate,
       templateDir: TEMPLATE_DIR,
-      projectDir: path.join(
-        process.cwd(),
-        projectNameSanitized
-      )
+      projectDir
     }
 
     // 5. Generate
     await generate(generateOptions)
-    return config
+    return normalizedConfig
   }
 )
