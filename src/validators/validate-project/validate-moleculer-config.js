@@ -2,14 +2,83 @@
   PATH /src/validators/validate-project/validate-moleculer-config.js
 */
 
-import path from 'path'
+import path from 'node:path'
 
 import { AppError } from '../../errors/AppError.js'
+
+import {
+  validateProjectName,
+  validateSanitizedName
+} from '../../utils/common-helpers.js'
+
 import {
   exists,
   readJsonFile
 } from '../../utils/fs-helpers.js'
+
 import { logger } from '../../utils/logger.js'
+
+/**
+ * Validates .moleculer-gen/config.json.
+ *
+ * Recoverable structure errors are accumulated so all possible
+ * validation errors can be reported in one execution.
+ *
+ * @param {string} projectDir Project root directory.
+ * @returns {Promise<{
+ *   valid: boolean,
+ *   errors: string[],
+ *   warnings: string[],
+ *   validatedConfig: object,
+ *   canContinue: boolean
+ * }>}
+ */
+export const validateMoleculerConfig = async projectDir => {
+  const errors = []
+  const warnings = []
+
+  // 1. Parse moleculer config content
+  // If can't get and parse -> validation is stopped
+  const moleculerConfig = await parseMoleculerConfigFile(projectDir)
+
+  /*
+   * Only validated values are passed to dependent validators.
+   * Invalid entries are excluded to avoid secondary errors.
+   */
+  const validatedConfig = {
+    ...moleculerConfig,
+    projectName: undefined,
+    projectNameSanitized: undefined,
+    database: undefined,
+    transporter: undefined,
+    plugins: [],
+    services: Object.create(null)
+  }
+
+  checkValidatedFields(moleculerConfig, validatedConfig, errors)
+
+  if (errors.length === 0) {
+    logger.info(
+      '.moleculer-gen/config.json structure is valid'
+    )
+  }
+
+  const canContinue =
+    validatedConfig.database !== undefined ||
+    validatedConfig.transporter !== undefined ||
+    validatedConfig.plugins.length > 0 ||
+    Object.keys(validatedConfig.services).length > 0
+
+  return {
+    valid: errors.length === 0,
+    errors,
+    warnings,
+    validatedConfig,
+    canContinue
+  }
+}
+
+/// //////////// Utils function ////////////
 
 const isObject = value =>
   value !== null &&
@@ -20,105 +89,7 @@ const isNonEmptyString = value =>
   typeof value === 'string' &&
   value.trim().length > 0
 
-/**
- * Validates the structure of a service stored in
- * .moleculer-gen/config.json.
- *
- * Only properties required by subsequent validators are checked here.
- *
- * @param {string} serviceKey Service key in the services object.
- * @param {unknown} service Service configuration.
- * @returns {{
- *   valid: boolean,
- *   errors: string[]
- * }}
- */
-const validateServiceStructure = (
-  serviceKey,
-  service
-) => {
-  const errors = []
-  const serviceContext = `services.${serviceKey}`
-
-  if (!isObject(service)) {
-    errors.push(
-      `Invalid .moleculer-gen/config.json: "${serviceContext}" must be an object`
-    )
-
-    return {
-      valid: false,
-      errors
-    }
-  }
-
-  if (!isNonEmptyString(service.serviceName)) {
-    errors.push(
-      `Invalid .moleculer-gen/config.json: missing or invalid "${serviceContext}.serviceName"`
-    )
-  }
-
-  if (!isNonEmptyString(service.serviceDirectoryName)) {
-    errors.push(
-      `Invalid .moleculer-gen/config.json: missing or invalid "${serviceContext}.serviceDirectoryName"`
-    )
-  }
-
-  if (!isNonEmptyString(service.serviceFileName)) {
-    errors.push(
-      `Invalid .moleculer-gen/config.json: missing or invalid "${serviceContext}.serviceFileName"`
-    )
-  }
-
-  if (typeof service.isCrud !== 'boolean') {
-    errors.push(
-      `Invalid .moleculer-gen/config.json: "${serviceContext}.isCrud" must be a boolean`
-    )
-  }
-
-  if (
-    service.exposeApi !== undefined &&
-    typeof service.exposeApi !== 'boolean'
-  ) {
-    errors.push(
-      `Invalid .moleculer-gen/config.json: "${serviceContext}.exposeApi" must be a boolean`
-    )
-  }
-
-  if (
-    service.isCrud === true &&
-    !isNonEmptyString(service.modelFileName)
-  ) {
-    errors.push(
-      `Invalid .moleculer-gen/config.json: missing or invalid "${serviceContext}.modelFileName"`
-    )
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors
-  }
-}
-
-/**
- * Validates .moleculer-gen/config.json.
- *
- * Throws only when the configuration cannot be read or interpreted.
- * Recoverable structure errors are accumulated so that all possible
- * validation errors can be reported in a single execution.
- *
- * @param {string} projectDir Project root directory.
- * @returns {Promise<{
- *   valid: boolean,
- *   errors: string[],
- *   warnings: string[],
- *   config: object,
- *   validatedConfig: object
- * }>}
- */
-export const validateMoleculerConfig = async projectDir => {
-  const errors = []
-  const warnings = []
-
+const parseMoleculerConfigFile = async projectDir => {
   const moleculerConfigPath = path.join(
     projectDir,
     '.moleculer-gen',
@@ -137,8 +108,9 @@ export const validateMoleculerConfig = async projectDir => {
   let moleculerConfig
 
   try {
-    moleculerConfig =
-      await readJsonFile(moleculerConfigPath)
+    moleculerConfig = await readJsonFile(
+      moleculerConfigPath
+    )
   } catch (error) {
     throw new AppError(
       'Unable to read .moleculer-gen/config.json',
@@ -158,34 +130,43 @@ export const validateMoleculerConfig = async projectDir => {
     )
   }
 
-  /*
-   * The validated values are passed to subsequent validators.
-   * Invalid values are excluded to prevent secondary errors.
-   */
-  const validatedConfig = {
-    ...moleculerConfig,
-    database: undefined,
-    transporter: undefined,
-    plugins: [],
-    services: {}
-  }
+  return moleculerConfig
+}
 
-  if (!isNonEmptyString(moleculerConfig.projectName)) {
+const captureValidation = (
+  validator,
+  errors
+) => {
+  try {
+    return validator()
+  } catch (error) {
     errors.push(
-      'Invalid .moleculer-gen/config.json: missing or invalid "projectName"'
+      `Invalid .moleculer-gen/config.json: ${error.message}`
     )
+    return undefined
   }
+}
 
-  if (
-    !isNonEmptyString(
-      moleculerConfig.projectNameSanitized
-    )
-  ) {
-    errors.push(
-      'Invalid .moleculer-gen/config.json: missing or invalid "projectNameSanitized"'
-    )
-  }
+const checkValidatedFields = (moleculerConfig, validatedConfig, errors) => {
+  // Check if projectName field is validated
+  validatedConfig.projectName = captureValidation(
+    () => validateProjectName(
+      moleculerConfig.projectName
+    ),
+    errors
+  )
 
+  // Check if projectNameSanitized field is validated
+  validatedConfig.projectNameSanitized =
+    captureValidation(
+      () => validateSanitizedName(
+        'projectNameSanitized',
+        moleculerConfig.projectNameSanitized
+      ),
+      errors
+    )
+
+  // Check if database field is validated
   if (!isNonEmptyString(moleculerConfig.database)) {
     errors.push(
       'Invalid .moleculer-gen/config.json: missing or invalid "database"'
@@ -195,6 +176,7 @@ export const validateMoleculerConfig = async projectDir => {
       moleculerConfig.database.trim()
   }
 
+  // Check if transporter field is validated
   if (!isNonEmptyString(moleculerConfig.transporter)) {
     errors.push(
       'Invalid .moleculer-gen/config.json: missing or invalid "transporter"'
@@ -204,6 +186,7 @@ export const validateMoleculerConfig = async projectDir => {
       moleculerConfig.transporter.trim()
   }
 
+  // Check is plugins field is validated
   if (
     moleculerConfig.plugins !== undefined &&
     !Array.isArray(moleculerConfig.plugins)
@@ -228,13 +211,12 @@ export const validateMoleculerConfig = async projectDir => {
     }
   }
 
+  // Check if services field is validated
   if (!isObject(moleculerConfig.services)) {
     errors.push(
       'Invalid .moleculer-gen/config.json: "services" must be an object'
     )
   } else {
-    const validServices = {}
-
     for (
       const [serviceKey, service] of
       Object.entries(moleculerConfig.services)
@@ -248,31 +230,151 @@ export const validateMoleculerConfig = async projectDir => {
       errors.push(...serviceResult.errors)
 
       if (serviceResult.valid) {
-        validServices[serviceKey] = service
+        validatedConfig.services[serviceKey] =
+          serviceResult.service
       }
     }
-
-    validatedConfig.services = validServices
   }
+}
 
-  if (errors.length === 0) {
-    logger.info(
-      '.moleculer-gen/config.json structure is valid'
+/**
+ * Validates a file name without allowing path traversal.
+ *
+ * @param {string} fieldName
+ * @param {unknown} value
+ * @returns {string}
+ * @throws {AppError} If the file name is invalid.
+ */
+const validateFileName = (fieldName, value) => {
+  if (!isNonEmptyString(value)) {
+    throw new AppError(
+      `${fieldName} must be a non-empty string.`,
+      { code: 'INVALID_FILE_NAME' }
     )
   }
 
-  // Determine if subsequent validators can continue based on the validated configuration.
-  const canContinue =
-    validatedConfig.database !== undefined ||
-    validatedConfig.transporter !== undefined ||
-    validatedConfig.plugins.length > 0 ||
-    Object.keys(validatedConfig.services).length > 0
+  const fileName = value.trim()
+
+  if (
+    fileName === '.' ||
+    fileName === '..' ||
+    fileName.includes('/') ||
+    fileName.includes('\\') ||
+    path.basename(fileName) !== fileName
+  ) {
+    throw new AppError(
+      `${fieldName} must be a file name without path separators.`,
+      { code: 'INVALID_FILE_NAME' }
+    )
+  }
+
+  return fileName
+}
+
+/**
+ * Validates a service stored in .moleculer-gen/config.json.
+ *
+ * @param {string} serviceKey
+ * @param {unknown} service
+ * @returns {{
+ *   valid: boolean,
+ *   errors: string[],
+ *   service?: object
+ * }}
+ */
+const validateServiceStructure = (
+  serviceKey,
+  service
+) => {
+  const errors = []
+  const serviceContext = `services.${serviceKey}`
+
+  if (!isObject(service)) {
+    errors.push(
+      `Invalid .moleculer-gen/config.json: "${serviceContext}" must be an object`
+    )
+
+    return {
+      valid: false,
+      errors
+    }
+  }
+
+  const validatedService = {
+    ...service,
+    serviceName: undefined,
+    serviceDirectoryName: undefined,
+    serviceFileName: undefined,
+    modelFileName: undefined
+  }
+
+  if (!isNonEmptyString(service.serviceName)) {
+    errors.push(
+      `Invalid .moleculer-gen/config.json: missing or invalid "${serviceContext}.serviceName"`
+    )
+  } else {
+    validatedService.serviceName =
+      service.serviceName.trim()
+  }
+
+  try {
+    validatedService.serviceDirectoryName =
+      validateSanitizedName(
+        `${serviceContext}.serviceDirectoryName`,
+        service.serviceDirectoryName
+      )
+  } catch (error) {
+    errors.push(
+      `Invalid .moleculer-gen/config.json: ${error.message}`
+    )
+  }
+
+  try {
+    validatedService.serviceFileName =
+      validateFileName(
+        `${serviceContext}.serviceFileName`,
+        service.serviceFileName
+      )
+  } catch (error) {
+    errors.push(
+      `Invalid .moleculer-gen/config.json: ${error.message}`
+    )
+  }
+
+  if (typeof service.isCrud !== 'boolean') {
+    errors.push(
+      `Invalid .moleculer-gen/config.json: "${serviceContext}.isCrud" must be a boolean`
+    )
+  }
+
+  if (
+    service.exposeApi !== undefined &&
+    typeof service.exposeApi !== 'boolean'
+  ) {
+    errors.push(
+      `Invalid .moleculer-gen/config.json: "${serviceContext}.exposeApi" must be a boolean`
+    )
+  }
+
+  if (service.isCrud === true) {
+    try {
+      validatedService.modelFileName =
+        validateFileName(
+          `${serviceContext}.modelFileName`,
+          service.modelFileName
+        )
+    } catch (error) {
+      errors.push(
+        `Invalid .moleculer-gen/config.json: ${error.message}`
+      )
+    }
+  } else {
+    delete validatedService.modelFileName
+  }
 
   return {
     valid: errors.length === 0,
     errors,
-    warnings,
-    validatedConfig,
-    canContinue
+    service: validatedService
   }
 }
