@@ -148,3 +148,22 @@ export const ensurePathInside = (baseDir, targetPath) => {
 
   return resolvedTarget
 }
+
+/**
+ *
+ * @param {*} value
+ * @returns
+ */
+export const isNonEmptyString = value =>
+  typeof value === 'string' &&
+  value.trim().length > 0
+
+/**
+ *
+ * @param {*} value
+ * @returns
+ */
+export const isObject = value =>
+  value !== null &&
+  typeof value === 'object' &&
+  !Array.isArray(value)
