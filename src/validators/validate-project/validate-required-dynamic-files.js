@@ -2,7 +2,7 @@
   PATH /src/validators/validate-project/validate-required-dynamic-files.js
 */
 
-import path from 'path'
+import path from 'node:path'
 
 import { logger } from '../../utils/logger.js'
 
@@ -10,6 +10,7 @@ import {
   isDirectory,
   isFile
 } from '../../utils/fs-helpers.js'
+import { ensurePathInside } from '../../utils/common-helpers.js'
 
 /**
  * Builds required paths from the validated Moleculer Gen configuration.
@@ -121,20 +122,18 @@ export const validateRequiredDynamicFiles = async (
       `> Checking ${requiredPath.type}: ${requiredPath.path}`
     )
 
-    const segments = requiredPath.path.split(/[\\/]+/)
-
-    if (segments.includes('..')) {
-      errors.push(
-        `Path is outside the project: ${requiredPath.path}`
+    let absolutePath
+    try {
+      absolutePath = ensurePathInside(
+        projectDir,
+        path.join(projectDir, requiredPath.path)
       )
-
+    } catch (error) {
+      errors.push(
+        `Invalid generated path: ${requiredPath.path}`
+      )
       continue
     }
-
-    const absolutePath = path.join(
-      projectDir,
-      requiredPath.path
-    )
 
     const hasExpectedType =
       requiredPath.type === 'file'
