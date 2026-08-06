@@ -33,8 +33,8 @@
     "change-case": "5.4.4",
     "commander": "14.0.1",
     "inquirer": "12.9.6",
-    "js-yaml": "4.1.0",
-    "lodash": "4.17.21",
+    "js-yaml": "4.3.0",
+    "lodash": "4.18.1",
     "mustache": "4.2.0",
     "pluralize-esm": "9.0.5",
     "slugify": "1.6.6"
@@ -43,7 +43,7 @@
     "@types/node": "24.8.1",
     "standard": "17.1.2",
     "typescript": "5.9.3",
-    "vitest": "3.2.4"
+    "vitest": "3.2.7"
   },
   "type": "module"
 }
