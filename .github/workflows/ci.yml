@@ -53,6 +53,18 @@ jobs:
 
       - name: Check npm package content
         run: yarn pack --dry-run
+      - name: Smoke test packaged CLI
+        run: |
+          PACKAGE_PATH="/tmp/moleculer-gen.tgz"
+          TEST_DIR="$(mktemp -d)"
+
+          yarn pack --out "$PACKAGE_PATH"
+
+          cd "$TEST_DIR"
+          npm init --yes >/dev/null
+          npm install "$PACKAGE_PATH"
+
+          ./node_modules/.bin/moleculer-gen --help
 
   tests:
     name: Tests — Node ${{ matrix.node-version }}
