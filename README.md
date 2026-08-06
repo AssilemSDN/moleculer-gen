@@ -1,4 +1,7 @@
-![Status](https://img.shields.io/badge/status-WIP-yellow) ![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen) ![License](https://img.shields.io/badge/license-MIT-lightgrey)
+[![CI](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/tests.yml)
+![Node.js](https://img.shields.io/badge/Node.js-20%20%7C%2022%20%7C%2024-339933?logo=node.js&logoColor=white)
+![Yarn](https://img.shields.io/badge/Yarn-4.18.0-2C8EBB?logo=yarn&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 # moleculer-gen
 
@@ -97,37 +100,50 @@ A generated demo project is available [here](https://github.com/AssilemSDN/molec
 | [Docker](https://www.docker.com/) | >= 24 | To run the generated project |
 | [Docker Compose](https://docs.docker.com/compose/) | v2+ | Bundled with Docker Desktop |
 | [Make](https://www.gnu.org/software/make/) | any | Used to build and run the generated project (`make build`, `make start`) |
-
 ### For contributors / developers
 
 Everything above, plus:
 
-| Requirement | Version | Notes |
-| ----------- | ------- | ----- |
-| [Yarn](https://classic.yarnpkg.com/) | 1.x | Package manager (`yarn install`, `yarn test`) |
-| [TypeScript](https://www.typescriptlang.org/) | >= 5 | Installed via devDependencies (`yarn build`) |
+| Requirement                                   | Supported versions | Recommended     | Notes                                                 |
+| --------------------------------------------- | ------------------ | --------------- | ----------------------------------------------------- |
+| [Node.js](https://nodejs.org/)                | 20, 22, 24         | 22 or 24        | The supported versions are tested in CI               |
+| [Yarn](https://yarnpkg.com/)                  | 4.18.0             | 4.18.0          | Managed through Corepack and pinned in `package.json` |
+| [TypeScript](https://www.typescriptlang.org/) | >= 5               | Project version | Installed through the project dependencies            |
 
+Enable Corepack before installing dependencies:
+
+```bash
+corepack enable
+yarn --version
+```
+
+The reported Yarn version should match the version declared in the `packageManager` field of `package.json`.
 ## Installation
 
-```sh
-# Run via npx (no installation required)
-$ npx moleculer-gen init
+Run the published CLI directly with `npx`:
 
-# Or install globally
-$ yarn global add moleculer-gen
+```bash
+npx moleculer-gen init
 ```
 
-> **Note for contributors**: this project uses **yarn** as its package manager.
-> Please use `yarn` instead of `npm` to avoid lockfile conflicts.
+For contributors, clone the repository and install its dependencies using the pinned Yarn version:
 
-```sh
-$ yarn install
+```bash
+git clone https://github.com/AssilemSDN/moleculer-gen.git
+cd moleculer-gen
+
+corepack enable
+yarn install --immutable
 ```
+
+This project uses Yarn 4. Use Yarn to manage project dependencies and avoid running `npm install`, as it may create lockfile conflicts.
+
+The `npm link` command is only used to expose the local CLI binary during development.
 
 ## Usage
 
 ```sh
-$ npx moleculer-gen [options] [command]
+npx moleculer-gen [options] [command]
 ```
 
 
@@ -145,19 +161,19 @@ $ npx moleculer-gen [options] [command]
 
 ```sh
 # Create a project interactively
-$ npx moleculer-gen init
+npx moleculer-gen init
 
 # Create a project from config
-$ npx moleculer-gen init examples/config/init-project/minimal.json
+npx moleculer-gen init examples/config/init-project/minimal.json
 
 # Add a service interactively
-$ npx moleculer-gen add-service
+npx moleculer-gen add-service
 
 # Add a service from config
-$ npx moleculer-gen add-service examples/config/add-service/crud_full.json
+npx moleculer-gen add-service examples/config/add-service/crud_full.json
 
 # Validate the generated project
-$ npx moleculer-gen validate
+npx moleculer-gen validate
 ```
 
 ### Global options
@@ -193,7 +209,7 @@ Currently, `moleculer-gen` supports the following commands:
 
 ```sh
 # In the current folder
-$ npx moleculer-gen init
+npx moleculer-gen init
 ```
 
 **Steps during initialization**:
@@ -235,13 +251,13 @@ At the end, a project summary can be displayed:
 💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the `examples/config/init-project` folder.
 
 ```bash
-$ npx moleculer-gen init examples/config/init-project/minimal.json
+npx moleculer-gen init examples/config/init-project/minimal.json
 ```
 
 💡 For testing, you can use the `--dry-run` option.
 
 ```bash
-$ npx moleculer-gen init examples/config/init-project/minimal.json --dry-run --debug
+npx moleculer-gen init examples/config/init-project/minimal.json --dry-run --debug
 ```
 
 ##### 2- `add-service`
@@ -249,7 +265,7 @@ $ npx moleculer-gen init examples/config/init-project/minimal.json --dry-run --d
 `add-service` Add a **new service** to your **generated project**
 
 ```sh
-$ npx moleculer-gen add-service
+npx moleculer-gen add-service
 ```
 
 **Steps during service creation**:
@@ -293,13 +309,13 @@ $ npx moleculer-gen add-service
 💡 You can use **JSON config files** to skip interactive prompts. Example configs are included in the `examples/config/add-service` folder.
 
 ```bash
-$ npx moleculer-gen add-service examples/config/add-service/crud_full.json
+npx moleculer-gen add-service examples/config/add-service/crud_full.json
 ```
 
 💡 For testing, you can use the `--dry-run` option.
 
 ```bash
-$ npx moleculer-gen add-service examples/config/add-service/crud_full.json --dry-run --debug
+npx moleculer-gen add-service examples/config/add-service/crud_full.json --dry-run --debug
 ```
 
 **Behavior with existing services**:
@@ -328,7 +344,7 @@ Unlike `add-service`, this command is **config-file only**. It does not provide 
 
 
 ```sh
-$ npx moleculer-gen add-services examples/config/add-services/demo.json
+npx moleculer-gen add-services examples/config/add-services/demo.json
 [2026-07-12T10:35:26.125Z] [INFO] 🚀 Starting batch services addition...
 [2026-07-12T10:35:26.191Z] [INFO] 🎉 batch services addition completed successfully!
 [2026-07-12T10:35:26.191Z] [INFO] Result:
@@ -415,7 +431,7 @@ The existence guard checks are the same as for `add-service`.
 `validate` checks whether the current folder looks like a valid project generated by `moleculer-gen`.
 
 ```sh
-$ npx moleculer-gen validate
+npx moleculer-gen validate
 ```
 
 Current checks:
@@ -448,36 +464,79 @@ Current checks:
 # General CLI help
 moleculer-gen --help
 ```
-
 ## Development
 
-```sh
-# Clone the repo
-$ git clone https://github.com/AssilemSDN/moleculer-gen.git
-$ cd moleculer-gen
+Clone the repository and install the dependencies:
 
-# Install dependencies
-$ yarn install
+```bash
+git clone https://github.com/AssilemSDN/moleculer-gen.git
+cd moleculer-gen
 
-# Build TypeScript modules
-$ yarn build
+corepack enable
+yarn install --immutable
+```
 
-# Link the CLI locally for testing
-$ yarn link
+Build the TypeScript modules:
 
-# Run commands directly
-$ moleculer-gen init
-$ moleculer-gen add-service
-$ moleculer-gen validate
+```bash
+yarn build
+```
 
-# Run tests
-$ yarn test
+Link the local CLI globally for testing:
 
-# Simulate without writing files
-$ moleculer-gen init --dry-run --debug
+```bash
+npm link
+```
 
-# Unlink when done
-$ yarn unlink moleculer-gen
+> Yarn 4's `yarn link` command does not create a global CLI link like Yarn Classic did. Use `npm link` to expose the local `moleculer-gen` executable.
+
+Run the CLI directly:
+
+```bash
+moleculer-gen --help
+moleculer-gen init
+moleculer-gen add-service
+moleculer-gen add-services examples/config/add-services/demo.json
+moleculer-gen validate
+```
+
+Simulate generation without writing files:
+
+```bash
+moleculer-gen init --dry-run --debug
+```
+
+Run the project checks:
+
+```bash
+yarn lint
+yarn build
+yarn test
+yarn test:integration
+```
+
+Audit production dependencies:
+
+```bash
+yarn audit:prod
+```
+
+Audit all direct and transitive dependencies:
+
+```bash
+yarn audit
+```
+
+Inspect the contents of the npm package:
+
+```bash
+yarn pack --dry-run
+```
+
+Remove the global development link when finished:
+
+```bash
+npm unlink --global moleculer-gen
 ```
 
 ## Contributing

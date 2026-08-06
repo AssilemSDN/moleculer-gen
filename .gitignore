@@ -39,3 +39,7 @@ Thumbs.db
 
 # Temporary files created by editors (such as Vim)
 *.swp
+
+# Yarn-specific files
+.yarn/install-state.gz
+.yarn/cache/
