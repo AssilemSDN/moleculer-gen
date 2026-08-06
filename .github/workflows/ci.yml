@@ -26,15 +26,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
+      - name: Enable Corepack for cache detection
+        run: corepack enable
+
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 20
           cache: yarn
           cache-dependency-path: yarn.lock
-
-      - name: Enable Corepack
-        run: corepack enable
 
       - name: Check Yarn version
         run: yarn --version
