@@ -1,0 +1,63 @@
+version: 2
+
+updates:
+  # package.json + yarn.lock
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+
+    open-pull-requests-limit: 3
+
+    groups:
+      npm-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: scope
+
+  # .github/workflows/*.yml
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+    open-pull-requests-limit: 3
+
+    groups:
+      github-actions-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+    commit-message:
+      prefix: "chore"
+      include: scope
+
+  # /templates/static/Dockerfile
+  - package-ecosystem: docker
+    directory: /templates/static
+    schedule:
+      interval: weekly
+
+    open-pull-requests-limit: 3
+
+    groups:
+      docker-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+    commit-message:
+      prefix: "chore"
+      include: scope
