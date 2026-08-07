@@ -1,7 +1,7 @@
 # ------------------------------------
 # First stage: install dependencies
 # ------------------------------------
-FROM node:23-alpine AS builder
+FROM node:25-alpine AS builder
 
 WORKDIR /usr/app
 
@@ -12,7 +12,7 @@ RUN npm install --omit=dev
 # ------------------------------------
 # Final stage: runtime image
 # ------------------------------------
-FROM node:23-alpine
+FROM node:25-alpine
 
 WORKDIR /usr/app
 
