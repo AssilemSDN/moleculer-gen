@@ -1,5 +1,5 @@
 [![CI](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml)
-![Node.js](https://img.shields.io/badge/Node.js-20%20%7C%2022%20%7C%2024-339933?logo=node.js&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2024-339933?logo=node.js&logoColor=white)
 ![Yarn](https://img.shields.io/badge/Yarn-4.18.0-2C8EBB?logo=yarn&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
@@ -96,7 +96,7 @@ A generated demo project is available [here](https://github.com/AssilemSDN/molec
 
 | Requirement | Version | Notes |
 | ----------- | ------- | ----- |
-| [Node.js](https://nodejs.org/) | >= 20 | Required to run the CLI |
+| [Node.js](https://nodejs.org/) | >= 22.12.0 | Required to run the CLI |
 | [Docker](https://www.docker.com/) | >= 24 | To run the generated project |
 | [Docker Compose](https://docs.docker.com/compose/) | v2+ | Bundled with Docker Desktop |
 | [Make](https://www.gnu.org/software/make/) | any | Used to build and run the generated project (`make build`, `make start`) |
@@ -106,7 +106,7 @@ Everything above, plus:
 
 | Requirement                                   | Supported versions | Recommended     | Notes                                                 |
 | --------------------------------------------- | ------------------ | --------------- | ----------------------------------------------------- |
-| [Node.js](https://nodejs.org/)                | 20, 22, 24         | 22 or 24        | The supported versions are tested in CI               |
+| [Node.js](https://nodejs.org/)                |  22, 24         | 22 or 24        | The supported versions are tested in CI               |
 | [Yarn](https://yarnpkg.com/)                  | 4.18.0             | 4.18.0          | Managed through Corepack and pinned in `package.json` |
 | [TypeScript](https://www.typescriptlang.org/) | >= 5               | Project version | Installed through the project dependencies            |
 

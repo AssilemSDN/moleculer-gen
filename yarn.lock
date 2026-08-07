@@ -1213,10 +1213,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:14.0.1":
-  version: 14.0.1
-  resolution: "commander@npm:14.0.1"
-  checksum: 10c0/64439c0651ddd01c1d0f48c8f08e97c18a0a1fa693879451f1203ad01132af2c2aa85da24cf0d8e098ab9e6dc385a756be670d2999a3c628ec745c3ec124587b
+"commander@npm:15.0.0":
+  version: 15.0.0
+  resolution: "commander@npm:15.0.0"
+  checksum: 10c0/539229c171914ea1ccd45ee5f10d924289a12a684ea3a7a44147abe54003c35ed6de9ae4ad198d88c29fdf403dca0428451a388234e6dc01b6faa978fb207206
   languageName: node
   linkType: hard
 
@@ -2872,7 +2872,7 @@ __metadata:
     "@types/node": "npm:24.8.1"
     chalk: "npm:5.6.2"
     change-case: "npm:5.4.4"
-    commander: "npm:14.0.1"
+    commander: "npm:15.0.0"
     inquirer: "npm:12.9.6"
     js-yaml: "npm:5.2.3"
     lodash: "npm:4.18.1"
