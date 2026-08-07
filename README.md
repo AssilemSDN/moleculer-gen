@@ -1,3 +1,11 @@
+<p align="center">
+  <img
+    src="./docs/images/moleculer-gen.png"
+    alt="Aperçu de Moleculer gen"
+    width="900"
+  />
+</p>
+
 [![CI](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml)
 ![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2024-339933?logo=node.js&logoColor=white)
 ![Yarn](https://img.shields.io/badge/Yarn-4.18.0-2C8EBB?logo=yarn&logoColor=white)
