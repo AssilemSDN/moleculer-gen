@@ -1,7 +1,7 @@
 /*
   PATH /src/modules/backend-services/ServiceModule.ts
 */
-import { default as slugify } from "slugify"
+import slugify from "slugify"
 import { ModuleDefinition, ModuleMeta, DockerConfig } from "../types.js"
 
 interface ServiceModuleOptions {
@@ -28,9 +28,12 @@ export const ServiceModule = ({
   dependsOn = [],
   labels = []
 }: ServiceModuleOptions): ModuleDefinition => {
-  // @ts-expect-error - slugify type mismatch
-  const serviceNameSanitized = slugify(serviceName, { lower: true, strict: true, trim: true })
-
+  const serviceNameSanitized = slugify(serviceName, {
+    lower: true,
+    strict: true,
+    trim: true
+  })
+  
   const meta: ModuleMeta = {
     key: serviceNameSanitized,
     name: `${serviceName} Service`,
