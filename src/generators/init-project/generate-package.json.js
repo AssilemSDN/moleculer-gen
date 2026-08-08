@@ -1,6 +1,6 @@
 /*
-  PATH /src/generators/init-project/generate-package.json.js
-*/
+ * PATH /src/generators/init-project/generate-package.json.js
+ */
 import path from 'path'
 import { writeFile } from '../../utils/fs-helpers.js'
 
@@ -15,30 +15,43 @@ import { writeFile } from '../../utils/fs-helpers.js'
  */
 export const generatePackageJson = async (projectNameSanitized, outputDir, options) => {
   const { database } = options
+
   const pkg = {
     name: projectNameSanitized,
     version: '0.0.1',
     license: 'UNLICENSED',
     description: 'A simple Moleculer-based microservices with Docker Compose setup for development environment.',
     scripts: {
-      dev: 'moleculer-runner -E .env.dev --repl --hot --config ./src/config/moleculer.config.js ./src/services'
+      dev: 'moleculer-runner -E .env.dev --repl --hot --config ./src/config/moleculer.config.js ./src/services',
+      start: 'moleculer-runner --config ./src/config/moleculer.config.js ./src/services',
+      audit: 'yarn npm audit --all --recursive --severity high',
+      lint: 'standard "src/**/*.js"'
     },
     dependencies: {
       deepmerge: '4.3.1',
-      dotenv: '16.4.5',
-      moleculer: '0.14.35',
-      'moleculer-db': '0.8.28',
-      'moleculer-db-adapter-mongoose': '0.10.0',
-      'moleculer-repl': '0.7.4',
-      'moleculer-web': '0.10.8',
+      dotenv: '17.4.2',
+      moleculer: '0.15.1',
+      'moleculer-db': '0.9.0',
+      'moleculer-repl': '0.8.0',
+      'moleculer-web': '0.11.0',
       nats: '2.29.3'
     },
     devDependencies: {
       standard: '17.1.2'
-    }
+    },
+    engines: {
+      node: '>=24'
+    },
+    packageManager: 'yarn@4.18.0'
   }
+
   if (database === 'mongodb') {
-    pkg.dependencies.mongoose = '7.4.0'
+    pkg.dependencies['moleculer-db-adapter-mongoose'] = '0.11.0'
+    pkg.dependencies.mongoose = '8.24.1'
   }
-  await writeFile(path.join(outputDir, 'package.json'), JSON.stringify(pkg, null, 2))
+
+  await writeFile(
+    path.join(outputDir, 'package.json'),
+    JSON.stringify(pkg, null, 2)
+  )
 }
