@@ -1,18 +1,22 @@
 # ------------------------------------
 # First stage: install dependencies
 # ------------------------------------
-FROM node:23-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /usr/app
 
+RUN corepack enable
+
+COPY package.json yarn.lock .yarnrc.yml ./
+
 # Install production dependencies
-COPY package*.json ./
-RUN npm install --omit=dev
+RUN yarn install --immutable
+RUN yarn workspaces focus --all --production
 
 # ------------------------------------
 # Final stage: runtime image
 # ------------------------------------
-FROM node:23-alpine
+FROM node:24-alpine
 
 WORKDIR /usr/app
 
