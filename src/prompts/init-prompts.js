@@ -44,9 +44,9 @@ export const initPrompts = async () => {
       type: 'list',
       name: 'database',
       message: '💾 Choose a database:',
-      choices: Object.values(modulesRegistry.database).map(({ meta }) => ({
+      choices: Object.entries(modulesRegistry.database).map(([key, { meta }]) => ({
         name: `${meta.name} – ${meta.description}`,
-        value: meta.key
+        value: key
       }))
     }
   ])
@@ -57,9 +57,9 @@ export const initPrompts = async () => {
       type: 'list',
       name: 'transporter',
       message: '📦 Choose a transporter:',
-      choices: Object.values(modulesRegistry.transporter).map(({ meta }) => ({
+      choices: Object.entries(modulesRegistry.transporter).map(([key, { meta }]) => ({
         name: `${meta.name} – ${meta.description}`,
-        value: meta.key
+        value: key
       }))
     }
   ])
@@ -70,10 +70,10 @@ export const initPrompts = async () => {
       type: 'checkbox',
       name: 'plugins',
       message: '⚙️ Select optional infrastructure modules:',
-      choices: Object.values(modulesRegistry.plugin).map(({ meta }) => ({
+      choices: Object.entries(modulesRegistry.plugin).map(([key, { meta }]) => ({
         name: `${meta.name} – ${meta.description}`,
         short: meta.name,
-        value: meta.key,
+        value: key,
         checked: meta.enabledByDefault
       }))
     }
