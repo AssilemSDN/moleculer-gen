@@ -21,18 +21,73 @@ vi.mock('../../../src/generators/init-project/generate.js', () => ({
   generate: vi.fn().mockResolvedValue(undefined)
 }))
 
-vi.mock('../../../dist/modules/databases/index.js', () => ({
-  databases: { mongodb: () => ({ meta: { key: 'mongodb' }, docker: {}, env: {} }) }
-}))
+vi.mock('../../../dist/modules/registry.js', () => ({
+  modulesRegistry: {
+    database: {
+      mongodb: {
+        factory: () => ({
+          meta: { key: 'mongodb' },
+          docker: {},
+          env: {}
+        }),
+        meta: {
+          key: 'mongodb',
+          name: 'MongoDB',
+          description: '',
+          category: 'database',
+          enabledByDefault: true
+        }
+      }
+    },
 
-vi.mock('../../../dist/modules/transporters/index.js', () => ({
-  transporters: { nats: () => ({ meta: { key: 'nats' }, docker: {}, env: {} }) }
-}))
+    transporter: {
+      nats: {
+        factory: () => ({
+          meta: { key: 'nats' },
+          docker: {},
+          env: {}
+        }),
+        meta: {
+          key: 'nats',
+          name: 'NATS',
+          description: '',
+          category: 'transporter',
+          enabledByDefault: true
+        }
+      }
+    },
 
-vi.mock('../../../dist/modules/plugins/index.js', () => ({
-  plugins: {
-    traefik: () => ({ meta: { key: 'traefik' }, docker: {}, env: {} }),
-    prometheus: () => ({ meta: { key: 'prometheus' }, docker: {}, env: {} })
+    plugin: {
+      traefik: {
+        factory: () => ({
+          meta: { key: 'traefik' },
+          docker: {},
+          env: {}
+        }),
+        meta: {
+          key: 'traefik',
+          name: 'Traefik',
+          description: '',
+          category: 'plugin',
+          enabledByDefault: false
+        }
+      },
+
+      prometheus: {
+        factory: () => ({
+          meta: { key: 'prometheus' },
+          docker: {},
+          env: {}
+        }),
+        meta: {
+          key: 'prometheus',
+          name: 'Prometheus',
+          description: '',
+          category: 'plugin',
+          enabledByDefault: false
+        }
+      }
+    }
   }
 }))
 
