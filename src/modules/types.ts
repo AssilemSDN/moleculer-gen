@@ -3,6 +3,28 @@
 */
 
 /**
+ * Categories whose modules are registered statically and can be discovered
+ * through the centralized module registry.
+ */
+export type StaticModuleCategory =
+  | 'database'
+  | 'transporter'
+  | 'plugin'
+
+/**
+ * Categories whose modules are created dynamically from project configuration.
+ */
+export type DynamicModuleCategory =
+  | 'backend-service'
+
+/**
+ * All supported module categories.
+ */
+export type ModuleCategory =
+  | StaticModuleCategory
+  | DynamicModuleCategory
+
+/**
  * Meta information used for init prompts / user selection
  */
 export interface ModuleMeta {
@@ -13,7 +35,7 @@ export interface ModuleMeta {
   /** Description shown during init prompts */
   description: string
   /** Module category */
-  category: 'database' | 'transporter' | 'plugin' | 'backend-service'
+  category: ModuleCategory
   /** Whether the module is enabled by default */
   enabledByDefault: boolean
 }
@@ -82,6 +104,17 @@ export interface ModuleDefinition {
 export type ModuleFactory = (...args: any[]) => ModuleDefinition
 
 /**
- * Registry of all available modules
+ * Registry entry describing a statically available module.
+ *
+ * The factory is used to generate the module definition while the metadata
+ * is used for discovery, prompts and validation.
  */
-export type ModuleRegistry = Record<string, ModuleFactory>
+export interface ModuleRegistryEntry {
+  factory: ModuleFactory
+  meta: ModuleMeta
+}
+
+/**
+ * Collection of registered modules indexed by their unique module key.
+ */
+export type ModuleRegistry = Record<string, ModuleRegistryEntry>

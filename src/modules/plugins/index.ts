@@ -6,19 +6,18 @@ import { PrometheusModule, PrometheusModuleMeta } from "./PrometheusModule.js"
 import { TraefikModuleMeta, TraefikModule } from "./TraefikModule.js"
 
 /** 
- * Meta information for plugins.
- * Used in init prompts and for display purposes.
- */
-export const pluginMetas: Record<string, ModuleMeta> = {
-  traefik: TraefikModuleMeta,
-  prometheus: PrometheusModuleMeta
-}
-
-/** 
  * Registry of all plugins factories.
- * Each key corresponds to a plugin factory that returns a ModuleDefinition.
+ * 
+ * Each entry contains the module factory and its metadata.
  */
-export const plugins: ModuleRegistry = {
-  traefik: TraefikModule,
-  prometheus: PrometheusModule
-}
+export const plugins = {
+  traefik: {
+    factory: TraefikModule,
+    meta: TraefikModuleMeta,
+  },
+
+  prometheus: {
+    factory: PrometheusModule,
+    meta: PrometheusModuleMeta,
+  },
+} satisfies ModuleRegistry

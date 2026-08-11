@@ -17,9 +17,7 @@ import {
 } from '../utils/common-helpers.js'
 
 // Modules Factory
-import { databases } from '../../dist/modules/databases/index.js'
-import { transporters } from '../../dist/modules/transporters/index.js'
-import { plugins } from '../../dist/modules/plugins/index.js'
+import { modulesRegistry } from '../../dist/modules/registry.js'
 import { ApiGatewayModule } from '../../dist/modules/backend-services/ApiGatewayModule.js'
 
 // Generator
@@ -75,18 +73,21 @@ export const initProject = safeRun(
     const needsTraefikLabels = selectedPlugins.includes('traefik')
 
     // 3. Build modules
+    const databaseModule = modulesRegistry.database[database]
+    const transporterModule = modulesRegistry.transporter[transporter]
+
     const modulesToGenerate = [
       ApiGatewayModule({
         projectNameSanitized,
         needsTraefikLabels
       }),
 
-      databases[database](projectNameSanitized),
+      databaseModule.factory(projectNameSanitized),
 
-      transporters[transporter](projectNameSanitized),
+      transporterModule.factory(projectNameSanitized),
 
       ...selectedPlugins
-        .map(key => plugins[key])
+        .map(key => modulesRegistry.plugin[key]?.factory)
         .filter(Boolean)
         .map(factory =>
           factory({
