@@ -35,14 +35,14 @@ export const validateInitProjectConfig = (config) => {
     }
   }
 
-  if (!modulesRegistry.database[config.database]) {
+  if (!Object.hasOwn(modulesRegistry.database, config.database)) {
     throw new AppError(
       `Invalid database key: ${config.database}`,
       { code: 'INVALID_CONFIG' }
     )
   }
 
-  if (!modulesRegistry.transporter[config.transporter]) {
+  if (!Object.hasOwn(modulesRegistry.transporter, config.transporter)) {
     throw new AppError(
       `Invalid transporter key: ${config.transporter}`,
       { code: 'INVALID_CONFIG' }
@@ -59,7 +59,7 @@ export const validateInitProjectConfig = (config) => {
   }
 
   for (const pluginKey of pluginKeys) {
-    if (!modulesRegistry.plugin[pluginKey]) {
+    if (!Object.hasOwn(modulesRegistry.plugin, pluginKey)) {
       throw new AppError(
         `Invalid plugin key: ${pluginKey}`,
         { code: 'INVALID_CONFIG' }
