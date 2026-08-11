@@ -7,7 +7,8 @@ import { TraefikModuleMeta, TraefikModule } from "./TraefikModule.js"
 
 /** 
  * Registry of all plugins factories.
- * Each key corresponds to a plugin factory that returns a ModuleDefinition.
+ * 
+ * Each entry contains the module factory and its metadata.
  */
 export const plugins = {
   traefik: {

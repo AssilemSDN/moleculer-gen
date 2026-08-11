@@ -7,7 +7,8 @@ import { NatsModule, NatsModuleMeta } from "./NatsModule.js"
 
 /** 
  * Registry of all transporter factories.
- * Each key corresponds to a transporter factory that returns a ModuleDefinition.
+ * 
+ * Each entry contains the module factory and its metadata.
  */
 export const transporters = {
   nats: {

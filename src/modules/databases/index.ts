@@ -6,7 +6,8 @@ import { MongoDBModule, MongoDBModuleMeta } from "./MongoDBModule.js"
 
 /** 
  * Registry of all databases factories.
- * Each key corresponds to a database factory that returns a ModuleDefinition.
+ * 
+ * Each entry contains the module factory and its metadata.
  */
 export const databases = {
   mongodb: {
