@@ -20,15 +20,3 @@ export const plugins = {
     meta: PrometheusModuleMeta,
   },
 } satisfies ModuleRegistry
-
-export type PluginKey = keyof typeof plugins
-
-/** 
- * Meta information for plugins.
- * Used in init prompts and for display purposes.
- */
-export const pluginMetas = {
-  traefik: TraefikModuleMeta,
-  prometheus: PrometheusModuleMeta
-} satisfies Record<PluginKey, ModuleMeta> 
-

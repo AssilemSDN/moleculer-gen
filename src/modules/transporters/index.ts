@@ -15,16 +15,3 @@ export const transporters = {
     meta: NatsModuleMeta
   },
 } satisfies ModuleRegistry
-
-
-export type TransporterKey = keyof typeof transporters
-
-/** 
- * Meta information for transporters.
- * Used in init prompts and for display purposes.
- */
-export const transporterMetas = {
-  nats: NatsModuleMeta
-} satisfies Record<string, ModuleMeta> 
-
-
