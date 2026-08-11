@@ -2,14 +2,24 @@
   PATH /src/modules/types.ts
 */
 
+/**
+ * Categories whose modules are registered statically and can be discovered
+ * through the centralized module registry.
+ */
 export type StaticModuleCategory =
   | 'database'
   | 'transporter'
   | 'plugin'
 
+/**
+ * Categories whose modules are created dynamically from project configuration.
+ */
 export type DynamicModuleCategory =
   | 'backend-service'
 
+/**
+ * All supported module categories.
+ */
 export type ModuleCategory =
   | StaticModuleCategory
   | DynamicModuleCategory
@@ -93,12 +103,18 @@ export interface ModuleDefinition {
  */
 export type ModuleFactory = (...args: any[]) => ModuleDefinition
 
+/**
+ * Registry entry describing a statically available module.
+ *
+ * The factory is used to generate the module definition while the metadata
+ * is used for discovery, prompts and validation.
+ */
 export interface ModuleRegistryEntry {
   factory: ModuleFactory
   meta: ModuleMeta
 }
 
 /**
- * Registry of all available modules
+ * Collection of registered modules indexed by their unique module key.
  */
 export type ModuleRegistry = Record<string, ModuleRegistryEntry>
