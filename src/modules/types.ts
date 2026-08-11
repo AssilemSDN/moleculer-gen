@@ -2,6 +2,18 @@
   PATH /src/modules/types.ts
 */
 
+export type StaticModuleCategory =
+  | 'database'
+  | 'transporter'
+  | 'plugin'
+
+export type DynamicModuleCategory =
+  | 'backend-service'
+
+export type ModuleCategory =
+  | StaticModuleCategory
+  | DynamicModuleCategory
+
 /**
  * Meta information used for init prompts / user selection
  */
@@ -13,7 +25,7 @@ export interface ModuleMeta {
   /** Description shown during init prompts */
   description: string
   /** Module category */
-  category: 'database' | 'transporter' | 'plugin' | 'backend-service'
+  category: ModuleCategory
   /** Whether the module is enabled by default */
   enabledByDefault: boolean
 }
@@ -81,7 +93,12 @@ export interface ModuleDefinition {
  */
 export type ModuleFactory = (...args: any[]) => ModuleDefinition
 
+export interface ModuleRegistryEntry {
+  factory: ModuleFactory
+  meta: ModuleMeta
+}
+
 /**
  * Registry of all available modules
  */
-export type ModuleRegistry = Record<string, ModuleFactory>
+export type ModuleRegistry = Record<string, ModuleRegistryEntry>
