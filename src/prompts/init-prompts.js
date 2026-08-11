@@ -2,9 +2,7 @@
   PATH /src/prompts/init-prompts.js
 */
 import inquirer from 'inquirer'
-import { transporterMetas } from '../../dist/modules/transporters/index.js'
-import { databaseMetas } from '../../dist/modules/databases/index.js'
-import { pluginMetas } from '../../dist/modules/plugins/index.js'
+import { modulesRegistry } from '../../dist/modules/registry.js'
 import { sanitizeName } from '../utils/common-helpers.js'
 import path from 'path'
 
@@ -46,7 +44,7 @@ export const initPrompts = async () => {
       type: 'list',
       name: 'database',
       message: '💾 Choose a database:',
-      choices: Object.values(databaseMetas).map(meta => ({
+      choices: Object.values(modulesRegistry.database).map(({ meta }) => ({
         name: `${meta.name} – ${meta.description}`,
         value: meta.key
       }))
@@ -59,7 +57,7 @@ export const initPrompts = async () => {
       type: 'list',
       name: 'transporter',
       message: '📦 Choose a transporter:',
-      choices: Object.values(transporterMetas).map(meta => ({
+      choices: Object.values(modulesRegistry.transporter).map(({ meta }) => ({
         name: `${meta.name} – ${meta.description}`,
         value: meta.key
       }))
@@ -72,7 +70,7 @@ export const initPrompts = async () => {
       type: 'checkbox',
       name: 'plugins',
       message: '⚙️ Select optional infrastructure modules:',
-      choices: Object.values(pluginMetas).map(meta => ({
+      choices: Object.values(modulesRegistry.plugin).map(({ meta }) => ({
         name: `${meta.name} – ${meta.description}`,
         short: meta.name,
         value: meta.key,

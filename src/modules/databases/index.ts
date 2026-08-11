@@ -14,13 +14,3 @@ export const databases = {
     meta: MongoDBModuleMeta,
   },
 } satisfies ModuleRegistry
-
-export type DatabaseKey = keyof typeof databases
-
-/** 
- * Meta information for databases.
- * Used in init prompts and for display purposes.
- */
-export const databaseMetas = {
-  mongodb: MongoDBModuleMeta
-} satisfies Record<DatabaseKey, ModuleMeta>

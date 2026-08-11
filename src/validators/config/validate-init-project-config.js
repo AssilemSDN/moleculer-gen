@@ -1,13 +1,9 @@
 import path from 'path'
 
 import { AppError } from '../../errors/AppError.js'
-
 import { sanitizeName } from '../../utils/common-helpers.js'
 
-// Modules Factory
-import { databases } from '../../../dist/modules/databases/index.js'
-import { transporters } from '../../../dist/modules/transporters/index.js'
-import { plugins } from '../../../dist/modules/plugins/index.js'
+import { modulesRegistry } from '../../../dist/modules/registry.js'
 
 /**
  * Validate and normalize a project configuration.
@@ -39,14 +35,14 @@ export const validateInitProjectConfig = (config) => {
     }
   }
 
-  if (!databases[config.database]) {
+  if (!modulesRegistry.database[config.database]) {
     throw new AppError(
       `Invalid database key: ${config.database}`,
       { code: 'INVALID_CONFIG' }
     )
   }
 
-  if (!transporters[config.transporter]) {
+  if (!modulesRegistry.transporter[config.transporter]) {
     throw new AppError(
       `Invalid transporter key: ${config.transporter}`,
       { code: 'INVALID_CONFIG' }
@@ -63,7 +59,7 @@ export const validateInitProjectConfig = (config) => {
   }
 
   for (const pluginKey of pluginKeys) {
-    if (!plugins[pluginKey]) {
+    if (!modulesRegistry.plugin[pluginKey]) {
       throw new AppError(
         `Invalid plugin key: ${pluginKey}`,
         { code: 'INVALID_CONFIG' }
