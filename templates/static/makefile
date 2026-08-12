@@ -9,7 +9,7 @@ base_compose := docker-compose.yaml
 service_file := $(wildcard docker/services/*.yaml)
 compose_arg := -f $(base_compose) $(foreach f,$(service_file),-f $(f))
 
-.PHONY: build build-no-cache start stop logs restart
+.PHONY: build build-no-cache start stop logs restart repl
 
 build:
 	docker build -t $(DOCKER_IMAGE_NAME_APP):$(DOCKER_IMAGE_TAG_APP) .
@@ -23,6 +23,9 @@ start:
 stop: 
 	docker compose --env-file $(ENV_FILE) $(compose_arg) down
 
+repl:
+	docker compose --env-file $(ENV_FILE) $(compose_arg) run --rm --no-deps repl
+
 ps:
 	docker compose --env-file $(ENV_FILE) $(compose_arg) ps
 	
@@ -30,5 +33,3 @@ logs:
 	docker compose --env-file $(ENV_FILE) logs -f
 
 restart: stop start
-
-

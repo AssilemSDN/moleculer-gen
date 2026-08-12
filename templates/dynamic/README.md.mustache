@@ -1,68 +1,217 @@
 # {{projectName}}
 
-🚀 A ready-to-use **Node.js microservices project** using [Moleculer.js](https://moleculer.services/), generated with [moleculer-gen](https://github.com/AssilemSDN/moleculer-gen).
+A **Moleculer.js microservices project** generated with [moleculer-gen](https://github.com/AssilemSDN/moleculer-gen).
 
-## 📦 Tech Stack
+The generated project is Docker-first: application services and infrastructure run through Docker Compose, while the Makefile provides the main development workflow.
 
-- [Moleculer.js](https://moleculer.services/)
-- Docker & Docker Compose
-- Makefile-based workflow
-{{#database}}
-- {{database}} database integration
-{{/database}}
-{{#transporter}}
-- {{transporter}} transporter
-{{/transporter}}
+## Stack
 
+* [Moleculer.js](https://moleculer.services/)
+* Docker & Docker Compose
+* Makefile-based workflow
+  {{#database}}
+* {{database}}
+  {{/database}}
+  {{#transporter}}
+* {{transporter}} transporter
+  {{/transporter}}
 
-## ⚙️ Project structure
+## Quick start
 
-> The project follows Moleculer’s recommended modular layout.  
-> Each service is self-contained within the `/services` directory.
-
-## 🐳 Run with Docker
+Build the application image:
 
 ```bash
-# Build Docker image and start services
-$ make build
-$ make start
-
-# Stop containers
-$ make stop
+make build
 ```
 
-## Create new service
-
-You can create a new service manually in the services/ directory, or use the CLI command from ``moleculer-gen`` :
-```bash
-$ npx moleculer-gen add-service
-```
-> 💡 **Tip**: The generator ensures consistent naming conventions and configuration defaults, but you remain free to adjust them afterward — nothing is locked.
-
-## ⚡ Environment variables
-
-The project uses environment files to configure your services. 
-
-- `.env.example` → Template generated automatically (based on your selected database, transporter, and plugins)
-- `.env.dev` → Default environment used for local development
-
-You can create your own file and use it with Docker.
-
-By default, the project uses `.env.dev`. To switch to another file, you can change it dynamically using the `ENV_FILE` variable in the **Makefile**:
+Start the complete stack:
 
 ```bash
-make start     # Uses .env.dev by default
-ENV_FILE=.env.production make start  # Uses .env.production instead
+make start
 ```
-Or you can directly update the following line in your **Makefile**:
+
+Open a Moleculer REPL connected to the running cluster:
+
+```bash
+make repl
+```
+
+Stop the stack:
+
+```bash
+make stop
+```
+
+## Make commands
+
+| Command        | Description                                            |
+| -------------- | ------------------------------------------------------ |
+| `make build`   | Build the application Docker image                     |
+| `make start`   | Start the generated stack                              |
+| `make stop`    | Stop the stack                                         |
+| `make restart` | Restart the stack                                      |
+| `make logs`    | Follow container logs                                  |
+| `make repl`    | Open a REPL connected to the running Moleculer cluster |
+
+## Moleculer REPL
+
+The generated project includes a dedicated REPL container connected to the same Docker network and Moleculer transporter as the application services.
+
+Start the stack first:
+
+```bash
+make start
+```
+
+Then open the REPL:
+
+```bash
+make repl
+```
+
+The REPL runs as a temporary Moleculer node.
+
+It does not load application services locally. Instead, it joins the existing Moleculer cluster and discovers services through the Moleculer service registry.
+
+This keeps the REPL connected to the same distributed topology used by the running application.
+
+Useful commands include:
+
+```text
+mol $ nodes
+mol $ services
+mol $ actions
+mol $ call <service>.<action>
+```
+
+For example:
+
+```text
+mol $ call articles.list
+```
+
+Leaving the REPL removes its temporary container automatically.
+
+> `make repl` expects the application stack to already be running.
+
+## Project structure
+
+```text
+.
+├── docker/
+│   └── services/          # Generated Docker Compose service definitions
+├── src/
+│   ├── config/            # Moleculer and application configuration
+│   └── services/          # Moleculer application services
+├── .env.example           # Generated environment template
+├── .env.dev               # Default development environment
+├── docker-compose.yaml    # Base Docker Compose configuration
+├── Dockerfile
+├── makefile
+└── package.json
+```
+
+Each application service lives under `src/services`.
+
+The Docker configuration is modular. Databases, transporters, plugins and application services provide their own Compose definitions under `docker/services`.
+
+## Generating services
+
+`moleculer-gen` can extend an existing generated project with additional microservices.
+
+### Add a single service
+
+Generate a service interactively:
+
+```bash
+npx moleculer-gen add-service
+```
+
+A single service can also be generated from a JSON configuration file:
+
+```bash
+npx moleculer-gen add-service path/to/service.json
+```
+
+### Add multiple services
+
+Generate several services at once with `add-services`:
+
+```bash
+npx moleculer-gen add-services path/to/services.json
+```
+
+Example:
+
+```json
+{
+  "services": [
+    {
+      "serviceName": "articles",
+      "serviceDirectoryName": "articles",
+      "isCrud": true,
+      "exposeApi": true
+    },
+    {
+      "serviceName": "comments",
+      "serviceDirectoryName": "comments",
+      "isCrud": true,
+      "exposeApi": true
+    }
+  ]
+}
+```
+
+Each entry follows the same service configuration rules as `add-service`.
+
+When optional names are omitted, `moleculer-gen` generates them using the project naming conventions.
+
+Each generated service is added as an independent Moleculer service with its own Docker Compose definition, preserving the generated project's one-container-per-service topology.
+
+After adding services, rebuild and restart the stack:
+
+```bash
+make build
+make restart
+```
+
+The new services join the existing Moleculer cluster through the configured transporter and can be discovered immediately from the REPL:
+
+```bash
+make repl
+```
+
+```text
+mol $ nodes
+mol $ services
+mol $ actions
+```
+
+Services can still be created or modified manually when needed.
+
+> Generated files remain regular project files. `moleculer-gen` provides the initial structure and conventions, but does not lock the project afterward.
+
+## Environment configuration
+
+Environment variables are used by both the application and Docker Compose.
+
+The generated project contains:
+
+```text
+.env.example   # Template containing the generated configuration
+.env.dev       # Default local development environment
+```
+
+The Makefile uses `.env.dev` by default:
 
 ```makefile
-# Active environment file
 ENV_FILE ?= .env.dev
-
-# Load the selected environment variables
-include $(ENV_FILE)
-export
 ```
 
-Then, all Docker commands automatically load that environment file.
+Any Make command can use another environment file by overriding `ENV_FILE`:
+
+```bash
+ENV_FILE=.env.production make start
+```
+
+The selected environment file is loaded by the Makefile and passed to Docker Compose.
