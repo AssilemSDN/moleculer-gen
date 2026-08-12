@@ -22,8 +22,7 @@ export const generatePackageJson = async (projectNameSanitized, outputDir, optio
     license: 'UNLICENSED',
     description: 'A simple Moleculer-based microservices with Docker Compose setup for development environment.',
     scripts: {
-      dev: 'moleculer-runner -E .env.dev --repl --hot --config ./src/config/moleculer.config.js ./src/services',
-      start: 'moleculer-runner --config ./src/config/moleculer.config.js ./src/services',
+      repl: 'moleculer-runner -E .env.dev --repl --hot --config ./src/config/moleculer.repl.config.js ./src/services',
       audit: 'yarn npm audit --all --recursive --severity high',
       lint: 'standard "src/**/*.js"'
     },
