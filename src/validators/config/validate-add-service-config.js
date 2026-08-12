@@ -1,5 +1,7 @@
 import { generateDefaultNames } from '../../utils/common-helpers.js'
 import { AppError } from '../../errors/AppError.js'
+import { addServiceConfigSchema } from '../../schemas/add-service-config.schema.js'
+
 /**
  * Validate and normalize a service configuration.
  * Fills missing fields with default values.
@@ -9,58 +11,58 @@ import { AppError } from '../../errors/AppError.js'
  * @throws {AppError} If the configuration is invalid.
  */
 export const validateAddServiceConfig = (config) => {
-  if (!config || typeof config !== 'object' || Array.isArray(config)) {
-    throw new AppError(
-      'Invalid service config: must be a JSON object',
-      { code: 'INVALID_CONFIG' }
+  const result = addServiceConfigSchema.safeParse(config)
+
+  if (!result.success) {
+    throw new AppError('Invalid service config',
+      {
+        code: 'INVALID_CONFIG',
+        cause: result.error
+      }
     )
   }
-  if (!config.serviceName || typeof config.serviceName !== 'string') {
-    throw new AppError(
-      'Missing required field: serviceName',
-      { code: 'INVALID_CONFIG' }
-    )
-  }
+
+  const parsedConfig = result.data
 
   // Default values
-  const defaults = generateDefaultNames(config.serviceName)
+  const defaults = generateDefaultNames(parsedConfig.serviceName)
 
-  const isCrud = !!config.isCrud
-  const exposeApi = !!config.exposeApi
+  const isCrud = parsedConfig.isCrud ?? false
+  const exposeApi = parsedConfig.exposeApi ?? false
 
   // Normalized values
   const normalized = {
-    serviceName: config.serviceName,
+    serviceName: parsedConfig.serviceName,
     isCrud,
     exposeApi,
     serviceFileName:
-      config.serviceFileName ||
+      parsedConfig.serviceFileName ??
       defaults.serviceFileName,
     serviceDirectoryName:
-      config.serviceDirectoryName ||
+      parsedConfig.serviceDirectoryName ??
       defaults.serviceDirectoryName
   }
 
   // Add required values for CRUD services
   if (isCrud) {
     normalized.modelFileName =
-      config.modelFileName ||
+      parsedConfig.modelFileName ??
       defaults.modelFileName
 
     normalized.modelName =
-      config.modelName ||
+      parsedConfig.modelName ??
       defaults.modelName
 
     normalized.modelVariableName =
-      config.modelVariableName ||
+      parsedConfig.modelVariableName ??
       defaults.modelVariableName
 
     normalized.collectionName =
-      config.collectionName ||
+      parsedConfig.collectionName ??
       defaults.collectionName
 
     normalized.schemaName =
-      config.schemaName ||
+      parsedConfig.schemaName ??
       defaults.schemaName
   }
 

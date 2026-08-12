@@ -10,13 +10,20 @@
  * @param {Object} [options]
  * @param {string} [options.code='APP_ERROR'] - Machine-readable error code
  * @param {any} [options.details=null] - Additional details for debugging
+ * @param {any} [options.cause] - Original error that caused this error
  */
 export class AppError extends Error {
-  constructor (message, { code = 'APP_ERROR', details = null } = {}) {
-    super(message)
+  constructor (message, {
+    code = 'APP_ERROR',
+    details = null,
+    cause
+  } = {}) {
+    super(message, { cause })
+
     this.name = 'AppError'
     this.code = code
     this.details = details
+
     Error.captureStackTrace(this, this.constructor)
   }
 }
