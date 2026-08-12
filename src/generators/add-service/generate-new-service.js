@@ -2,7 +2,7 @@
   PATH /src/generators/add/generate-new-service.js
 */
 import path from 'path'
-import { mkdirp, writeFile } from '../../utils/fs-helpers.js'
+import { mkdirp, writeFile, resolvePathInside } from '../../utils/fs-helpers.js'
 import { renderTemplate } from '../../utils/render-template.js'
 import { logger } from '../../utils/logger.js'
 import { updateMoleculerGenConfig } from './update-moleculer-gen-config.js'
@@ -62,7 +62,10 @@ export const generateNewService = async (
     ...answers,
     servicePath: `src/services/${serviceDirectoryName}/${serviceFileName}`
   })
-  const serviceFilePath = path.join(serviceDir, serviceFileName)
+  const serviceFilePath = resolvePathInside(
+    serviceDir,
+    serviceFileName
+  )
   await writeFile(serviceFilePath, serviceRendered)
 
   // 4- Generate model if CRUD
@@ -76,7 +79,17 @@ export const generateNewService = async (
       modelName,
       schemaName
     })
-    const modelFilePath = path.join(outputDir, 'src', 'data', 'model', path.basename(modelFileName))
+    const modelDir = path.join(
+      outputDir,
+      'src',
+      'data',
+      'model'
+    )
+
+    const modelFilePath = resolvePathInside(
+      modelDir,
+      modelFileName
+    )
     await mkdirp(path.dirname(modelFilePath))
     await writeFile(modelFilePath, modelRendered)
   }
