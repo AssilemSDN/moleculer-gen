@@ -18,9 +18,50 @@ const handleFsError = (fn, msg, code) => async (...args) => {
     }
     throw new AppError(`${msg}: ${args[0]}`, {
       code,
-      details: err
+      cause: err,
+      details: {
+        path: args[0]
+      }
     })
   }
+}
+
+/**
+ * Resolve a path and ensure it stays inside the allowed base directory.
+ *
+ * @param {string} baseDir Allowed base directory.
+ * @param {string} targetPath Path to resolve inside the base directory.
+ * @returns {string} Resolved absolute path.
+ * @throws {AppError} If the resolved path escapes the base directory.
+ */
+export const resolvePathInside = (baseDir, targetPath) => {
+  const resolvedBase = path.resolve(baseDir)
+  const resolvedTarget = path.resolve(resolvedBase, targetPath)
+
+  const relativePath = path.relative(
+    resolvedBase,
+    resolvedTarget
+  )
+
+  const escapesBase =
+    relativePath === '..' ||
+    relativePath.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(relativePath)
+
+  if (escapesBase) {
+    throw new AppError(`Path escapes allowed directory: ${targetPath}`,
+      {
+        code: 'INVALID_PATH',
+        details: {
+          baseDir: resolvedBase,
+          targetPath,
+          resolvedPath: resolvedTarget
+        }
+      }
+    )
+  }
+
+  return resolvedTarget
 }
 
 /**
