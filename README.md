@@ -1,7 +1,7 @@
 <p align="center">
   <img
     src="./docs/images/moleculer-gen.png"
-    alt="Aperçu de Moleculer gen"
+    alt="Moleculer gen banner"
     width="900"
   />
 </p>
@@ -116,7 +116,7 @@ Everything above, plus:
 | --------------------------------------------- | ------------------ | --------------- | ----------------------------------------------------- |
 | [Node.js](https://nodejs.org/)                |  22, 24         | 22 or 24        | The supported versions are tested in CI               |
 | [Yarn](https://yarnpkg.com/)                  | 4.18.0             | 4.18.0          | Managed through Corepack and pinned in `package.json` |
-| [TypeScript](https://www.typescriptlang.org/) | >= 5               | Project version | Installed through the project dependencies            |
+| [TypeScript](https://www.typescriptlang.org/) | >= 7               | Project version | Installed through the project dependencies            |
 
 Enable Corepack before installing dependencies:
 
