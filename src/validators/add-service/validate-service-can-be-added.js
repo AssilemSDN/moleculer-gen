@@ -3,7 +3,11 @@
 */
 import path from 'path'
 
-import { exists } from '../../utils/fs-helpers.js'
+import {
+  exists,
+  resolvePathInside
+} from '../../utils/fs-helpers.js'
+
 import { AppError } from '../../errors/AppError.js'
 
 export const validateServiceCanBeAdded = async ({
@@ -23,10 +27,14 @@ export const validateServiceCanBeAdded = async ({
   }
 
   // Check if service directory already exists
-  const serviceDir = path.join(
+  const servicesDir = path.join(
     projectDir,
     'src',
-    'services',
+    'services'
+  )
+
+  const serviceDir = resolvePathInside(
+    servicesDir,
     serviceConfig.serviceDirectoryName
   )
 
@@ -38,10 +46,14 @@ export const validateServiceCanBeAdded = async ({
   }
 
   // Check if docker service file already exists
-  const dockerServicePath = path.join(
+  const dockerServicesDir = path.join(
     projectDir,
     'docker',
-    'services',
+    'services'
+  )
+
+  const dockerServicePath = resolvePathInside(
+    dockerServicesDir,
     `${serviceConfig.serviceDirectoryName}.yaml`
   )
 
@@ -54,11 +66,15 @@ export const validateServiceCanBeAdded = async ({
 
   // Check if model file already exists (if service is CRUD)
   if (serviceConfig.isCrud) {
-    const modelPath = path.join(
+    const modelsDir = path.join(
       projectDir,
       'src',
       'data',
-      'model',
+      'model'
+    )
+
+    const modelPath = resolvePathInside(
+      modelsDir,
       serviceConfig.modelFileName
     )
 

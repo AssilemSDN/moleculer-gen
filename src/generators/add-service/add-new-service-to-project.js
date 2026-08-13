@@ -1,9 +1,12 @@
 /*
   PATH /src/generators/add-service/add-new-service-to-project.js
 */
+
 import path from 'path'
+
 import { generateNewService } from './generate-new-service.js'
 import { validateServiceCanBeAdded } from '../../validators/add-service/validate-service-can-be-added.js'
+import { resolvePathInside } from '../../utils/fs-helpers.js'
 
 export const addNewServiceToProject = async ({
   projectNameSanitized,
@@ -13,10 +16,14 @@ export const addNewServiceToProject = async ({
   moleculerGenConfig,
   dryRun = false
 }) => {
-  const serviceDir = path.join(
+  const servicesDir = path.join(
     projectDir,
     'src',
-    'services',
+    'services'
+  )
+
+  const serviceDir = resolvePathInside(
+    servicesDir,
     serviceConfig.serviceDirectoryName
   )
 

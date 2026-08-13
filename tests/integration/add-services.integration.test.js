@@ -119,4 +119,69 @@ describe('add-services command integration', () => {
       'completed with warnings'
     )
   })
+
+  it('KO : should reject path traversal in serviceFileName', async () => {
+    tempDir = await fs.mkdtemp(
+      path.join(os.tmpdir(), 'moleculer-gen-')
+    )
+
+    const initConfig = JSON.parse(
+      await fs.readFile(initConfigPath, 'utf8')
+    )
+
+    await execFileAsync(
+      process.execPath,
+      [cliPath, 'init', initConfigPath],
+      {
+        cwd: tempDir
+      }
+    )
+
+    const projectDir = path.join(
+      tempDir,
+      initConfig.projectNameSanitized
+    )
+
+    const maliciousConfigPath = path.join(
+      tempDir,
+      'malicious-add-services.json'
+    )
+
+    const maliciousConfig = [
+      {
+        serviceName: 'users',
+        serviceDirectoryName: 'users',
+        serviceFileName: '../../../users.service.js',
+        isCrud: false,
+        exposeApi: false
+      }
+    ]
+
+    await fs.writeFile(
+      maliciousConfigPath,
+      JSON.stringify(maliciousConfig, null, 2)
+    )
+
+    await expect(
+      execFileAsync(
+        process.execPath,
+        [cliPath, 'add-services', maliciousConfigPath],
+        {
+          cwd: projectDir
+        }
+      )
+    ).rejects.toBeDefined()
+
+    const escapedFilePath = path.resolve(
+      projectDir,
+      'src',
+      'services',
+      'users',
+      '../../../users.service.js'
+    )
+
+    await expect(
+      fs.access(escapedFilePath)
+    ).rejects.toThrow()
+  })
 })
