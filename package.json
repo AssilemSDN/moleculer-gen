@@ -42,7 +42,7 @@
   "devDependencies": {
     "@types/node": "24.8.1",
     "standard": "17.1.2",
-    "typescript": "5.9.3",
+    "typescript": "7.0.2",
     "vitest": "3.2.7"
   },
   "type": "module"
