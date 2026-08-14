@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 
 import { resolvePathInside } from '../../../src/utils/fs-helpers.js'
 
-////////////// Tests : function resolvePathInside 
+/// /////////// Tests : function resolvePathInside //////////////
 describe('resolvePathInside', () => {
   const baseDir = path.resolve('/project/src/services')
 
