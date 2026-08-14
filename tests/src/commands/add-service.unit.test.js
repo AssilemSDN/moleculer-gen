@@ -18,7 +18,7 @@ vi.mock('../../../src/generators/add-service/add-new-service-to-project.js', () 
 // --- Tests ---
 describe('addService', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
   })
 
   const expectSuccess = result => {
@@ -34,96 +34,100 @@ describe('addService', () => {
     }
   }
 
-  // ---------------------------
-  // Happy path
-  // ---------------------------
-  it('OK : Should add a service via prompts', async () => {
-    vi.spyOn(fsHelpers, 'exists').mockResolvedValue(true)
+  describe('OK cases', () => {
+    // ---------------------------
+    // Happy path via prompts
+    // ---------------------------
+    it('OK : Should add a service via prompts', async () => {
+      vi.spyOn(fsHelpers, 'exists').mockResolvedValue(true)
 
-    vi.spyOn(fsHelpers, 'readJsonFile').mockResolvedValue({
-      projectNameSanitized: 'my-app',
-      services: {}
-    })
-
-    addServicePrompts.mockResolvedValue({
-      serviceName: 'My Service',
-      serviceDirectoryName: 'my-service-dir',
-      isCrud: true,
-      exposeApi: true
-    })
-
-    addNewServiceToProject.mockResolvedValue(undefined)
-
-    const result = await addService({ dryRun: true })
-
-    expectSuccess(result)
-    expect(result.data.serviceName).toBe('My Service')
-
-    expect(addNewServiceToProject).toHaveBeenCalledWith(
-      expect.objectContaining({
+      vi.spyOn(fsHelpers, 'readJsonFile').mockResolvedValue({
         projectNameSanitized: 'my-app',
-        serviceConfig: expect.objectContaining({
-          serviceName: 'My Service',
-          serviceDirectoryName: 'my-service-dir'
-        }),
-        templateDir: expect.any(String),
-        projectDir: expect.any(String),
-        dryRun: true
-      })
-    )
-  })
-  // ---------------------------
-  // Project not initialized
-  // ---------------------------
-  it('KO : Should fail if project is not initialized', async () => {
-    vi.spyOn(fsHelpers, 'exists').mockResolvedValue(false)
-
-    const result = await addService()
-
-    expectFailure(result, 'PROJECT_NOT_INITIALIZED')
-  })
-
-  // ---------------------------
-  // Service config file provided
-  // ---------------------------
-  it('OK : Should load configFile instead of prompting', async () => {
-    vi.spyOn(fsHelpers, 'exists')
-      .mockImplementationOnce(() => Promise.resolve(true))
-      .mockImplementationOnce(() => Promise.resolve(true))
-
-    vi.spyOn(fsHelpers, 'readJsonFile')
-      .mockResolvedValueOnce({ projectNameSanitized: 'my-app' })
-      .mockResolvedValueOnce({
-        serviceName: 'ServiceFromFile',
-        isCrud: false
+        services: {}
       })
 
-    addNewServiceToProject.mockResolvedValue(undefined)
+      addServicePrompts.mockResolvedValue({
+        serviceName: 'My Service',
+        serviceDirectoryName: 'my-service-dir',
+        isCrud: true,
+        exposeApi: true
+      })
 
-    const result = await addService({ configFile: 'service.json', dryRun: true })
+      addNewServiceToProject.mockResolvedValue(undefined)
 
-    expectSuccess(result)
-    expect(result.data.serviceName).toBe('ServiceFromFile')
-    expect(addNewServiceToProject).toHaveBeenCalled()
-  })
+      const result = await addService({ dryRun: true })
 
-  // ---------------------------
-  // Invalid service config file
-  // ---------------------------
-  it('KO : Should fail on invalid service config', async () => {
-    vi.spyOn(fsHelpers, 'exists')
-      .mockImplementationOnce(() => Promise.resolve(true))
-      .mockImplementationOnce(() => Promise.resolve(true))
-    vi.spyOn(fsHelpers, 'readJsonFile')
-      .mockResolvedValueOnce({ projectNameSanitized: 'my-app' })
-      .mockRejectedValueOnce(
-        new AppError('Invalid JSON', {
-          code: 'FS_INVALID_JSON'
+      expectSuccess(result)
+      expect(result.data.serviceName).toBe('My Service')
+
+      expect(addNewServiceToProject).toHaveBeenCalledWith(
+        expect.objectContaining({
+          projectNameSanitized: 'my-app',
+          serviceConfig: expect.objectContaining({
+            serviceName: 'My Service',
+            serviceDirectoryName: 'my-service-dir'
+          }),
+          templateDir: expect.any(String),
+          projectDir: expect.any(String),
+          dryRun: true
         })
       )
+    })
+    // ---------------------------
+    // Service config file provided
+    // ---------------------------
+    it('OK : Should load configFile instead of prompting', async () => {
+      vi.spyOn(fsHelpers, 'exists')
+        .mockImplementationOnce(() => Promise.resolve(true))
+        .mockImplementationOnce(() => Promise.resolve(true))
 
-    const result = await addService({ configFile: 'service.json' })
+      vi.spyOn(fsHelpers, 'readJsonFile')
+        .mockResolvedValueOnce({ projectNameSanitized: 'my-app' })
+        .mockResolvedValueOnce({
+          serviceName: 'ServiceFromFile',
+          isCrud: false
+        })
 
-    expectFailure(result, 'INVALID_SERVICE_CONFIG')
+      addNewServiceToProject.mockResolvedValue(undefined)
+
+      const result = await addService({ configFile: 'service.json', dryRun: true })
+
+      expectSuccess(result)
+      expect(result.data.serviceName).toBe('ServiceFromFile')
+      expect(addNewServiceToProject).toHaveBeenCalled()
+    })
+  })
+
+  describe('KO cases', () => {
+    // ---------------------------
+    // Project not initialized
+    // ---------------------------
+    it('KO : Should fail if project is not initialized', async () => {
+      vi.spyOn(fsHelpers, 'exists').mockResolvedValue(false)
+
+      const result = await addService()
+
+      expectFailure(result, 'PROJECT_NOT_INITIALIZED')
+    })
+
+    // ---------------------------
+    // Invalid service config file
+    // ---------------------------
+    it('KO : Should fail on invalid service config', async () => {
+      vi.spyOn(fsHelpers, 'exists')
+        .mockImplementationOnce(() => Promise.resolve(true))
+        .mockImplementationOnce(() => Promise.resolve(true))
+      vi.spyOn(fsHelpers, 'readJsonFile')
+        .mockResolvedValueOnce({ projectNameSanitized: 'my-app' })
+        .mockRejectedValueOnce(
+          new AppError('Invalid JSON', {
+            code: 'FS_INVALID_JSON'
+          })
+        )
+
+      const result = await addService({ configFile: 'service.json' })
+
+      expectFailure(result, 'INVALID_SERVICE_CONFIG')
+    })
   })
 })
