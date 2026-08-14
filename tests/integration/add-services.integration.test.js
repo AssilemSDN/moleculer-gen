@@ -1,21 +1,22 @@
-/*
-  PATH /tests/integration/add-services.integration.test.js
-*/
 import { afterEach, describe, expect, it } from 'vitest'
-import { execFile } from 'node:child_process'
-import { promisify } from 'node:util'
 import fs from 'node:fs/promises'
-import os from 'node:os'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 
-const execFileAsync = promisify(execFile)
+import {
+  runCli
+} from '../helpers/cli.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import {
+  createGeneratedProject,
+  removeTempDir,
+  writeTempConfig
+} from '../helpers/temp-project.js'
 
-const repoRoot = path.resolve(__dirname, '../..')
-const cliPath = path.join(repoRoot, 'bin/cli.js')
+import { repoRoot } from '../helpers/paths.js'
+import { createAddServicesConfig } from '../helpers/config-factories.js'
+import { readJsonFile } from '../../src/utils/fs-helpers.js'
+
+import { expectServicesNotToExist, expectServicesToExist } from '../helpers/assertions.js'
 
 const initConfigPath = path.join(
   repoRoot,
@@ -31,146 +32,160 @@ describe('add-services command integration', () => {
   let tempDir
 
   afterEach(async () => {
-    if (tempDir) {
-      await fs.rm(tempDir, {
-        recursive: true,
-        force: true
-      })
+    await removeTempDir(tempDir)
+    tempDir = undefined
+  })
+
+  const setupProject = async () => {
+    const generatedProject = await createGeneratedProject(
+      initConfigPath
+    )
+    tempDir = generatedProject.tempDir
+    return generatedProject
+  }
+
+  // OK Cases
+  const cases = [
+    {
+      name: 'Should create all services when none already exist',
+      existingServices: []
+    },
+    {
+      name: 'Should skip existing services and create missing ones',
+      existingServices: ['articles']
+    },
+    {
+      name: 'Should skip all services when all already exist',
+      existingServices: ['articles', 'categories']
     }
-  })
+  ]
 
-  it('OK : should add multiple services from config and skip them when already existing', async () => {
-    tempDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), 'moleculer-gen-')
-    )
+  /// /////////// OK cases //////////////
+  it.each(cases)(
+    'OK : $name',
+    async ({ existingServices }) => {
+      const { projectDir } = await setupProject()
 
-    const initConfig = JSON.parse(
-      await fs.readFile(initConfigPath, 'utf8')
-    )
+      const addServicesConfig = await readJsonFile(
+        addServicesConfigPath
+      )
 
-    await execFileAsync(
-      process.execPath,
-      [cliPath, 'init', initConfigPath],
-      {
-        cwd: tempDir
+      const services = addServicesConfig.services
+
+      const servicesToSkip = services.filter(service =>
+        existingServices.includes(service.serviceName)
+      )
+
+      const servicesToCreate = services.filter(service =>
+        !existingServices.includes(service.serviceName)
+      )
+
+      if (servicesToSkip.length > 0) {
+        const seedConfigPath = await writeTempConfig(
+          tempDir,
+          'seed-add-services.json',
+          createAddServicesConfig(servicesToSkip)
+        )
+
+        await runCli(
+          ['add-services', seedConfigPath],
+          { cwd: projectDir }
+        )
       }
-    )
 
-    const projectDir = path.join(
-      tempDir,
-      initConfig.projectNameSanitized
-    )
+      // State before command
+      await expectServicesToExist(
+        projectDir,
+        servicesToSkip
+      )
 
-    await execFileAsync(
-      process.execPath,
-      [cliPath, 'add-services', addServicesConfigPath],
-      {
-        cwd: projectDir
+      await expectServicesNotToExist(
+        projectDir,
+        servicesToCreate
+      )
+
+      // Actual command under test
+      const result = await runCli(
+        ['add-services', addServicesConfigPath],
+        { cwd: projectDir }
+      )
+
+      const output = `${
+      result.stdout ?? ''
+    }${
+      result.stderr ?? ''
+    }`
+
+      // Everything must exist afterward
+      await expectServicesToExist(
+        projectDir,
+        services
+      )
+
+      // Existing services must have been skipped
+      for (const service of servicesToSkip) {
+        expect(output).toContain(
+        `Service "${service.serviceName}" already exists, skipping`
+        )
       }
-    )
 
-    await expect(
-      fs.access(path.join(projectDir, 'src/services/articles'))
-    ).resolves.toBeUndefined()
+      // Everything was already there
+      if (servicesToCreate.length === 0) {
+        expect(output).toContain(
+          'No service was added. All services were skipped.'
+        )
 
-    await expect(
-      fs.access(path.join(projectDir, 'src/services/categories'))
-    ).resolves.toBeUndefined()
-
-    await expect(
-      fs.access(path.join(projectDir, 'docker/services/articles.yaml'))
-    ).resolves.toBeUndefined()
-
-    await expect(
-      fs.access(path.join(projectDir, 'docker/services/categories.yaml'))
-    ).resolves.toBeUndefined()
-
-    await expect(
-      fs.access(path.join(projectDir, 'src/data/model/article.model.js'))
-    ).resolves.toBeUndefined()
-
-    await expect(
-      fs.access(path.join(projectDir, 'src/data/model/category.model.js'))
-    ).resolves.toBeUndefined()
-
-    const secondRun = await execFileAsync(
-      process.execPath,
-      [cliPath, 'add-services', addServicesConfigPath],
-      {
-        cwd: projectDir
+        expect(output).toContain(
+          'completed with warnings'
+        )
       }
-    )
+    }
+  )
 
-    const output = `${secondRun.stdout ?? ''}${secondRun.stderr ?? ''}`
-
-    expect(output).toContain(
-      'Service "articles" already exists, skipping'
-    )
-
-    expect(output).toContain(
-      'Service "categories" already exists, skipping'
-    )
-
-    expect(output).toContain(
-      'No service was added. All services were skipped.'
-    )
-
-    expect(output).toContain(
-      'completed with warnings'
-    )
-  })
-
+  /// /////////// KO cases //////////////
   it('KO : should reject path traversal in serviceFileName', async () => {
-    tempDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), 'moleculer-gen-')
-    )
+    const { projectDir } = await setupProject()
 
-    const initConfig = JSON.parse(
-      await fs.readFile(initConfigPath, 'utf8')
-    )
-
-    await execFileAsync(
-      process.execPath,
-      [cliPath, 'init', initConfigPath],
-      {
-        cwd: tempDir
-      }
-    )
-
-    const projectDir = path.join(
-      tempDir,
-      initConfig.projectNameSanitized
-    )
-
-    const maliciousConfigPath = path.join(
-      tempDir,
-      'malicious-add-services.json'
-    )
-
-    const maliciousConfig = [
-      {
+    const maliciousConfig = createAddServicesConfig([
+      createAddServicesConfig({
         serviceName: 'users',
         serviceDirectoryName: 'users',
         serviceFileName: '../../../users.service.js',
         isCrud: false,
         exposeApi: false
-      }
-    ]
+      })
+    ])
 
-    await fs.writeFile(
-      maliciousConfigPath,
-      JSON.stringify(maliciousConfig, null, 2)
+    const maliciousConfigPath = await writeTempConfig(
+      tempDir,
+      'malicious-add-services.json',
+      maliciousConfig
     )
 
-    await expect(
-      execFileAsync(
-        process.execPath,
-        [cliPath, 'add-services', maliciousConfigPath],
-        {
-          cwd: projectDir
-        }
+    let commandError
+
+    try {
+      await runCli(
+        ['add-services', maliciousConfigPath],
+        { cwd: projectDir }
       )
-    ).rejects.toBeDefined()
+    } catch (error) {
+      commandError = error
+    }
+
+    expect(commandError).toBeDefined()
+
+    const errorOutput = `${
+      commandError?.stdout ?? ''
+    }${
+      commandError?.stderr ?? ''
+    }${
+      commandError?.message ?? ''
+    }`
+
+    expect(errorOutput).toMatch(
+      /serviceFileName|path|traversal|invalid/i
+    )
 
     const escapedFilePath = path.resolve(
       projectDir,
