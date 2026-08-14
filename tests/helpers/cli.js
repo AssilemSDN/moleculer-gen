@@ -12,3 +12,22 @@ export const runCli = async (args, { cwd }) => {
     { cwd }
   )
 }
+
+export const getCliFailure = async (args, { cwd }) => {
+  try {
+    await runCli(args, { cwd })
+  } catch (error) {
+    return {
+      error,
+      output: `${
+        error.stdout ?? ''
+      }${
+        error.stderr ?? ''
+      }`
+    }
+  }
+
+  throw new Error(
+    `Expected CLI command "${args.join(' ')}" to fail`
+  )
+}
