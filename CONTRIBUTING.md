@@ -4,7 +4,7 @@ Contributions are welcome!
 
 ## Prerequisites
 
-* Node.js 22 or 24
+* Node.js 22, 24 or 26
 * Corepack
 * Git
 
