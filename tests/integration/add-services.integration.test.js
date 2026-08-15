@@ -147,13 +147,13 @@ describe('add-services command integration', () => {
     const { projectDir } = await setupProject()
 
     const maliciousConfig = createAddServicesConfig([
-      createAddServicesConfig({
+      {
         serviceName: 'users',
         serviceDirectoryName: 'users',
         serviceFileName: '../../../users.service.js',
         isCrud: false,
         exposeApi: false
-      })
+      }
     ])
 
     const maliciousConfigPath = await writeTempConfig(

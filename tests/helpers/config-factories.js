@@ -20,11 +20,9 @@ export const createAddServiceConfig = (overrides = {}) => {
 }
 
 export const createAddServicesConfig = (
-  services = [createAddServiceConfig()],
+  services = [{}],
   overrides = {}
-) => {
-  return {
-    services,
-    ...overrides
-  }
-}
+) => ({
+  services: services.map(service => createAddServiceConfig(service)),
+  ...overrides
+})
