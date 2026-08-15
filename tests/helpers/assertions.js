@@ -18,14 +18,21 @@ const getGeneratedServiceConfig = async (
 
   if (Array.isArray(config.services)) {
     return config.services.find(
-      service => service.serviceName === serviceName
+      service =>
+        service.serviceName === serviceName
     )
   }
 
   return config.services?.[serviceName]
 }
 
-export const getServiceDirectoryPath = (
+/**
+ * Path expected from the input config.
+ *
+ * Used before running the command, when the generated
+ * service config may not exist yet.
+ */
+export const getExpectedServiceDirectoryPath = (
   projectDir,
   service
 ) => {
@@ -38,25 +45,76 @@ export const getServiceDirectoryPath = (
   )
 }
 
-export const getServiceFilePath = (
+/**
+ * Path resolved from the config actually generated
+ * by moleculer-gen.
+ */
+const getGeneratedServiceDirectoryPath = async (
   projectDir,
   service
 ) => {
+  const generatedService =
+    await getGeneratedServiceConfig(
+      projectDir,
+      service.serviceName
+    )
+
+  expect(generatedService).toBeDefined()
+  expect(
+    generatedService.serviceDirectoryName
+  ).toBeDefined()
+
   return path.join(
-    getServiceDirectoryPath(projectDir, service),
-    service.serviceFileName ??
-      `${service.serviceName}.service.js`
+    projectDir,
+    'src',
+    'services',
+    generatedService.serviceDirectoryName
   )
 }
+
+const getGeneratedServiceFilePath = async (
+  projectDir,
+  service
+) => {
+  const generatedService =
+    await getGeneratedServiceConfig(
+      projectDir,
+      service.serviceName
+    )
+
+  expect(generatedService).toBeDefined()
+  expect(
+    generatedService.serviceDirectoryName
+  ).toBeDefined()
+  expect(
+    generatedService.serviceFileName
+  ).toBeDefined()
+
+  return path.join(
+    projectDir,
+    'src',
+    'services',
+    generatedService.serviceDirectoryName,
+    generatedService.serviceFileName
+  )
+}
+
+/**
+ * Assertions on the initial filesystem state.
+ */
 
 export const expectServiceToExist = async (
   projectDir,
   service
 ) => {
-  await expect(
-    fs.access(
-      getServiceDirectoryPath(projectDir, service)
+  const serviceDirectoryPath =
+    getExpectedServiceDirectoryPath(
+      projectDir,
+      service
     )
+
+  await expect(
+    fs.access(serviceDirectoryPath)
   ).resolves.toBeUndefined()
 }
 
@@ -64,22 +122,15 @@ export const expectServiceNotToExist = async (
   projectDir,
   service
 ) => {
-  await expect(
-    fs.access(
-      getServiceDirectoryPath(projectDir, service)
+  const serviceDirectoryPath =
+    getExpectedServiceDirectoryPath(
+      projectDir,
+      service
     )
-  ).rejects.toThrow()
-}
 
-export const expectServiceFileToExist = async (
-  projectDir,
-  service
-) => {
   await expect(
-    fs.access(
-      getServiceFilePath(projectDir, service)
-    )
-  ).resolves.toBeUndefined()
+    fs.access(serviceDirectoryPath)
+  ).rejects.toThrow()
 }
 
 export const expectServicesToExist = async (
@@ -104,6 +155,41 @@ export const expectServicesNotToExist = async (
       service
     )
   }
+}
+
+/**
+ * Assertions on generated artifacts.
+ */
+
+export const expectGeneratedServiceDirectoryToExist =
+  async (
+    projectDir,
+    service
+  ) => {
+    const serviceDirectoryPath =
+      await getGeneratedServiceDirectoryPath(
+        projectDir,
+        service
+      )
+
+    await expect(
+      fs.access(serviceDirectoryPath)
+    ).resolves.toBeUndefined()
+  }
+
+export const expectServiceFileToExist = async (
+  projectDir,
+  service
+) => {
+  const serviceFilePath =
+    await getGeneratedServiceFilePath(
+      projectDir,
+      service
+    )
+
+  await expect(
+    fs.access(serviceFilePath)
+  ).resolves.toBeUndefined()
 }
 
 export const expectCrudArtifactsToExist = async (
@@ -146,7 +232,12 @@ export const expectApiArtifactsToExist = async (
     )
 
   expect(generatedService).toBeDefined()
-  expect(generatedService.exposeApi).toBe(true)
+  expect(
+    generatedService.exposeApi
+  ).toBe(true)
+  expect(
+    generatedService.serviceDirectoryName
+  ).toBeDefined()
 
   const routesConfigPath = path.join(
     projectDir,
@@ -161,7 +252,7 @@ export const expectApiArtifactsToExist = async (
   )
 
   expect(routesConfig).toContain(
-    `/api/v1/${service.serviceDirectoryName}`
+    `/api/v1/${generatedService.serviceDirectoryName}`
   )
 
   for (const action of [
@@ -172,7 +263,7 @@ export const expectApiArtifactsToExist = async (
     'remove'
   ]) {
     expect(routesConfig).toContain(
-      `${service.serviceName}.${action}`
+      `${generatedService.serviceName}.${action}`
     )
   }
 }
@@ -181,11 +272,22 @@ export const expectDockerArtifactToExist = async (
   projectDir,
   service
 ) => {
+  const generatedService =
+    await getGeneratedServiceConfig(
+      projectDir,
+      service.serviceName
+    )
+
+  expect(generatedService).toBeDefined()
+  expect(
+    generatedService.serviceDirectoryName
+  ).toBeDefined()
+
   const dockerServicePath = path.join(
     projectDir,
     'docker',
     'services',
-    `${service.serviceDirectoryName}.yaml`
+    `${generatedService.serviceDirectoryName}.yaml`
   )
 
   await expect(
@@ -197,7 +299,15 @@ export const expectServiceArtifacts = async (
   projectDir,
   service
 ) => {
-  await expectServiceToExist(
+  const generatedService =
+    await getGeneratedServiceConfig(
+      projectDir,
+      service.serviceName
+    )
+
+  expect(generatedService).toBeDefined()
+
+  await expectGeneratedServiceDirectoryToExist(
     projectDir,
     service
   )
@@ -212,14 +322,14 @@ export const expectServiceArtifacts = async (
     service
   )
 
-  if (service.isCrud) {
+  if (generatedService.isCrud) {
     await expectCrudArtifactsToExist(
       projectDir,
       service
     )
   }
 
-  if (service.exposeApi) {
+  if (generatedService.exposeApi) {
     await expectApiArtifactsToExist(
       projectDir,
       service
