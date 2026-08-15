@@ -18,7 +18,7 @@ vi.mock('../../../src/generators/add-service/add-new-service-to-project.js', () 
 // --- Tests ---
 describe('addService', () => {
   beforeEach(() => {
-    vi.restoreAllMocks()
+    vi.resetAllMocks()
   })
 
   const expectSuccess = result => {
