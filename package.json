@@ -11,7 +11,7 @@
     "test": "yarn build && vitest run --reporter=dot",
     "test:integration": "yarn build && vitest run tests/integration --reporter=dot",
     "test:coverage": "yarn build && vitest run --coverage",
-    "test:integration:coverage": "c8 --all --src src --exclude 'src/modules/**' vitest run tests/integration",
+    "test:integration:coverage": "yarn build && c8 --all --src src --exclude 'src/modules/**' vitest run tests/integration",
     "audit": "yarn npm audit --all --recursive --severity high",
     "audit:prod": "yarn npm audit --all --recursive --environment production --severity high"
   },
