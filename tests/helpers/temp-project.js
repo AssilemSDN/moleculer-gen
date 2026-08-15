@@ -36,21 +36,27 @@ export const writeTempConfig = async (
   return configPath
 }
 
-export async function createGeneratedProject (configPath) {
+export const createGeneratedProject = async (configPath) => {
   const tempDir = await createTempDir()
-  const config = await readJsonFile(configPath)
 
-  await runCli(
-    ['init', configPath],
-    { cwd: tempDir }
-  )
+  try {
+    const config = await readJsonFile(configPath)
 
-  return {
-    tempDir,
-    projectDir: path.join(
+    await runCli(
+      ['init', configPath],
+      { cwd: tempDir }
+    )
+
+    return {
       tempDir,
-      config.projectNameSanitized
-    ),
-    config
+      projectDir: path.join(
+        tempDir,
+        config.projectNameSanitized
+      ),
+      config
+    }
+  } catch (error) {
+    await removeTempDir(tempDir)
+    throw error
   }
 }

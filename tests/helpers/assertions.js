@@ -161,7 +161,7 @@ export const expectApiArtifactsToExist = async (
   )
 
   expect(routesConfig).toContain(
-    `/api/v1/${service.serviceName}`
+    `/api/v1/${service.serviceDirectoryName}`
   )
 
   for (const action of [
@@ -185,7 +185,7 @@ export const expectDockerArtifactToExist = async (
     projectDir,
     'docker',
     'services',
-    `${service.serviceName}.yaml`
+    `${service.serviceDirectoryName}.yaml`
   )
 
   await expect(
