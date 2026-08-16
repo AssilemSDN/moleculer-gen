@@ -60,15 +60,6 @@ export const createGeneratedProject = async (configPath) => {
       ),
       config
     }
-
-    return {
-      tempDir,
-      projectDir: path.join(
-        tempDir,
-        config.projectNameSanitized
-      ),
-      config
-    }
   } catch (error) {
     await removeTempDir(tempDir)
     throw error
