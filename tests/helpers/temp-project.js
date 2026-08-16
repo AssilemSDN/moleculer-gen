@@ -3,6 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 
 import { readJsonFile } from '../../src/utils/fs-helpers.js'
+import { sanitizeName } from '../../src/utils/common-helpers.js'
 
 import { runCli } from './cli.js'
 
@@ -46,6 +47,19 @@ export const createGeneratedProject = async (configPath) => {
       ['init', configPath],
       { cwd: tempDir }
     )
+
+    const projectNameSanitized =
+      config.projectNameSanitized ??
+      sanitizeName(config.projectName)
+
+    return {
+      tempDir,
+      projectDir: path.join(
+        tempDir,
+        projectNameSanitized
+      ),
+      config
+    }
 
     return {
       tempDir,
