@@ -1,5 +1,5 @@
 /*
-  PATH  /tests/src/commands/init-project.test.js
+  PATH  /tests/src/commands/init-project-interactive.test.js
 */
 import path from 'path'
 

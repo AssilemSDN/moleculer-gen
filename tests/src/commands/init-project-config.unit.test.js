@@ -1,5 +1,5 @@
 /*
-  PATH  /tests/src/commands/init-project.test.js
+  PATH  /tests/src/commands/init-project-config.test.js
 */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
