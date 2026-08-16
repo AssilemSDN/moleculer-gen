@@ -1,15 +1,3 @@
-export const createInitConfig = (overrides = {}) => {
-  return {
-    projectName: 'Project',
-    projectNameSanitized: 'project',
-    database: 'mongodb',
-    transporter: 'nats',
-    plugins: [],
-    services: {},
-    ...overrides
-  }
-}
-
 export const createAddServiceConfig = (overrides = {}) => {
   return {
     serviceName: 'users',
@@ -24,5 +12,24 @@ export const createAddServicesConfig = (
   overrides = {}
 ) => ({
   services: services.map(service => createAddServiceConfig(service)),
+  ...overrides
+})
+
+export const createInitAnswers = (
+  overrides = {}
+) => ({
+  projectName: 'Project',
+  database: 'mongodb',
+  transporter: 'nats',
+  plugins: [],
+  ...overrides
+})
+
+export const createInitConfig = (
+  overrides = {}
+) => ({
+  ...createInitAnswers(),
+  projectNameSanitized: 'project',
+  services: {},
   ...overrides
 })
