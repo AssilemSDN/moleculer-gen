@@ -4,9 +4,14 @@ export default defineConfig({
   test: {
     coverage: {
       provider: 'v8',
+
       reporter: [
-        'text'
+        'text',
+        'lcov'
       ],
+
+      reportsDirectory: 'coverage/unit',
+
       include: [
         'src/**/*.js'
       ],
