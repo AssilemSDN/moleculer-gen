@@ -32,6 +32,27 @@ const addServicesConfigPath = path.join(
   'examples/config/add-services/demo.json'
 )
 
+const readDirectoryState = async directoryPath => {
+  const entries = await fs.readdir(directoryPath, {
+    recursive: true,
+    withFileTypes: true
+  })
+
+  return Object.fromEntries(
+    await Promise.all(
+      entries
+        .filter(entry => entry.isFile())
+        .map(async entry => {
+          const filePath = path.join(entry.parentPath, entry.name)
+          return [
+            path.relative(directoryPath, filePath),
+            await fs.readFile(filePath)
+          ]
+        })
+    )
+  )
+}
+
 describe('add-services command integration', () => {
   let tempDir
 
@@ -109,6 +130,23 @@ describe('add-services command integration', () => {
         servicesToCreate
       )
 
+      const skippedServicesState = new Map()
+
+      for (const service of servicesToSkip) {
+        const serviceDirectory = path.join(
+          projectDir,
+          'src',
+          'services',
+          service.serviceDirectoryName ??
+            service.serviceName
+        )
+
+        skippedServicesState.set(
+          service.serviceName,
+          await readDirectoryState(serviceDirectory)
+        )
+      }
+
       // Actual command under test
       const result = await runCli(
         ['add-services', addServicesConfigPath],
@@ -135,9 +173,26 @@ describe('add-services command integration', () => {
       )
 
       // Existing services must have been skipped
+      // without being modified
       for (const service of servicesToSkip) {
         expect(output).toContain(
           `Service "${service.serviceName}" already exists, skipping`
+        )
+
+        const serviceDirectory = path.join(
+          projectDir,
+          'src',
+          'services',
+          service.serviceDirectoryName ??
+            service.serviceName
+        )
+
+        const stateAfter = await readDirectoryState(
+          serviceDirectory
+        )
+
+        expect(stateAfter).toEqual(
+          skippedServicesState.get(service.serviceName)
         )
       }
 
@@ -155,54 +210,52 @@ describe('add-services command integration', () => {
   )
 
   /// /////////// KO cases //////////////
-  it(
-    'KO : should reject path traversal in serviceFileName',
-    async () => {
-      const { projectDir } = await setupProject()
+  it('KO : should reject path traversal in serviceFileName', async () => {
+    const { projectDir } = await setupProject()
 
-      const maliciousConfig = createAddServicesConfig([
-        {
-          serviceName: 'users',
-          serviceDirectoryName: 'users',
-          serviceFileName: '../../../users.service.js',
-          isCrud: false,
-          exposeApi: false
-        }
-      ])
-
-      const maliciousConfigPath = await writeTempConfig(
-        tempDir,
-        'malicious-add-services.json',
-        maliciousConfig
-      )
-
-      let commandError
-
-      try {
-        await runCli(
-          ['add-services', maliciousConfigPath],
-          { cwd: projectDir }
-        )
-      } catch (error) {
-        commandError = error
+    const maliciousConfig = createAddServicesConfig([
+      {
+        serviceName: 'users',
+        serviceDirectoryName: 'users',
+        serviceFileName: '../../../users.service.js',
+        isCrud: false,
+        exposeApi: false
       }
-      expect(commandError).toBeDefined()
+    ])
 
-      expect(commandError.stdout).toContain(
-        'Path escapes allowed directory: ../../../users.service.js'
+    const maliciousConfigPath = await writeTempConfig(
+      tempDir,
+      'malicious-add-services.json',
+      maliciousConfig
+    )
+
+    let commandError
+
+    try {
+      await runCli(
+        ['add-services', maliciousConfigPath],
+        { cwd: projectDir }
       )
-
-      const escapedFilePath = path.resolve(
-        projectDir,
-        'src',
-        'services',
-        'users',
-        '../../../users.service.js'
-      )
-
-      await expect(
-        fs.access(escapedFilePath)
-      ).rejects.toThrow()
+    } catch (error) {
+      commandError = error
     }
-  )
+
+    expect(commandError).toBeDefined()
+
+    expect(commandError.stdout).toContain(
+      'Path escapes allowed directory: ../../../users.service.js'
+    )
+
+    const escapedFilePath = path.resolve(
+      projectDir,
+      'src',
+      'services',
+      'users',
+      '../../../users.service.js'
+    )
+
+    await expect(
+      fs.access(escapedFilePath)
+    ).rejects.toThrow()
+  })
 })
