@@ -295,10 +295,58 @@ export const expectDockerArtifactToExist = async (
   ).resolves.toBeUndefined()
 }
 
+const expectGeneratedServiceConfigToMatchInput = async (
+  projectDir,
+  service
+) => {
+  const generatedService =
+    await getGeneratedServiceConfig(
+      projectDir,
+      service.serviceName
+    )
+
+  expect(generatedService).toBeDefined()
+
+  expect(generatedService.serviceName).toBe(
+    service.serviceName
+  )
+
+  if (service.isCrud !== undefined) {
+    expect(generatedService.isCrud).toBe(
+      service.isCrud
+    )
+  }
+
+  if (service.exposeApi !== undefined) {
+    expect(generatedService.exposeApi).toBe(
+      service.exposeApi
+    )
+  }
+
+  if (service.serviceDirectoryName !== undefined) {
+    expect(
+      generatedService.serviceDirectoryName
+    ).toBe(service.serviceDirectoryName)
+  }
+
+  if (service.serviceFileName !== undefined) {
+    expect(
+      generatedService.serviceFileName
+    ).toBe(service.serviceFileName)
+  }
+
+  return generatedService
+}
+
 export const expectServiceArtifacts = async (
   projectDir,
   service
 ) => {
+  await expectGeneratedServiceConfigToMatchInput(
+    projectDir,
+    service
+  )
+
   const generatedService =
     await getGeneratedServiceConfig(
       projectDir,
@@ -322,14 +370,14 @@ export const expectServiceArtifacts = async (
     service
   )
 
-  if (generatedService.isCrud) {
+  if (service.isCrud) {
     await expectCrudArtifactsToExist(
       projectDir,
       service
     )
   }
 
-  if (generatedService.exposeApi) {
+  if (service.exposeApi) {
     await expectApiArtifactsToExist(
       projectDir,
       service
