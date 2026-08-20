@@ -31,92 +31,25 @@ vi.mock('../../../src/utils/fs-helpers.js', () => ({
   readJsonFile: vi.fn()
 }))
 
-vi.mock('../../../dist/modules/registry.js', () => ({
-  modulesRegistry: {
-    database: {
-      mongodb: {
-        factory: () => ({
-          meta: { key: 'mongodb' },
-          docker: {},
-          env: {}
-        }),
-        meta: {
-          key: 'mongodb',
-          name: 'MongoDB',
-          description: '',
-          category: 'database',
-          enabledByDefault: true
-        }
-      }
-    },
+vi.mock('../../../dist/modules/registry.js', async () => {
+  const {
+    createModulesRegistry
+  } = await import('./init-project-common.js')
 
-    transporter: {
-      nats: {
-        factory: () => ({
-          meta: { key: 'nats' },
-          docker: {},
-          env: {}
-        }),
-        meta: {
-          key: 'nats',
-          name: 'NATS',
-          description: '',
-          category: 'transporter',
-          enabledByDefault: true
-        }
-      }
-    },
-
-    plugin: {
-      traefik: {
-        factory: () => ({
-          meta: { key: 'traefik' },
-          docker: {},
-          env: {}
-        }),
-        meta: {
-          key: 'traefik',
-          name: 'Traefik',
-          description: '',
-          category: 'plugin',
-          enabledByDefault: false
-        }
-      },
-
-      prometheus: {
-        factory: () => ({
-          meta: { key: 'prometheus' },
-          docker: {},
-          env: {}
-        }),
-        meta: {
-          key: 'prometheus',
-          name: 'Prometheus',
-          description: '',
-          category: 'plugin',
-          enabledByDefault: false
-        }
-      }
-    }
+  return {
+    modulesRegistry: createModulesRegistry()
   }
-}))
+})
 
-vi.mock(
-  '../../../dist/modules/backend-services/ApiGatewayModule.js',
-  () => ({
-    ApiGatewayModule: vi.fn(({
-      projectNameSanitized,
-      needsTraefikLabels
-    }) => ({
-      meta: {
-        key: `${projectNameSanitized}-api-gateway`,
-        needsTraefikLabels
-      },
-      docker: {},
-      env: {}
-    }))
-  })
-)
+vi.mock('../../../dist/modules/backend-services/ApiGatewayModule.js', async () => {
+  const {
+    createApiGatewayModule
+  } = await import('./init-project-common.js')
+
+  return {
+    ApiGatewayModule: vi.fn(createApiGatewayModule)
+  }
+})
 
 describe('initProject - config file', () => {
   beforeEach(() => {
