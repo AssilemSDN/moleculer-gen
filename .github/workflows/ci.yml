@@ -92,9 +92,59 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
           cache-dependency-path: yarn.lock
-          
+
       - name: Install dependencies
         run: yarn install --immutable
 
       - name: Run tests
         run: yarn test
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs:
+      - tests
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Unit coverage
+        run: yarn test:unit:coverage
+
+      - name: Upload unit coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage/unit/lcov.info
+          flags: unit
+          name: unit
+          disable_search: true
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Integration coverage
+        run: yarn test:integration:coverage
+
+      - name: Upload integration coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage/integration/lcov.info
+          flags: integration
+          name: integration
+          disable_search: true
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}

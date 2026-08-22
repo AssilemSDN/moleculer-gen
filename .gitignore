@@ -43,3 +43,5 @@ Thumbs.db
 # Yarn-specific files
 .yarn/install-state.gz
 .yarn/cache/
+
+coverage

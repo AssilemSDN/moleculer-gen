@@ -7,7 +7,8 @@
 </p>
 
 [![CI](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml)
-![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2024-339933?logo=node.js&logoColor=white)
+[![codecov](https://codecov.io/github/AssilemSDN/moleculer-gen/graph/badge.svg?token=IBG74CEDTK)](https://codecov.io/github/AssilemSDN/moleculer-gen)
+![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2024%20%7C%2026-339933?logo=node.js&logoColor=white)
 ![Yarn](https://img.shields.io/badge/Yarn-4.18.0-2C8EBB?logo=yarn&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
@@ -114,7 +115,7 @@ Everything above, plus:
 
 | Requirement                                   | Supported versions | Recommended     | Notes                                                 |
 | --------------------------------------------- | ------------------ | --------------- | ----------------------------------------------------- |
-| [Node.js](https://nodejs.org/)                |  22, 24         | 22 or 24        | The supported versions are tested in CI               |
+| [Node.js](https://nodejs.org/)                |  22, 24, 26         | 22 or 24        | The supported versions are tested in CI               |
 | [Yarn](https://yarnpkg.com/)                  | 4.18.0             | 4.18.0          | Managed through Corepack and pinned in `package.json` |
 | [TypeScript](https://www.typescriptlang.org/) | >= 7               | Project version | Installed through the project dependencies            |
 
