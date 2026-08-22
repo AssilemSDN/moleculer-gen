@@ -1,42 +1,111 @@
-<p align="center">
+<div align="center">
   <img
     src="./docs/images/moleculer-gen.png"
     alt="moleculer-gen banner"
     width="900"
   />
-</p>
-
-<div align="center">
-  <a href="https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml">
-    <img src="https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" />
-  </a>
-  <a href="https://codecov.io/github/AssilemSDN/moleculer-gen">
-    <img src="https://codecov.io/github/AssilemSDN/moleculer-gen/graph/badge.svg?token=IBG74CEDTK" alt="Codecov" />
-  </a>
-  <img src="https://img.shields.io/badge/Node.js-22%20%7C%2024%20%7C%2026-339933?logo=node.js&logoColor=white" alt="Node.js" />
-  <img src="https://img.shields.io/badge/Yarn-4.18.0-2C8EBB?logo=yarn&logoColor=white" alt="Yarn" />
-  <a href="./LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" />
-  </a>
 </div>
 
+<div align="center">
+
+  [![CI](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml)
+  [![codecov](https://codecov.io/github/AssilemSDN/moleculer-gen/graph/badge.svg?token=IBG74CEDTK)](https://codecov.io/github/AssilemSDN/moleculer-gen)
+  ![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2024%20%7C%2026-339933?logo=node.js&logoColor=white)
+  ![Yarn](https://img.shields.io/badge/Yarn-4.18.0-2C8EBB?logo=yarn&logoColor=white)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+</div>
+
+<br />
+
 # { } moleculer gen
-> A **modular platform engineering CLI** for scaffolding and extending ready-to-run [Moleculer.js](https://moleculer.services/) projects with Docker Compose, an API Gateway, databases, message transporters, and optional infrastructure modules.
 
-Pick your **database**, message **transporter**, and optional infrastructure plugins such as **Traefik** or **Prometheus**.
+A **modular platform engineering CLI** for scaffolding and extending ready-to-run [Moleculer.js](https://moleculer.services/) microservice projects with Docker Compose and composable infrastructure modules.
 
-`moleculer-gen` generates a complete Docker Compose development environment, so you can focus on building your microservices instead of wiring the same infrastructure from scratch.
+Choose your database, message transporter, and optional infrastructure modules, then evolve the generated project as your architecture grows.
 
-> Designed for developers who want a fast, lightly opinionated foundation for building Moleculer.js microservices with Docker.
+## Why moleculer-gen?
 
----
+`moleculer-gen` is designed for developers who want a **fast, modular, and lightly opinionated foundation** for building Moleculer.js microservices with Docker.
 
-> [!WARNING]
-> **moleculer-gen is under active development.**
->
-> The CLI is usable today, but generated structures, configuration formats, and available modules may evolve before a stable `1.0` release.
+It aims to avoid two extremes:
 
+* rebuilding the same development infrastructure for every project;
+* adopting a heavy platform that becomes harder to modify than the application itself.
 
+Start small, then add infrastructure as your architecture evolves.
+
+The generated project remains a **standard Moleculer.js project** — `moleculer-gen` handles the repetitive scaffolding without locking the application into a proprietary project format.
+
+## 🚀 Quick start
+
+### Requirements
+
+| Requirement                                        | Version        | Purpose                          |
+| -------------------------------------------------- | -------------- | -------------------------------- |
+| [Node.js](https://nodejs.org/)                     | `>= 22.13.0`   | Run the CLI                      |
+| [Docker](https://www.docker.com/)                  | `>= 24`        | Run generated services           |
+| [Docker Compose](https://docs.docker.com/compose/) | `v2+`          | Orchestrate the generated stack  |
+| [Make](https://www.gnu.org/software/make/)         | Recent version | Build and manage the environment |
+
+No global installation is required.
+
+### Create a project
+
+Create an empty directory and run the CLI:
+
+```bash
+mkdir my-project
+cd my-project
+
+npx moleculer-gen init
+```
+
+The interactive setup lets you choose the infrastructure required by your project.
+
+Once generated:
+
+```bash
+make build
+make start
+```
+
+You can also skip the interactive prompts and use a JSON configuration file for reproducible generation:
+
+```bash
+npx moleculer-gen init examples/config/init-project/minimal.json
+```
+
+### Extend the project
+
+Add a service interactively:
+
+```bash
+npx moleculer-gen add-service
+```
+
+Or generate multiple services from configuration:
+
+```bash
+npx moleculer-gen add-services examples/config/add-services/demo.json
+```
+
+## Modular by design
+
+`moleculer-gen` is built around independent modules that can be composed when creating a project.
+
+### Currently supported
+
+| Category       | Module      |
+| -------------- | ----------- |
+| Database       | MongoDB     |
+| Transporter    | NATS        |
+| Backend        | API Gateway |
+| Infrastructure | Traefik     |
+| Observability  | Prometheus  |
+
+Only the modules selected during initialization are included in the generated project.
+
+This keeps generated environments focused while allowing `moleculer-gen` to evolve with additional databases, transporters, and infrastructure integrations.
 
 ## 🎬 Demo 
 ### A complete CRUD microservice stack in under one minute
@@ -104,16 +173,48 @@ https://github.com/user-attachments/assets/c72a0a86-f531-432b-8a43-87d69540788a
 > A complete demo project is available [here](https://github.com/AssilemSDN/moleculer-gen-demo).
 
 
-## ✨ Why moleculer-gen?
 
-Starting a microservice project usually means recreating the same foundation:
+## 🧰 CLI overview
 
-- application structure
-- API Gateway
-- database configuration
-- message transport
-- Docker services
-- development tooling
-- service boilerplate
+```text
+npx moleculer-gen [options] [command]
+```
 
-`moleculer-gen` generates and maintains that foundation for you.
+| Command        | Mode                 | Description                                     |
+| -------------- | -------------------- | ----------------------------------------------- |
+| `init`         | Interactive / config | Initialize a new Moleculer.js project           |
+| `add-service`  | Interactive / config | Add one service to an existing project          |
+| `add-services` | Config               | Add multiple services from a JSON configuration |
+| `validate`     | Validation           | Validate the consistency of a generated project |
+
+Generation commands support dry runs, allowing changes to be inspected before files are written.
+
+For command options, configuration formats, generated files, and detailed examples, see the documentation.
+
+## 📚 Documentation
+
+The README is intentionally focused on discovering `moleculer-gen` and getting a project running quickly.
+
+Detailed documentation lives under [`docs/`](./docs/).
+
+### Command reference
+
+* [`init`](./docs/cli/init.md)
+* [`add-service`](./docs/cli/add-service.md)
+* [`add-services`](./docs/cli/add-services.md)
+* [`validate`](./docs/cli/validate.md)
+
+
+## 🤝 Contributing
+
+Contributions, bug reports, and feature proposals are welcome.
+
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for development setup and contribution guidelines.
+
+## Security
+
+For vulnerability reporting and security-related information, see [`SECURITY.md`](./SECURITY.md).
+
+## License
+
+`moleculer-gen` is distributed under the [MIT License](./LICENSE).
