@@ -32,6 +32,34 @@ const addServicesConfigPath = path.join(
   'examples/config/add-services/demo.json'
 )
 
+const expectedServices = {
+  articles: {
+    serviceName: 'articles',
+    isCrud: true,
+    exposeApi: true,
+    serviceFileName: 'articles.service.js',
+    serviceDirectoryName: 'articles',
+    modelFileName: 'article.model.js',
+    modelName: 'Article',
+    modelVariableName: 'ArticleModel',
+    collectionName: 'articles',
+    schemaName: 'articleSchema'
+  },
+
+  categories: {
+    serviceName: 'categories',
+    isCrud: true,
+    exposeApi: true,
+    serviceFileName: 'categories.service.js',
+    serviceDirectoryName: 'categories',
+    modelFileName: 'category.model.js',
+    modelName: 'Category',
+    modelVariableName: 'CategoryModel',
+    collectionName: 'categories',
+    schemaName: 'categorySchema'
+  }
+}
+
 const readDirectoryState = async directoryPath => {
   const entries = await fs.readdir(directoryPath, {
     recursive: true,
@@ -163,7 +191,10 @@ describe('add-services command integration', () => {
       // all expected artifacts
       await expectGeneratedArtifacts(
         projectDir,
-        servicesToCreate
+        servicesToCreate.map(
+          service =>
+            expectedServices[service.serviceName]
+        )
       )
 
       // Existing services must still exist
