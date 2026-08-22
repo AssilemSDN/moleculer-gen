@@ -81,6 +81,41 @@ const readDirectoryState = async directoryPath => {
   )
 }
 
+const readServiceState = async (projectDir, expectedService) => {
+  const serviceDirectory = path.join(
+    projectDir,
+    'src',
+    'services',
+    expectedService.serviceDirectoryName
+  )
+
+  const dockerFile = path.join(
+    projectDir,
+    'docker',
+    'services',
+    `${expectedService.serviceDirectoryName}.yaml`
+  )
+
+  const state = {
+    serviceDirectory: await readDirectoryState(serviceDirectory),
+    dockerFile: await fs.readFile(dockerFile)
+  }
+
+  if (expectedService.isCrud) {
+    const modelFile = path.join(
+      projectDir,
+      'src',
+      'data',
+      'model',
+      expectedService.modelFileName
+    )
+
+    state.modelFile = await fs.readFile(modelFile)
+  }
+
+  return state
+}
+
 describe('add-services command integration', () => {
   let tempDir
 
@@ -161,17 +196,15 @@ describe('add-services command integration', () => {
       const skippedServicesState = new Map()
 
       for (const service of servicesToSkip) {
-        const serviceDirectory = path.join(
-          projectDir,
-          'src',
-          'services',
-          service.serviceDirectoryName ??
-            service.serviceName
-        )
+        const expectedService =
+          expectedServices[service.serviceName]
 
         skippedServicesState.set(
           service.serviceName,
-          await readDirectoryState(serviceDirectory)
+          await readServiceState(
+            projectDir,
+            expectedService
+          )
         )
       }
 
@@ -218,8 +251,11 @@ describe('add-services command integration', () => {
             service.serviceName
         )
 
-        const stateAfter = await readDirectoryState(
-          serviceDirectory
+        const expectedService = expectedServices[service.serviceName]
+
+        const stateAfter = await readServiceState(
+          projectDir,
+          expectedService
         )
 
         expect(stateAfter).toEqual(
