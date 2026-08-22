@@ -243,14 +243,6 @@ describe('add-services command integration', () => {
           `Service "${service.serviceName}" already exists, skipping`
         )
 
-        const serviceDirectory = path.join(
-          projectDir,
-          'src',
-          'services',
-          service.serviceDirectoryName ??
-            service.serviceName
-        )
-
         const expectedService = expectedServices[service.serviceName]
 
         const stateAfter = await readServiceState(
