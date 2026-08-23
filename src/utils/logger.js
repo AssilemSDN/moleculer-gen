@@ -2,6 +2,7 @@
   PATH /src/utils/logger.js
 */
 import chalk from 'chalk'
+import logSymbols from 'log-symbols'
 
 const LEVELS = { error: 0, warn: 1, info: 2, debug: 3 }
 const DEFAULT = process.env.LOG_LEVEL || 'info'
@@ -35,14 +36,27 @@ export const logger = {
   },
 
   /** Log a debug message */
-  debug (...args) { this.log('debug', ...args) },
+  debug (...args) {
+    this.log('debug', ...args)
+  },
 
   /** Log an info message */
-  info (...args) { this.log('info', ...args) },
+  info (...args) {
+    this.log('info', logSymbols.info, ...args)
+  },
+
+  /** Log a success message */
+  success (...args) {
+    this.log('info', logSymbols.success, ...args)
+  },
 
   /** Log a warning message */
-  warn (...args) { this.log('warn', ...args) },
+  warn (...args) {
+    this.log('warn', logSymbols.warning, ...args)
+  },
 
   /** Log an error message */
-  error (...args) { this.log('error', ...args) }
+  error (...args) {
+    this.log('error', logSymbols.error, ...args)
+  }
 }

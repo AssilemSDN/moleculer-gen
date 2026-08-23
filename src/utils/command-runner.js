@@ -4,7 +4,7 @@
 import { logger } from './logger.js'
 
 export const runCommand = async (commandName, commandFn, options) => {
-  logger.info(`🚀 Starting ${commandName}...`)
+  logger.info(`Starting ${commandName}...`)
 
   try {
     const result = await commandFn(options)
@@ -16,9 +16,9 @@ export const runCommand = async (commandName, commandFn, options) => {
       }
 
       if (warnings.length > 0) {
-        logger.warn(`⚠️ ${commandName} completed with warnings.`)
+        logger.warn(`${commandName} completed with warnings.`)
       } else {
-        logger.info(`🎉 ${commandName} completed successfully!`)
+        logger.success(`${commandName} completed successfully!`)
       }
 
       if (result.data !== undefined) {
@@ -28,10 +28,10 @@ export const runCommand = async (commandName, commandFn, options) => {
       return
     }
 
-    logger.error(`❌ ${commandName} failed.`)
+    logger.error(`${commandName} failed.`)
     process.exitCode ||= 1
   } catch (err) {
-    logger.error(`❌ Unexpected error during ${commandName}:`, err)
+    logger.error(`Unexpected error during ${commandName}:`, err)
     process.exitCode ||= 1
   }
 }
