@@ -6,6 +6,8 @@
   />
 </div>
 
+<br />
+
 <div align="center">
 
   [![CI](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AssilemSDN/moleculer-gen/actions/workflows/ci.yml)
@@ -15,13 +17,18 @@
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 </div>
 
-<br />
 
 # { } moleculer gen
 
 A **modular platform engineering CLI** for scaffolding and extending ready-to-run [Moleculer.js](https://moleculer.services/) microservice projects with Docker Compose and composable infrastructure modules.
 
 Choose your database, message transporter, and optional infrastructure modules, then evolve the generated project as your architecture grows.
+
+```bash
+mkdir my-project 
+cd my-project 
+npx moleculer-gen init
+```
 
 ## Why moleculer-gen?
 
@@ -32,9 +39,9 @@ It aims to avoid two extremes:
 * rebuilding the same development infrastructure for every project;
 * adopting a heavy platform that becomes harder to modify than the application itself.
 
-Start small, then add infrastructure as your architecture evolves.
-
 The generated project remains a **standard Moleculer.js project** — `moleculer-gen` handles the repetitive scaffolding without locking the application into a proprietary project format.
+
+**Start small. Add infrastructure as your architecture evolves.**
 
 ## 🚀 Quick start
 
@@ -47,7 +54,7 @@ The generated project remains a **standard Moleculer.js project** — `moleculer
 | [Docker Compose](https://docs.docker.com/compose/) | `v2+`          | Orchestrate the generated stack  |
 | [Make](https://www.gnu.org/software/make/)         | Recent version | Build and manage the environment |
 
-No global installation is required.
+> No global installation is required.
 
 ### Create a project
 
@@ -108,6 +115,7 @@ Only the modules selected during initialization are included in the generated pr
 This keeps generated environments focused while allowing `moleculer-gen` to evolve with additional databases, transporters, and infrastructure integrations.
 
 ## 🎬 Demo 
+
 ### A complete CRUD microservice stack in under one minute
 
 Generate and start a complete CRUD microservice environment without manually wiring the application infrastructure.
