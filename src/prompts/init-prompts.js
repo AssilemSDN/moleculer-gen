@@ -41,7 +41,7 @@ export const initPrompts = async () => {
   // Database
   const { database } = await inquirer.prompt([
     {
-      type: 'list',
+      type: 'select',
       name: 'database',
       message: '💾 Choose a database:',
       choices: Object.entries(modulesRegistry.database).map(([key, { meta }]) => ({
@@ -54,7 +54,7 @@ export const initPrompts = async () => {
   // Transporter
   const { transporter } = await inquirer.prompt([
     {
-      type: 'list',
+      type: 'select',
       name: 'transporter',
       message: '📦 Choose a transporter:',
       choices: Object.entries(modulesRegistry.transporter).map(([key, { meta }]) => ({
