@@ -108,11 +108,16 @@ export const addServices = safeRun(
           dryRun
         })
         created.push(serviceConfig.serviceName)
+        if (!dryRun) {
+          logger.info(
+            `✅ Service "${serviceConfig.serviceName}" created successfully`
+          )
+        }
       } catch (error) {
         if (skippableErrorCodes.has(error.code)) {
           skipped.push(serviceConfig.serviceName)
           logger.warn(
-            `Service "${serviceConfig.serviceName}" already exists, skipping`
+            `⏭️ Service "${serviceConfig.serviceName}" already exists, skipping`
           )
           continue
         }

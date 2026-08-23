@@ -22,7 +22,7 @@ export const runCommand = async (commandName, commandFn, options) => {
       }
 
       if (result.data !== undefined) {
-        logger.info('Result:\n', result.data)
+        logger.debug('Result:\n', result.data)
       }
 
       return
