@@ -30,6 +30,90 @@ cd my-project
 npx moleculer-gen init
 ```
 
+## 🎬 Demo 
+### A complete CRUD microservice stack in under one minute
+
+#### Compose the project interactively
+
+Generate and extend a complete Moleculer.js microservice environment using the **interactive** CLI or reproduce the same stack from **JSON configuration files**.
+
+
+// PUT VIDEO HERE
+
+
+The service generator lets you configure the service interactively before writing it to the project. 
+
+// PUT VIDEO HERE
+
+For example, the demo creates an `articles` CRUD service backed by MongoDB.
+
+---
+
+#### Reproduce the stack from configuration
+
+Interactive prompts are useful while designing a stack, but the same project can also be generated non-interactively from JSON configuration files.
+
+The demo configurations are available at:
+
+```text
+examples/config/init-project/demo.json
+examples/config/add-service/demo.json
+examples/config/add-service/demo.json
+```
+
+##### Generate the project
+
+https://github.com/user-attachments/assets/40c787a0-6d7d-4102-956e-3c1f3135e6b5
+
+##### Extend the project with a new service
+
+https://github.com/user-attachments/assets/40c787a0-6d7d-4102-956e-3c1f3135e6b5
+
+##### Extend the project with multiple services
+
+Additional services can be generated in bulk from a JSON configuration.
+
+ADD VIDEO HERE
+
+Because the articles service was created interactively in the previous step, `moleculer-gen` detects that it already exists and **skips it instead of overwriting it**, while continuing to generate the remaining services.
+
+#### Start the stack
+
+PUT VIDEO HERE
+
+#### Use the generated API
+
+Once the stack is running, the generated API is available at: 
+
+[http://wiwiki-backend.local/api/v1/](http://wiwiki-backend.local/api/v1/)
+
+You can test the generated routes using `curl`, `Postman`, or any other HTTP client.
+
+The generated CRUD services are ready to be extended with your own fields and business logic.
+
+https://github.com/user-attachments/assets/70ff4b98-9b3b-40d7-a79d-e0dca275ac82
+
+#### Inspect Moleculer metrics with Prometheus
+
+Prometheus is available at :
+
+[http://prometheus.local/](http://prometheus.local/) 
+
+From there, you can inspect the metrics exposed by Moleculer.js and the generated services.
+
+https://github.com/user-attachments/assets/c72a0a86-f531-432b-8a43-87d69540788a
+
+---
+
+> [!NOTE]
+> The demo uses a full configuration to showcase the available modules.
+> Traefik and Prometheus are optional.
+
+> [!TIP]
+> Want to inspect the generated result without running the CLI?
+> A complete demo project is available [here](https://github.com/AssilemSDN/moleculer-gen-demo).
+
+
 ## Why moleculer-gen?
 
 `moleculer-gen` is designed for developers who want a **fast, modular, and lightly opinionated foundation** for building Moleculer.js microservices with Docker.
@@ -113,73 +197,6 @@ npx moleculer-gen add-services examples/config/add-services/demo.json
 Only the modules selected during initialization are included in the generated project.
 
 This keeps generated environments focused while allowing `moleculer-gen` to evolve with additional databases, transporters, and infrastructure integrations.
-
-## 🎬 Demo 
-
-### A complete CRUD microservice stack in under one minute
-
-Generate and start a complete CRUD microservice environment without manually wiring the application infrastructure.
-
-The demo includes:
-
-- Moleculer.js
-- API Gateway
-- CRUD `articles` service
-- MongoDB
-- NATS
-- Traefik
-- Prometheus
-- Docker Compose
-
-The demo uses the provided configuration files:
-
-```text
-examples/config/init-project/demo.json
-examples/config/add-service/demo.json
-```
-
-> [!IMPORTANT]
->  Before starting the stack, add the following entries to your /etc/hosts file:
-> ```
-> 127.0.0.1       localhost wiwiki-backend.local prometheus.local
-> ```
-
-
-### 1. Generate the project
-
-https://github.com/user-attachments/assets/40c787a0-6d7d-4102-956e-3c1f3135e6b5
-
-### 2. Use the generated API
-
-Once the stack is running, the generated API is available at: 
-
-[http://wiwiki-backend.local/api/v1/](http://wiwiki-backend.local/api/v1/)
-
-You can test the generated routes using `curl`, `Postman`, or any other HTTP client.
-
-The demo generates a minimal CRUD `articles` service, ready to be extended with your own fields and business logic.
-
-https://github.com/user-attachments/assets/70ff4b98-9b3b-40d7-a79d-e0dca275ac82
-
-### 3. Inspect Moleculer metrics with Prometheus
-
-Prometheus is available at 
-
-[http://prometheus.local/](http://prometheus.local/) 
-
-From there, you can inspect the metrics exposed by Moleculer.js and the generated services.
-
-https://github.com/user-attachments/assets/c72a0a86-f531-432b-8a43-87d69540788a
-
-
-> [!NOTE]
-> The demo uses a full configuration to showcase the available modules.
-> Traefik and Prometheus are optional.
-
-> [!TIP]
-> Want to inspect the generated result without running the CLI?
-> A complete demo project is available [here](https://github.com/AssilemSDN/moleculer-gen-demo).
-
 
 
 ## 🧰 CLI overview
