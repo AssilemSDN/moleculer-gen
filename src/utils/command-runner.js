@@ -4,7 +4,7 @@
 import { logger } from './logger.js'
 
 export const runCommand = async (commandName, commandFn, options) => {
-  logger.info(`Starting ${commandName}...`)
+  logger.debug(`Starting ${commandName}...`)
 
   try {
     const result = await commandFn(options)
@@ -15,6 +15,7 @@ export const runCommand = async (commandName, commandFn, options) => {
         logger.warn(warning)
       }
 
+      logger.newLine()
       if (warnings.length > 0) {
         logger.warn(`${commandName} completed with warnings.`)
       } else {
@@ -28,6 +29,7 @@ export const runCommand = async (commandName, commandFn, options) => {
       return
     }
 
+    logger.newLine()
     logger.error(`${commandName} failed.`)
     process.exitCode ||= 1
   } catch (err) {

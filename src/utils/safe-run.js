@@ -45,8 +45,9 @@ export const safeRun = (fn) => async (...args) => {
       if (err.details) logger.debug('Details:', err.details)
       process.exitCode = ExitCodes.USER_ERROR.code
     } else {
-      logger.error('An internal error happened', err.message || err)
-      logger.debug(err)
+      logger.error('An unexpected internal error occurred.')
+      logger.info('Run again with --debug for more details.')
+      logger.debug('Internal error:', err)
       process.exitCode = ExitCodes.INTERNAL_ERROR.code
     }
 

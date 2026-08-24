@@ -34,5 +34,5 @@ export const applyLoggerLevel = (program) => {
       ? 'error'
       : 'info'
 
-  logger.debug('🔧 Logger level set to:', logger.level)
+  logger.debug('Logger level set to:', logger.level)
 }
