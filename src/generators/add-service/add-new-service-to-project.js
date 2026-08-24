@@ -33,7 +33,7 @@ export const addNewServiceToProject = async ({
     moleculerGenConfig
   })
 
-  await generateNewService(
+  const generationResult = await generateNewService(
     projectNameSanitized,
     serviceConfig,
     templateDir,
@@ -42,5 +42,8 @@ export const addNewServiceToProject = async ({
     { dryRun }
   )
 
-  return serviceConfig
+  return {
+    serviceConfig,
+    changes: generationResult.changes
+  }
 }

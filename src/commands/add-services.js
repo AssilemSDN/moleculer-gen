@@ -5,7 +5,13 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 import { AppError } from '../errors/AppError.js'
+
 import { safeRun } from '../utils/safe-run.js'
+import {
+  createCommandResult,
+  addChange,
+  addWarning
+} from '../utils/command-result.js'
 /* Helpers */
 import { exists, readJsonFile } from '../utils/fs-helpers.js'
 import { loadJsonConfigFile } from '../utils/config-helpers.js'
@@ -13,7 +19,6 @@ import { loadJsonConfigFile } from '../utils/config-helpers.js'
 import { validateAddServicesConfig } from '../validators/config/validate-add-services-config.js'
 import { addNewServiceToProject } from '../generators/add-service/add-new-service-to-project.js'
 
-/* */
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const TEMPLATE_DIR = path.join(__dirname, '../../templates')
@@ -43,10 +48,14 @@ const loadServicesConfigFromFile = async (configFile) => {
  */
 export const addServices = safeRun(
   async ({ dryRun = false, configFile } = {}) => {
+    const result = createCommandResult({ dryRun })
+
     if (!configFile) {
       throw new AppError(
         'Missing required configFile argument',
-        { code: 'MISSING_CONFIG_FILE' }
+        {
+          code: 'MISSING_CONFIG_FILE'
+        }
       )
     }
 
@@ -89,7 +98,9 @@ export const addServices = safeRun(
     if (config.services.length === 0) {
       throw new AppError(
         'Invalid services config: services must not be empty',
-        { code: 'INVALID_SERVICES_CONFIG' }
+        {
+          code: 'INVALID_SERVICES_CONFIG'
+        }
       )
     }
 
@@ -97,8 +108,9 @@ export const addServices = safeRun(
     const skipped = []
     // 5. Add services sequentially
     for (const serviceConfig of config.services) {
+      const { serviceName } = serviceConfig
       try {
-        await addNewServiceToProject({
+        const serviceResult = await addNewServiceToProject({
           projectNameSanitized,
           serviceConfig,
           templateDir: TEMPLATE_DIR,
@@ -106,30 +118,46 @@ export const addServices = safeRun(
           moleculerGenConfig,
           dryRun
         })
-        created.push(serviceConfig.serviceName)
+
+        created.push(serviceName)
+
+        for (const change of serviceResult.changes) {
+          addChange(result, {
+            ...change,
+            service: serviceName
+          })
+        }
       } catch (error) {
         if (skippableErrorCodes.has(error.code)) {
-          skipped.push(serviceConfig.serviceName)
+          skipped.push(serviceName)
           continue
         }
         throw error
       }
     }
 
-    const warnings = []
-
+    // 6. Add non-blocking warnings
     if (created.length === 0 && skipped.length > 0) {
-      warnings.push('All services already exist')
+      addWarning(result, {
+        code: 'ALL_SERVICES_SKIPPED',
+        message: 'All services already exist',
+        services: skipped
+      })
     } else if (skipped.length > 0) {
-      warnings.push(`Skipped existing services: ${skipped.join(', ')}`)
+      addWarning(result, {
+        code: 'SERVICES_SKIPPED',
+        message: `Skipped existing services: ${skipped.join(', ')}`,
+        services: skipped
+      })
     }
 
-    return {
+    // 7. Expose command data
+    result.data = {
       createdCount: created.length,
       skippedCount: skipped.length,
       created,
-      skipped,
-      warnings
+      skipped
     }
+    return result
   }
 )

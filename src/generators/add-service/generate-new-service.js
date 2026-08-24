@@ -4,7 +4,7 @@
 import path from 'path'
 import { mkdirp, writeFile, resolvePathInside } from '../../utils/fs-helpers.js'
 import { renderTemplate } from '../../utils/render-template.js'
-import { logger } from '../../utils/logger.js'
+import { createCommandResult, addChange } from '../../utils/command-result.js'
 import { updateMoleculerGenConfig } from './update-moleculer-gen-config.js'
 import { updateRoutesConfig } from './update-routes-config.js'
 import { updateDockerCompose } from './update-docker-compose.js'
@@ -27,6 +27,8 @@ export const generateNewService = async (
   serviceDir,
   { dryRun = false } = {}
 ) => {
+  const result = createCommandResult({ dryRun })
+
   const {
     isCrud,
     exposeApi,
@@ -37,13 +39,54 @@ export const generateNewService = async (
     schemaName
   } = answers
 
+  const serviceFilePath = resolvePathInside(
+    serviceDir,
+    serviceFileName
+  )
+
+  const modelDir = path.join(
+    outputDir,
+    'src',
+    'data',
+    'model'
+  )
+
+  const modelFilePath = isCrud
+    ? resolvePathInside(modelDir, modelFileName)
+    : null
+
+  addChange(result, {
+    type: 'create',
+    target: serviceFilePath
+  })
+
+  if (isCrud) {
+    addChange(result, {
+      type: 'create',
+      target: modelFilePath
+    })
+  }
+
+  addChange(result, {
+    type: 'update',
+    target: 'docker-compose'
+  })
+
+  addChange(result, {
+    type: 'update',
+    target: '.moleculer-gen/config.json'
+  })
+
+  if (exposeApi) {
+    addChange(result, {
+      type: 'update',
+      target: 'api-gateway routes'
+    })
+  }
+
   //  1- dry-run mode : no real service generation
   if (dryRun) {
-    logger.info(`[dry-run] Would generate service ${serviceFileName} at ${serviceDir}`)
-    if (isCrud) logger.info(`[dry-run] Would generate model ${modelFileName}`)
-    if (exposeApi) logger.info('[dry-run] Would update api-gateway routes')
-
-    return
+    return result
   }
 
   // 2- Create needed directories
@@ -62,10 +105,7 @@ export const generateNewService = async (
     ...answers,
     servicePath: `src/services/${serviceDirectoryName}/${serviceFileName}`
   })
-  const serviceFilePath = resolvePathInside(
-    serviceDir,
-    serviceFileName
-  )
+
   await writeFile(serviceFilePath, serviceRendered)
 
   // 4- Generate model if CRUD
@@ -79,17 +119,7 @@ export const generateNewService = async (
       modelName,
       schemaName
     })
-    const modelDir = path.join(
-      outputDir,
-      'src',
-      'data',
-      'model'
-    )
 
-    const modelFilePath = resolvePathInside(
-      modelDir,
-      modelFileName
-    )
     await mkdirp(path.dirname(modelFilePath))
     await writeFile(modelFilePath, modelRendered)
   }
@@ -101,4 +131,6 @@ export const generateNewService = async (
   if (exposeApi) {
     await updateRoutesConfig(answers)
   }
+
+  return result
 }
