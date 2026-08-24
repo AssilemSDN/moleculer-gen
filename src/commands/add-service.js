@@ -5,6 +5,11 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 import { safeRun } from '../utils/safe-run.js'
+import {
+  createCommandResult,
+  addChange
+} from '../utils/command-result.js'
+
 import { addServicePrompts } from '../prompts/add-service-prompts.js'
 import { addNewServiceToProject } from '../generators/add-service/add-new-service-to-project.js'
 import { validateAddServiceConfig } from '../validators/config/validate-add-service-config.js'
@@ -44,10 +49,12 @@ export const loadServiceConfigFromFile = async (configFile) => {
  * @param {object} [options={}] Command options.
  * @param {boolean} [options.dryRun=false] Run without writing files.
  * @param {string} [options.configFile] Optional service config file.
- * @returns {Promise<object>} Generated service configuration.
+ * @returns {Promise<object>} Command result.
  */
 export const addService = safeRun(
   async ({ dryRun = false, configFile } = {}) => {
+    const result = createCommandResult({ dryRun })
+
     const projectDir = process.cwd()
 
     const moleculerGenConfigPath = path.join(
@@ -87,7 +94,7 @@ export const addService = safeRun(
       ? await loadServiceConfigFromFile(configFile)
       : await addServicePrompts()
 
-    await addNewServiceToProject({
+    const serviceResult = await addNewServiceToProject({
       projectNameSanitized,
       serviceConfig: answers,
       templateDir: TEMPLATE_DIR,
@@ -96,6 +103,12 @@ export const addService = safeRun(
       dryRun
     })
 
-    return answers
+    for (const change of serviceResult.changes) {
+      addChange(result, change)
+    }
+
+    result.data = serviceResult.serviceConfig
+
+    return result
   }
 )
