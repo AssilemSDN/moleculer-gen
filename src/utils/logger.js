@@ -39,11 +39,14 @@ export const logger = {
   },
 
   newLine () {
+    if (LEVELS.info > LEVELS[this.level]) { 
+      return 
+    }
     console.log()
   },
 
-  plain: (...args) => {
-    console.log(...args)
+  plain (...args) {
+    this.log('info', ...args)
   },
 
   /** Log a debug message */
