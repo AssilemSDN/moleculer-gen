@@ -57,6 +57,7 @@ export const registerCommands = (program) => {
     .description('Add multiple services to an existing Moleculer.js project')
     .argument('[config-file]', 'Path to a JSON config file')
     .option('--dry-run', 'Simulate service generation without creating files')
+
     .action(async (configFile, opts) =>
       runCommand(
         'services addition',
@@ -66,28 +67,25 @@ export const registerCommands = (program) => {
           configFile
         },
         {
-          successMessage: data => {
+          successMessage: (data) => {
             const {
               createdCount = 0,
               skippedCount = 0
             } = data ?? {}
 
-            const hasWarnings = skippedCount > 0
+            if (opts.dryRun) {
+              return `${createdCount} service${createdCount === 1 ? '' : 's'} can be added`
+            }
 
-            return [
-              opts.dryRun
-                ? 'Services addition simulated'
-                : 'Services addition completed',
-              hasWarnings ? 'with warnings' : null,
-              `— ${createdCount} added, ${skippedCount} skipped`
-            ]
-              .filter(Boolean)
-              .join(' ')
+            if (skippedCount > 0) {
+              return `${createdCount} service${createdCount === 1 ? '' : 's'} added, ${skippedCount} skipped`
+            }
+
+            return `${createdCount} service${createdCount === 1 ? '' : 's'} added`
           }
         }
       )
     )
-
   program
     .command('validate')
     .description('Validate the generated Moleculer project consistency')

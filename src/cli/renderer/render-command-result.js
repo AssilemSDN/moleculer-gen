@@ -19,7 +19,8 @@ const formatChange = (change) => {
 }
 
 const renderDryRun = (changes) => {
-  logger.info('Dry run — no changes were applied')
+  logger.info('Dry run — no files will be modified')
+
   if (changes.length === 0) {
     return
   }
@@ -37,10 +38,28 @@ const resolveSuccessMessage = (
   if (typeof successMessage === 'function') {
     return successMessage(
       result.data,
-      result.warnings ?? []
+      result
     )
   }
   return successMessage ?? `${commandName} completed`
+}
+
+const renderFinalStatus = ({
+  message,
+  result,
+  changes
+}) => {
+  let finalMessage = message
+  if (result.dryRun) {
+    const count = changes.length
+    const label = count === 1 ? 'change' : 'changes'
+    finalMessage = `${message} — ${count} ${label} planned`
+  }
+  if ((result.errors ?? []).length > 0) {
+    logger.warn(finalMessage)
+    return
+  }
+  logger.success(finalMessage)
 }
 
 export const renderCommandResult = ({
@@ -69,10 +88,10 @@ export const renderCommandResult = ({
     return
   }
   /*
-   * Validation / informational checks
+   * Successful checks
    */
   for (const check of checks) {
-    logger.info(getMessage(check))
+    logger.success(getMessage(check))
   }
   /*
    * Recoverable errors
@@ -103,23 +122,19 @@ export const renderCommandResult = ({
     successMessage,
     result
   )
-  if (result.dryRun) {
-    const count = changes.length
-    const label = count === 1 ? 'change' : 'changes'
-    logger.success(
-      `${finalMessage} — ${count} ${label} planned`
-    )
-  } else if (errors.length > 0) {
-    logger.success(`${finalMessage} with errors`)
-  } else if (warnings.length > 0) {
-    logger.success(`${finalMessage} with warnings`)
-  } else {
-    logger.success(finalMessage)
-  }
+
+  renderFinalStatus({
+    message: finalMessage,
+    result,
+    changes
+  })
   logger.debug('Command result:', result)
 }
 
-export const renderUnexpectedError = (commandName, error) => {
+export const renderUnexpectedError = (
+  commandName,
+  error
+) => {
   logger.newLine()
   logger.error('An unexpected internal error occurred.')
   logger.debug(
