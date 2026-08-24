@@ -25,83 +25,46 @@ A **modular platform engineering CLI** for scaffolding and extending ready-to-ru
 Choose your database, message transporter, and optional infrastructure modules, then evolve the generated project as your architecture grows.
 
 ```bash
-mkdir my-project 
-cd my-project 
 npx moleculer-gen init
 ```
 
+> **No global installation required.**
+
 ## 🎬 Demo 
-### A complete CRUD microservice stack in under one minute
+### From zero to a generated microservice stack
 
-#### Compose the project interactively
+`moleculer-gen` can generate a complete local microservice environment, add application services, and get the stack running without forcing the project into a proprietary structure.
 
-Generate and extend a complete Moleculer.js microservice environment using the **interactive** CLI or reproduce the same stack from **JSON configuration files**.
+![moleculer-gen interactive demo](docs/images/demo-interactive.gif)
 
+The demo shows the interactive workflow:
 
-// PUT VIDEO HERE
+- initialize a new project
+- select the infrastructure modules
+- add a CRUD service
+- add multiple services from configuration
 
+### Run the generated CRUD API
 
-The service generator lets you configure the service interactively before writing it to the project. 
-
-// PUT VIDEO HERE
-
-For example, the demo creates an `articles` CRUD service backed by MongoDB.
+![moleculer-gen runtime demo](docs/images/demo-runtime.gif)
 
 ---
 
-#### Reproduce the stack from configuration
+### Reproduce the stack from configuration
 
 Interactive prompts are useful while designing a stack, but the same project can also be generated non-interactively from JSON configuration files.
+
+![moleculer-gen configuration demo](docs/images/demo-configuration.gif)
 
 The demo configurations are available at:
 
 ```text
 examples/config/init-project/demo.json
 examples/config/add-service/demo.json
-examples/config/add-service/demo.json
+examples/config/add-services/demo.json
 ```
 
-##### Generate the project
-
-https://github.com/user-attachments/assets/40c787a0-6d7d-4102-956e-3c1f3135e6b5
-
-##### Extend the project with a new service
-
-https://github.com/user-attachments/assets/40c787a0-6d7d-4102-956e-3c1f3135e6b5
-
-##### Extend the project with multiple services
-
-Additional services can be generated in bulk from a JSON configuration.
-
-ADD VIDEO HERE
-
 Because the articles service was created interactively in the previous step, `moleculer-gen` detects that it already exists and **skips it instead of overwriting it**, while continuing to generate the remaining services.
-
-#### Start the stack
-
-PUT VIDEO HERE
-
-#### Use the generated API
-
-Once the stack is running, the generated API is available at: 
-
-[http://wiwiki-backend.local/api/v1/](http://wiwiki-backend.local/api/v1/)
-
-You can test the generated routes using `curl`, `Postman`, or any other HTTP client.
-
-The generated CRUD services are ready to be extended with your own fields and business logic.
-
-https://github.com/user-attachments/assets/70ff4b98-9b3b-40d7-a79d-e0dca275ac82
-
-#### Inspect Moleculer metrics with Prometheus
-
-Prometheus is available at :
-
-[http://prometheus.local/](http://prometheus.local/) 
-
-From there, you can inspect the metrics exposed by Moleculer.js and the generated services.
-
-https://github.com/user-attachments/assets/c72a0a86-f531-432b-8a43-87d69540788a
 
 ---
 
@@ -112,7 +75,6 @@ https://github.com/user-attachments/assets/c72a0a86-f531-432b-8a43-87d69540788a
 > [!TIP]
 > Want to inspect the generated result without running the CLI?
 > A complete demo project is available [here](https://github.com/AssilemSDN/moleculer-gen-demo).
-
 
 ## Why moleculer-gen?
 
