@@ -39,8 +39,8 @@ export const logger = {
   },
 
   newLine () {
-    if (LEVELS.info > LEVELS[this.level]) { 
-      return 
+    if (LEVELS.info > LEVELS[this.level]) {
+      return
     }
     console.log()
   },
