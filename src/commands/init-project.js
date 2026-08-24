@@ -1,12 +1,16 @@
 /*
   PATH /src/commands/init-project.js
 */
+
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 import { initPrompts } from '../prompts/init-prompts.js'
 import { safeRun } from '../utils/safe-run.js'
 import { loadJsonConfigFile } from '../utils/config-helpers.js'
+import { createCommandResult } from '../utils/command-result.js'
+import { logger } from '../utils/logger.js'
+
 import { validateInitProjectConfig } from '../validators/config/validate-init-project-config.js'
 
 import {
@@ -25,6 +29,7 @@ import { generate } from '../generators/init-project/generate.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
 const TEMPLATE_DIR = path.join(__dirname, '../../templates')
 
 /**
@@ -47,17 +52,25 @@ const loadInitConfigFromFile = async (configFile) => {
  */
 export const initProject = safeRun(
   async ({ dryRun = false, configFile } = {}) => {
+    const result = createCommandResult({ dryRun })
+
     // 1. Get config
     const config = configFile
       ? await loadInitConfigFromFile(configFile)
       : await initPrompts()
 
     const projectName = validateProjectName(config.projectName)
-    const projectNameSanitized = config.projectNameSanitized !== undefined
-      ? validateSanitizedName('projectNameSanitized', config.projectNameSanitized)
-      : sanitizeName(projectName)
+
+    const projectNameSanitized =
+      config.projectNameSanitized !== undefined
+        ? validateSanitizedName(
+          'projectNameSanitized',
+          config.projectNameSanitized
+        )
+        : sanitizeName(projectName)
 
     const currentDir = process.cwd()
+
     const projectDir = ensurePathInside(
       currentDir,
       path.join(currentDir, projectNameSanitized)
@@ -103,8 +116,25 @@ export const initProject = safeRun(
       projectNameSanitized
     }
 
-    // 4. Define generation options
-    const generateOptions = {
+    // 4. Command result data
+    result.data = {
+      projectName,
+      projectNameSanitized,
+      projectDir,
+      database,
+      transporter,
+      plugins: selectedPlugins
+    }
+
+    logger.debug('Init project configuration:', result.data)
+
+    logger.debug(
+      'Modules to generate:',
+      modulesToGenerate.map(module => module.meta?.key)
+    )
+
+    // 5. Generate
+    await generate({
       answers: normalizedConfig,
       dryRun,
       context: {
@@ -112,11 +142,10 @@ export const initProject = safeRun(
       },
       modules: modulesToGenerate,
       templateDir: TEMPLATE_DIR,
-      projectDir
-    }
+      projectDir,
+      result
+    })
 
-    // 5. Generate
-    await generate(generateOptions)
-    return normalizedConfig
+    return result
   }
 )

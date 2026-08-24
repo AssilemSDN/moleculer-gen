@@ -42,6 +42,10 @@ export const logger = {
     console.log()
   },
 
+  plain: (...args) => {
+    console.log(...args)
+  },
+
   /** Log a debug message */
   debug (...args) {
     this.log('debug', ...args)

@@ -6,7 +6,6 @@ import { fileURLToPath } from 'url'
 
 import { AppError } from '../errors/AppError.js'
 import { safeRun } from '../utils/safe-run.js'
-import { logger } from '../utils/logger.js'
 /* Helpers */
 import { exists, readJsonFile } from '../utils/fs-helpers.js'
 import { loadJsonConfigFile } from '../utils/config-helpers.js'
@@ -108,17 +107,9 @@ export const addServices = safeRun(
           dryRun
         })
         created.push(serviceConfig.serviceName)
-        if (!dryRun) {
-          logger.success(
-            `Service "${serviceConfig.serviceName}" created successfully`
-          )
-        }
       } catch (error) {
         if (skippableErrorCodes.has(error.code)) {
           skipped.push(serviceConfig.serviceName)
-          logger.warn(
-            `⏭ Service "${serviceConfig.serviceName}" already exists, skipping`
-          )
           continue
         }
         throw error
@@ -126,12 +117,11 @@ export const addServices = safeRun(
     }
 
     const warnings = []
+
     if (created.length === 0 && skipped.length > 0) {
-      warnings.push('No service was added. All services were skipped.')
-    } else if (created.length > 0 && skipped.length > 0) {
-      warnings.push(
-        `Some services were skipped because they already exist: ${skipped.join(', ')}`
-      )
+      warnings.push('All services already exist')
+    } else if (skipped.length > 0) {
+      warnings.push(`Skipped existing services: ${skipped.join(', ')}`)
     }
 
     return {

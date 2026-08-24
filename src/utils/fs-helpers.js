@@ -104,7 +104,7 @@ export const ensureEmptyDir = async (dirPath) => {
   try {
     const files = await fs.readdir(dirPath)
     if (files.length > 0) {
-      throw new AppError(`${dirPath} is not empty`, {
+      throw new AppError(`Directory is not empty: ${dirPath}`, {
         code: 'FS_DIR_NOT_EMPTY'
       })
     }

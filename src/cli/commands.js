@@ -1,16 +1,14 @@
 /*
   PATH /src/cli/commands.js
 */
+
 import { addService } from '../commands/add-service.js'
 import { addServices } from '../commands/add-services.js'
 import { initProject } from '../commands/init-project.js'
 import { validateProject } from '../commands/validate-project.js'
+
 import { runCommand } from '../utils/command-runner.js'
 
-/**
- * Register CLI commands
- * @param {*} program
- */
 export const registerCommands = (program) => {
   program
     .command('init')
@@ -18,10 +16,19 @@ export const registerCommands = (program) => {
     .argument('[config-file]', 'Path to a JSON config file')
     .option('--dry-run', 'Simulate project generation without creating files')
     .action(async (configFile, opts) =>
-      runCommand('project initialization', initProject, {
-        dryRun: opts.dryRun,
-        configFile
-      })
+      runCommand(
+        'project initialization',
+        initProject,
+        {
+          dryRun: opts.dryRun,
+          configFile
+        },
+        {
+          successMessage: opts.dryRun
+            ? 'Project initialization simulated'
+            : 'Project initialized'
+        }
+      )
     )
 
   program
@@ -30,10 +37,19 @@ export const registerCommands = (program) => {
     .argument('[config-file]', 'Path to a JSON config file')
     .option('--dry-run', 'Simulate service generation without creating files')
     .action(async (configFile, opts) =>
-      runCommand('service addition', addService, {
-        dryRun: opts.dryRun,
-        configFile
-      })
+      runCommand(
+        'service addition',
+        addService,
+        {
+          dryRun: opts.dryRun,
+          configFile
+        },
+        {
+          successMessage: opts.dryRun
+            ? 'Service addition simulated'
+            : 'Service added'
+        }
+      )
     )
 
   program
@@ -42,14 +58,47 @@ export const registerCommands = (program) => {
     .argument('[config-file]', 'Path to a JSON config file')
     .option('--dry-run', 'Simulate service generation without creating files')
     .action(async (configFile, opts) =>
-      runCommand('batch services addition', addServices, {
-        dryRun: opts.dryRun,
-        configFile
-      })
+      runCommand(
+        'services addition',
+        addServices,
+        {
+          dryRun: opts.dryRun,
+          configFile
+        },
+        {
+          successMessage: data => {
+            const {
+              createdCount = 0,
+              skippedCount = 0
+            } = data ?? {}
+
+            const hasWarnings = skippedCount > 0
+
+            return [
+              opts.dryRun
+                ? 'Services addition simulated'
+                : 'Services addition completed',
+              hasWarnings ? 'with warnings' : null,
+              `— ${createdCount} added, ${skippedCount} skipped`
+            ]
+              .filter(Boolean)
+              .join(' ')
+          }
+        }
+      )
     )
 
   program
     .command('validate')
     .description('Validate the generated Moleculer project consistency')
-    .action(async () => runCommand('project validation', validateProject, {}))
+    .action(async () =>
+      runCommand(
+        'project validation',
+        validateProject,
+        {},
+        {
+          successMessage: 'Project validated'
+        }
+      )
+    )
 }

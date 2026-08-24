@@ -1,39 +1,144 @@
 /*
   PATH /src/utils/command-runner.js
 */
+
 import { logger } from './logger.js'
 
-export const runCommand = async (commandName, commandFn, options) => {
+const getMessage = entry => {
+  if (typeof entry === 'string') {
+    return entry
+  }
+
+  return entry?.message ?? String(entry)
+}
+
+const formatChange = change => {
+  const type = (change?.type ?? 'change')
+    .toUpperCase()
+    .padEnd(7)
+
+  return `${type} ${change.target}`
+}
+
+const logDryRun = changes => {
+  logger.info('Dry run — no changes were applied')
+
+  if (changes.length === 0) {
+    return
+  }
+
+  logger.newLine()
+
+  for (const change of changes) {
+    logger.plain(`  ${formatChange(change)}`)
+  }
+}
+
+export const runCommand = async (
+  commandName,
+  commandFn,
+  options = {}
+) => {
   logger.debug(`Starting ${commandName}...`)
 
   try {
     const result = await commandFn(options)
+
     const warnings = result.warnings ?? []
+    const errors = result.errors ?? []
+    const changes = result.changes ?? []
 
-    if (result.success) {
-      for (const warning of warnings) {
-        logger.warn(warning)
-      }
-
+    /*
+     * Fatal command failure.
+     */
+    if (!result.success) {
       logger.newLine()
-      if (warnings.length > 0) {
-        logger.warn(`${commandName} completed with warnings.`)
-      } else {
-        logger.success(`${commandName} completed successfully!`)
+
+      for (const error of errors) {
+        logger.error(getMessage(error))
       }
 
-      if (result.data !== undefined) {
-        logger.debug('Result:\n', result.data)
+      if (errors.length === 0) {
+        logger.error('An unexpected internal error occurred.')
       }
 
+      if (result.error) {
+        logger.debug('Raw error:', result.error)
+      }
+
+      process.exitCode ||= result.exitCode ?? 1
       return
     }
 
+    /*
+     * Recoverable errors.
+     *
+     * Mainly useful for batch commands where part of the work
+     * may fail while the rest can still continue.
+     */
+    for (const error of errors) {
+      logger.error(getMessage(error))
+    }
+
+    /*
+     * Non-blocking warnings.
+     */
+    for (const warning of warnings) {
+      logger.warn(getMessage(warning))
+    }
+
+    /*
+     * Dry-run plan.
+     */
+    if (result.dryRun) {
+      logger.newLine()
+      logDryRun(changes)
+    }
+
+    /*
+     * Final command status.
+     */
     logger.newLine()
-    logger.error(`${commandName} failed.`)
-    process.exitCode ||= 1
-  } catch (err) {
-    logger.error(`Unexpected error during ${commandName}:`, err)
+
+    if (result.dryRun) {
+      const count = changes.length
+      const label = count === 1 ? 'change' : 'changes'
+
+      logger.success(
+        `${commandName} simulated — ${count} ${label} planned`
+      )
+    } else if (errors.length > 0) {
+      logger.success(
+        `${commandName} completed with errors`
+      )
+    } else if (warnings.length > 0) {
+      logger.success(
+        `${commandName} completed with warnings`
+      )
+    } else {
+      logger.success(
+        `${commandName} completed`
+      )
+    }
+
+    /*
+     * Full structured result is available in --debug.
+     */
+    logger.debug('Command result:', result)
+  } catch (error) {
+    /*
+     * runCommand itself should almost never throw because commands
+     * are wrapped with safeRun().
+     *
+     * This remains as a last-resort CLI boundary.
+     */
+    logger.newLine()
+    logger.error('An unexpected internal error occurred.')
+    logger.debug(
+      `Unexpected error during ${commandName}:`,
+      error
+    )
+
     process.exitCode ||= 1
   }
 }
