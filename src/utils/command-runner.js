@@ -37,7 +37,10 @@ const logDryRun = changes => {
 export const runCommand = async (
   commandName,
   commandFn,
-  options = {}
+  options = {},
+  {
+    successMessage = `${commandName} completed`
+  } = {}
 ) => {
   logger.debug(`Starting ${commandName}...`)
 
@@ -100,25 +103,18 @@ export const runCommand = async (
      */
     logger.newLine()
 
-    if (result.dryRun) {
-      const count = changes.length
-      const label = count === 1 ? 'change' : 'changes'
+    const message = typeof successMessage === 'function'
+      ? successMessage(result.data, warnings)
+      : successMessage
 
-      logger.success(
-        `${commandName} simulated — ${count} ${label} planned`
-      )
+    if (result.dryRun) {
+      logger.success(message)
     } else if (errors.length > 0) {
-      logger.success(
-        `${commandName} completed with errors`
-      )
+      logger.success(`${message} with errors`)
     } else if (warnings.length > 0) {
-      logger.success(
-        `${commandName} completed with warnings`
-      )
+      logger.success(`${message} with warnings`)
     } else {
-      logger.success(
-        `${commandName} completed`
-      )
+      logger.success(message)
     }
 
     /*
