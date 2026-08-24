@@ -5,7 +5,6 @@
 import path from 'path'
 import { exists, readJsonFile } from '../utils/fs-helpers.js'
 import { AppError } from '../errors/AppError.js'
-import { logger } from '../utils/logger.js'
 
 /**
  * Validates .moleculer-gen/config.json.
@@ -15,6 +14,7 @@ import { logger } from '../utils/logger.js'
  * @returns {Promise<{ valid: boolean, errors: string[], warnings: string[], config: object }>}
  */
 export const validateMoleculerConfig = async projectDir => {
+  const checks = []
   const errors = []
   const warnings = []
 
@@ -67,11 +67,15 @@ export const validateMoleculerConfig = async projectDir => {
   }
 
   if (errors.length === 0) {
-    logger.info('.moleculer-gen/config.json structure is valid')
+    checks.push({
+      code: 'MOLECULER_CONFIG_VALID',
+      message: '.moleculer-gen/config.json structure is valid'
+    })
   }
 
   return {
     valid: errors.length === 0,
+    checks,
     errors,
     warnings,
     config: moleculerConfig

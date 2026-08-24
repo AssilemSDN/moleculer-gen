@@ -4,6 +4,7 @@
 export const createCommandResult = ({ dryRun = false } = {}) => ({
   dryRun,
   changes: [],
+  checks: [],
   warnings: [],
   errors: [],
   data: {}
@@ -11,6 +12,10 @@ export const createCommandResult = ({ dryRun = false } = {}) => ({
 
 export const addChange = (result, change) => {
   result.changes.push(change)
+}
+
+export const addCheck = (result, check) => {
+  result.checks.push(check)
 }
 
 export const addWarning = (result, warning) => {

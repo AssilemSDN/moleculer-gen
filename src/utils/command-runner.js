@@ -50,6 +50,7 @@ export const runCommand = async (
     const warnings = result.warnings ?? []
     const errors = result.errors ?? []
     const changes = result.changes ?? []
+    const checks = result.checks ?? []
 
     /*
      * Fatal command failure.
@@ -81,6 +82,13 @@ export const runCommand = async (
      */
     for (const error of errors) {
       logger.error(getMessage(error))
+    }
+
+    for (const check of checks) {
+      logger.info(typeof check === 'string'
+        ? check
+        : check.message
+      )
     }
 
     /*
