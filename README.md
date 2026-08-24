@@ -48,7 +48,6 @@ The demo shows the interactive workflow:
 
 ![moleculer-gen runtime demo](docs/images/demo-runtime.gif)
 
----
 
 ### Reproduce the stack from configuration
 
@@ -63,8 +62,6 @@ examples/config/init-project/demo.json
 examples/config/add-service/demo.json
 examples/config/add-services/demo.json
 ```
-
-Because the articles service was created interactively in the previous step, `moleculer-gen` detects that it already exists and **skips it instead of overwriting it**, while continuing to generate the remaining services.
 
 ---
 

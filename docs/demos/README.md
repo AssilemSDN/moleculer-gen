@@ -13,18 +13,18 @@ vhs
 moleculer-gen
 ```
 
-## Generate the interactive demo
+## Generate demo
 
 Run VHS from the repository root:
 
 ```bash
-vhs docs/demos/demo-interactive.tape
+vhs docs/demos/demo-*.tape
 ```
 
 The generated GIF is written to:
 
 ```text
-docs/images/demo-interactive.gif
+docs/images/demo-*.gif
 ```
 
 ## Temporary environment
