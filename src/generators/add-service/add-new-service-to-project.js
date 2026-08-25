@@ -44,6 +44,6 @@ export const addNewServiceToProject = async ({
 
   return {
     serviceConfig,
-    changes: generationResult.changes
+    plannedChanges: generationResult.plannedChanges
   }
 }
