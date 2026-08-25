@@ -69,7 +69,7 @@ export const validateMoleculerConfig = async projectDir => {
   if (errors.length === 0) {
     checks.push({
       code: 'MOLECULER_CONFIG_VALID',
-      message: '.moleculer-gen/config.json structure is valid'
+      message: '.moleculer-gen/config.json'
     })
   }
 
