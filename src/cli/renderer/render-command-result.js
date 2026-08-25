@@ -1,6 +1,7 @@
 /*
   PATH /src/cli/renderer/render-command-result.js
 */
+import path from 'path'
 
 import { logger } from '../../utils/logger.js'
 
@@ -15,18 +16,52 @@ const formatChange = (change) => {
   const type = (change?.type ?? 'change')
     .toUpperCase()
     .padEnd(7)
-  return `${type} ${change.target}`
+
+  let target = change.target
+
+  if (target && path.isAbsolute(target)) {
+    const relativePath = path.relative(
+      process.cwd(),
+      target
+    )
+    target = relativePath || '.'
+  }
+
+  return `${type} ${target}`
 }
 
 const renderDryRun = (changes) => {
   logger.info('Dry run — no files will be modified')
-
   if (changes.length === 0) {
     return
   }
-  logger.newLine()
+
+  // Group identical changes and keep their occurrence count
+  const grouped = new Map()
+
   for (const change of changes) {
-    logger.plain(`  ${formatChange(change)}`)
+    const key = `${change.type}:${change.target}`
+    const existing = grouped.get(key)
+    if (existing) {
+      ++existing.count
+      continue
+    }
+    grouped.set(key, {
+      change,
+      count: 1
+    })
+  }
+
+  logger.newLine()
+
+  for (const { change, count } of grouped.values()) {
+    const suffix = count > 1
+      ? ` x${count}`
+      : ''
+
+    logger.plain(
+      `  ${formatChange(change)}${suffix}`
+    )
   }
 }
 
