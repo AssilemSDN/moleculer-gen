@@ -24,9 +24,13 @@ export const registerCommands = (program) => {
           configFile
         },
         {
-          successMessage: opts.dryRun
-            ? 'Project initialization simulated'
-            : 'Project initialized'
+          successMessage: (data, result) => {
+            const projectName = data?.projectName ?? 'Project'
+            if (result.dryRun) {
+              return `Project "${projectName}" can be initialized`
+            }
+            return `Project "${projectName}" initialized`
+          }
         }
       )
     )
@@ -45,9 +49,13 @@ export const registerCommands = (program) => {
           configFile
         },
         {
-          successMessage: opts.dryRun
-            ? 'Service addition simulated'
-            : 'Service added'
+          successMessage: (data, result) => {
+            const serviceName = data?.serviceName ?? ''
+            if (result.dryRun) {
+              return `Service "${serviceName}" can be added`
+            }
+            return `Service "${serviceName}" added`
+          }
         }
       )
     )
@@ -67,21 +75,20 @@ export const registerCommands = (program) => {
           configFile
         },
         {
-          successMessage: (data) => {
+          successMessage: (data, result) => {
             const {
               createdCount = 0,
               skippedCount = 0
             } = data ?? {}
-
-            if (opts.dryRun) {
-              return `${createdCount} service${createdCount === 1 ? '' : 's'} can be added`
+            const createdLabel = createdCount === 1 ? 'service' : 'services'
+            const skippedLabel = skippedCount === 1 ? 'service' : 'services'
+            if (result.dryRun) {
+              return `${createdCount} ${createdLabel} can be added`
             }
-
             if (skippedCount > 0) {
-              return `${createdCount} service${createdCount === 1 ? '' : 's'} added, ${skippedCount} skipped`
+              return `${createdCount} ${createdLabel} added, ${skippedCount} ${skippedLabel} skipped`
             }
-
-            return `${createdCount} service${createdCount === 1 ? '' : 's'} added`
+            return `${createdCount} ${createdLabel} added`
           }
         }
       )
