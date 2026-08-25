@@ -17,20 +17,6 @@ export const validateProject = safeRun(async () => {
 
   const result = await projectValidator(process.cwd())
 
-  if (!result.valid) {
-    for (const error of result.errors) {
-      addError(commandResult, {
-        code: 'PROJECT_VALIDATION_ERROR',
-        message: error
-      })
-    }
-    return {
-      ...commandResult,
-      success: false,
-      exitCode: ExitCodes.USER_ERROR.code
-    }
-  }
-
   for (const check of result.checks) {
     addCheck(commandResult, check)
   }
@@ -44,6 +30,20 @@ export const validateProject = safeRun(async () => {
 
   commandResult.data = {
     valid: result.valid
+  }
+
+  if (!result.valid) {
+    for (const error of result.errors) {
+      addError(commandResult, {
+        code: 'PROJECT_VALIDATION_ERROR',
+        message: error
+      })
+    }
+    return {
+      ...commandResult,
+      success: false,
+      exitCode: ExitCodes.USER_ERROR.code
+    }
   }
 
   return commandResult

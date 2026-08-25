@@ -90,10 +90,6 @@ const renderFinalStatus = ({
     const label = count === 1 ? 'change' : 'changes'
     finalMessage = `${message} — ${count} planned ${label}`
   }
-  if ((result.errors ?? []).length > 0) {
-    logger.warn(finalMessage)
-    return
-  }
   logger.success(finalMessage)
 }
 
@@ -106,22 +102,7 @@ export const renderCommandResult = ({
   const warnings = result.warnings ?? []
   const errors = result.errors ?? []
   const plannedChanges = result.plannedChanges ?? []
-  /*
-   * Fatal command failure
-   */
-  if (!result.success) {
-    logger.newLine()
-    for (const error of errors) {
-      logger.error(getMessage(error))
-    }
-    if (errors.length === 0) {
-      logger.error('An unexpected internal error occurred.')
-    }
-    if (result.error) {
-      logger.debug('Raw error:', result.error)
-    }
-    return
-  }
+
   /*
    * Successful checks
    */
@@ -129,16 +110,28 @@ export const renderCommandResult = ({
     logger.success(getMessage(check))
   }
   /*
-   * Recoverable errors
+   * Non-blocking warnings
+   */
+  for (const warning of warnings) {
+    logger.warn(getMessage(warning))
+  }
+  /*
+   * Errors
    */
   for (const error of errors) {
     logger.error(getMessage(error))
   }
   /*
-   * Non-blocking warnings
+   * Fatal command failure
    */
-  for (const warning of warnings) {
-    logger.warn(getMessage(warning))
+  if (!result.success) {
+    if (errors.length === 0) {
+      logger.error('An unexpected internal error occurred.')
+    }
+    if (result.error) {
+      logger.debug('Raw error: ', result.error)
+    }
+    return
   }
   /*
    * Dry-run plan
