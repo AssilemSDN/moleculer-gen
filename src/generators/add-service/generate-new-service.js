@@ -4,7 +4,7 @@
 import path from 'path'
 import { mkdirp, writeFile, resolvePathInside } from '../../utils/fs-helpers.js'
 import { renderTemplate } from '../../utils/render-template.js'
-import { createCommandResult, addChange } from '../../utils/command-result.js'
+import { createCommandResult, addPlannedChange } from '../../utils/command-result.js'
 import { updateMoleculerGenConfig } from './update-moleculer-gen-config.js'
 import { updateRoutesConfig } from './update-routes-config.js'
 import { updateDockerCompose } from './update-docker-compose.js'
@@ -55,32 +55,32 @@ export const generateNewService = async (
     ? resolvePathInside(modelDir, modelFileName)
     : null
 
-  addChange(result, {
+  addPlannedChange(result, {
     type: 'create',
     target: serviceFilePath
   })
 
   if (isCrud) {
-    addChange(result, {
+    addPlannedChange(result, {
       type: 'create',
       target: modelFilePath
     })
   }
 
-  addChange(result, {
-    type: 'update',
-    target: 'docker-compose'
+  addPlannedChange(result, {
+    type: 'create',
+    target: path.join('docker', 'services', `${serviceDirectoryName}.yaml`)
   })
 
-  addChange(result, {
+  addPlannedChange(result, {
     type: 'update',
     target: '.moleculer-gen/config.json'
   })
 
   if (exposeApi) {
-    addChange(result, {
+    addPlannedChange(result, {
       type: 'update',
-      target: 'api-gateway routes'
+      target: 'src/config/routes.config.js'
     })
   }
 

@@ -15,15 +15,12 @@ export const safeRun = (fn) => async (...args) => {
   const dryRun = args[0]?.dryRun ?? false
 
   try {
-    const result = await fn(...args)
-
-    return {
-      success: true,
-      ...(result ?? createCommandResult({ dryRun }))
-    }
+    return (
+      await fn(...args) ??
+      createCommandResult({ dryRun })
+    )
   } catch (err) {
     const result = createCommandResult({ dryRun })
-
     const isAppError = err?.name === 'AppError'
 
     addError(result, {
@@ -41,12 +38,9 @@ export const safeRun = (fn) => async (...args) => {
     })
 
     return {
-      success: false,
       ...result,
-
-      // Kept for --debug
+      success: false,
       error: err,
-
       exitCode: isAppError
         ? ExitCodes.USER_ERROR.code
         : ExitCodes.INTERNAL_ERROR.code

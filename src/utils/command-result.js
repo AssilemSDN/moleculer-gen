@@ -2,16 +2,17 @@
   PATH /src/utils/command-result.js
 */
 export const createCommandResult = ({ dryRun = false } = {}) => ({
+  success: true,
   dryRun,
-  changes: [],
+  plannedChanges: [],
   checks: [],
   warnings: [],
   errors: [],
   data: {}
 })
 
-export const addChange = (result, change) => {
-  result.changes.push(change)
+export const addPlannedChange = (result, plannedChange) => {
+  result.plannedChanges.push(plannedChange)
 }
 
 export const addCheck = (result, check) => {

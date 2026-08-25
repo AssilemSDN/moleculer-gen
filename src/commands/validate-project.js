@@ -6,10 +6,11 @@ import { safeRun } from '../utils/safe-run.js'
 import {
   createCommandResult,
   addCheck,
+  addError,
   addWarning
 } from '../utils/command-result.js'
-import { AppError } from '../errors/AppError.js'
 import { projectValidator } from '../validators/project-validator.js'
+import { ExitCodes } from '../utils/exit-codes.js'
 
 export const validateProject = safeRun(async () => {
   const commandResult = createCommandResult()
@@ -17,10 +18,17 @@ export const validateProject = safeRun(async () => {
   const result = await projectValidator(process.cwd())
 
   if (!result.valid) {
-    throw new AppError(`Project validation failed with ${result.errors.length} error(s).`, {
-      code: 'PROJECT_VALIDATION_FAILED',
-      details: result.errors
-    })
+    for (const error of result.errors) {
+      addError(commandResult, {
+        code: 'PROJECT_VALIDATION_ERROR',
+        message: error
+      })
+    }
+    return {
+      ...commandResult,
+      success: false,
+      exitCode: ExitCodes.USER_ERROR.code
+    }
   }
 
   for (const check of result.checks) {

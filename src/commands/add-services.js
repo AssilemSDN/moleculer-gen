@@ -9,7 +9,7 @@ import { AppError } from '../errors/AppError.js'
 import { safeRun } from '../utils/safe-run.js'
 import {
   createCommandResult,
-  addChange,
+  addPlannedChange,
   addWarning
 } from '../utils/command-result.js'
 /* Helpers */
@@ -121,9 +121,9 @@ export const addServices = safeRun(
 
         created.push(serviceName)
 
-        for (const change of serviceResult.changes) {
-          addChange(result, {
-            ...change,
+        for (const plannedChange of serviceResult.plannedChanges) {
+          addPlannedChange(result, {
+            ...plannedChange,
             service: serviceName
           })
         }

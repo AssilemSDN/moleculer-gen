@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url'
 import { safeRun } from '../utils/safe-run.js'
 import {
   createCommandResult,
-  addChange
+  addPlannedChange
 } from '../utils/command-result.js'
 
 import { addServicePrompts } from '../prompts/add-service-prompts.js'
@@ -103,8 +103,8 @@ export const addService = safeRun(
       dryRun
     })
 
-    for (const change of serviceResult.changes) {
-      addChange(result, change)
+    for (const plannedChange of serviceResult.plannedChanges) {
+      addPlannedChange(result, plannedChange)
     }
 
     result.data = serviceResult.serviceConfig

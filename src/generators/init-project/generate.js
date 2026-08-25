@@ -10,7 +10,7 @@ import {
 } from '../../utils/fs-helpers.js'
 
 import {
-  addChange,
+  addPlannedChange,
   createCommandResult
 } from '../../utils/command-result.js'
 
@@ -29,11 +29,11 @@ import { generateReadme } from './generate-readme.js'
  * - what WILL happen during a dry-run
  * - what DID happen during a real generation
  */
-const registerGenerationChanges = ({
+const registerPlannedGenerationChanges = ({
   result,
   modules
 }) => {
-  addChange(result, {
+  addPlannedChange(result, {
     type: 'copy',
     target: '.',
     scope: 'base-template'
@@ -50,7 +50,7 @@ const registerGenerationChanges = ({
   ]
 
   for (const target of generatedFiles) {
-    addChange(result, {
+    addPlannedChange(result, {
       type: 'create',
       target
     })
@@ -59,7 +59,7 @@ const registerGenerationChanges = ({
   for (const module of modules) {
     const moduleKey = path.basename(module.meta.key)
 
-    addChange(result, {
+    addPlannedChange(result, {
       type: 'create',
       target: `docker/services/${moduleKey}.yaml`,
       scope: 'module',
@@ -67,7 +67,7 @@ const registerGenerationChanges = ({
     })
 
     for (const template of module.templates ?? []) {
-      addChange(result, {
+      addPlannedChange(result, {
         type: 'create',
         target: template.outputPath,
         scope: 'module',
@@ -115,14 +115,14 @@ export const generate = async ({
    */
   await ensureEmptyDir(projectDir)
 
-  registerGenerationChanges({
+  registerPlannedGenerationChanges({
     result: generationResult,
     modules
   })
 
   logger.debug(
     'Project generation changes:',
-    generationResult.changes
+    generationResult.plannedChanges
   )
 
   // Dry-run stops after building and validating the plan.
@@ -177,7 +177,7 @@ export const generate = async ({
 
   logger.debug('Project generation completed:', {
     projectDir,
-    changes: generationResult.changes.length
+    plannedChanges: generationResult.plannedChanges.length
   })
 
   return generationResult

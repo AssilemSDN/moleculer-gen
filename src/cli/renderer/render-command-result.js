@@ -30,37 +30,37 @@ const formatChange = (change) => {
   return `${type} ${target}`
 }
 
-const renderDryRun = (changes) => {
+const renderDryRun = (plannedChanges) => {
   logger.info('Dry run — no files will be modified')
-  if (changes.length === 0) {
+  if (plannedChanges.length === 0) {
     return
   }
 
   // Group identical changes and keep their occurrence count
   const grouped = new Map()
 
-  for (const change of changes) {
-    const key = `${change.type}:${change.target}`
+  for (const plannedChange of plannedChanges) {
+    const key = `${plannedChange.type}:${plannedChange.target}`
     const existing = grouped.get(key)
     if (existing) {
       ++existing.count
       continue
     }
     grouped.set(key, {
-      change,
+      plannedChange,
       count: 1
     })
   }
 
   logger.newLine()
 
-  for (const { change, count } of grouped.values()) {
+  for (const { plannedChange, count } of grouped.values()) {
     const suffix = count > 1
       ? ` x${count}`
       : ''
 
     logger.plain(
-      `  ${formatChange(change)}${suffix}`
+      `  ${formatChange(plannedChange)}${suffix}`
     )
   }
 }
@@ -82,13 +82,13 @@ const resolveSuccessMessage = (
 const renderFinalStatus = ({
   message,
   result,
-  changes
+  plannedChanges
 }) => {
   let finalMessage = message
   if (result.dryRun) {
-    const count = changes.length
+    const count = plannedChanges.length
     const label = count === 1 ? 'change' : 'changes'
-    finalMessage = `${message} — ${count} ${label} planned`
+    finalMessage = `${message} — ${count} planned ${label}`
   }
   if ((result.errors ?? []).length > 0) {
     logger.warn(finalMessage)
@@ -105,7 +105,7 @@ export const renderCommandResult = ({
   const checks = result.checks ?? []
   const warnings = result.warnings ?? []
   const errors = result.errors ?? []
-  const changes = result.changes ?? []
+  const plannedChanges = result.plannedChanges ?? []
   /*
    * Fatal command failure
    */
@@ -145,7 +145,7 @@ export const renderCommandResult = ({
    */
   if (result.dryRun) {
     logger.newLine()
-    renderDryRun(changes)
+    renderDryRun(plannedChanges)
   }
   /*
    * Final command status
@@ -161,7 +161,7 @@ export const renderCommandResult = ({
   renderFinalStatus({
     message: finalMessage,
     result,
-    changes
+    plannedChanges
   })
   logger.debug('Command result:', result)
 }
