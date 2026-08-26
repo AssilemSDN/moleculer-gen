@@ -12,9 +12,9 @@ import { writeFile } from '../../utils/fs-helpers.js'
  * @param {string} answers.database - Chosen database
  * @param {string} answers.transporter - Chosen transporter
  * @param {string[]} answers.plugins - Optional selected plugins
- * @param {string} outputDir - Directory where files will be generated
+ * @param {string} projectDir - Directory where files will be generated
  */
-export const generateConfig = async (answers, outputDir) => {
+export const generateConfig = async (answers, projectDir) => {
   const config = {
     ...answers,
     services: {
@@ -26,5 +26,5 @@ export const generateConfig = async (answers, outputDir) => {
       }
     }
   }
-  await writeFile(path.join(outputDir, '.moleculer-gen/config.json'), JSON.stringify(config, null, 2))
+  await writeFile(path.join(projectDir, '.moleculer-gen/config.json'), JSON.stringify(config, null, 2))
 }

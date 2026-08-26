@@ -9,11 +9,11 @@ import { writeFile } from '../../utils/fs-helpers.js'
  *
  * @async
  * @param {string} projectNameSanitized - Name of the project
- * @param {string} outputDir - Directory to write the package.json into
+ * @param {string} projectDir - Directory to write the package.json into
  * @param {Object} options - Additional options
  * @param {string} options.database - Key database chosen (e.g., 'mongodb')
  */
-export const generatePackageJson = async (projectNameSanitized, outputDir, options) => {
+export const generatePackageJson = async (projectNameSanitized, projectDir, options) => {
   const { database } = options
 
   const pkg = {
@@ -50,7 +50,7 @@ export const generatePackageJson = async (projectNameSanitized, outputDir, optio
   }
 
   await writeFile(
-    path.join(outputDir, 'package.json'),
+    path.join(projectDir, 'package.json'),
     JSON.stringify(pkg, null, 2)
   )
 }

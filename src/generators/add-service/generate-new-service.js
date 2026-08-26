@@ -14,7 +14,7 @@ import { updateDockerCompose } from './update-docker-compose.js'
  * @param {string} projectNameSanitized
  * @param {object} answers - User inputs from prompts
  * @param {string} templateDir - Path to templates directory
- * @param {string} outputDir - Project root directory
+ * @param {string} projectDir - Project root directory
  * @param {string} serviceDir - Directory for the service
  * @param {object} [options]
  * @param {boolean} [options.dryRun=false] - Simulate generation
@@ -23,7 +23,7 @@ export const generateNewService = async (
   projectNameSanitized,
   answers,
   templateDir,
-  outputDir,
+  projectDir,
   serviceDir,
   { dryRun = false } = {}
 ) => {
@@ -45,7 +45,7 @@ export const generateNewService = async (
   )
 
   const modelDir = path.join(
-    outputDir,
+    projectDir,
     'src',
     'data',
     'model'
@@ -58,30 +58,30 @@ export const generateNewService = async (
   addPlannedChange(result, {
     type: 'create',
     target: serviceFilePath
-  }, { outputDir })
+  }, { projectDir })
 
   if (isCrud) {
     addPlannedChange(result, {
       type: 'create',
       target: modelFilePath
-    }, { outputDir })
+    }, { projectDir })
   }
 
   addPlannedChange(result, {
     type: 'create',
     target: path.join('docker', 'services', `${serviceDirectoryName}.yaml`)
-  }, { outputDir })
+  }, { projectDir })
 
   addPlannedChange(result, {
     type: 'update',
     target: '.moleculer-gen/config.json'
-  }, { outputDir })
+  }, { projectDir })
 
   if (exposeApi) {
     addPlannedChange(result, {
       type: 'update',
       target: 'src/config/routes.config.js'
-    }, { outputDir })
+    }, { projectDir })
   }
 
   //  1- dry-run mode : no real service generation
