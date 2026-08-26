@@ -1,6 +1,7 @@
 /*
   PATH /src/generators/init-project/generate.js
 */
+import fs from 'fs/promises'
 import path from 'path'
 
 import {
@@ -22,22 +23,58 @@ import { generatePackageJson } from './generate-package.json.js'
 import { generateApplicationConfig } from './generate-application-config.js'
 import { generateReadme } from './generate-readme.js'
 
-/**
- * Register all changes involved in project generation.
- *
- * Changes describe both:
- * - what WILL happen during a dry-run
- * - what DID happen during a real generation
- */
-const registerPlannedGenerationChanges = ({
-  result,
-  modules
-}) => {
-  addPlannedChange(result, {
-    type: 'copy',
-    target: '.',
-    scope: 'base-template'
+const listFilesRecursive = async (directory, baseDirectory = directory) => {
+  const entries = await fs.readdir(directory, {
+    withFileTypes: true
   })
+  const files = []
+  for (const entry of entries) {
+    const entryPath = path.join(directory, entry.name)
+    if (entry.isDirectory()) {
+      files.push(
+        ...await listFilesRecursive(
+          entryPath,
+          baseDirectory
+        )
+      )
+      continue
+    }
+
+    const relativePath = path.relative(
+      baseDirectory,
+      entryPath
+    )
+    const normalizedPath = relativePath.replaceAll(
+      path.sep,
+      path.posix.sep
+    )
+
+    files.push(normalizedPath)
+  }
+  return files.sort()
+}
+
+/**
+ * Register all planned changes involved in project generation.
+ *
+ * Planned changes describe the expected filesystem effects of the project generation.
+ */
+const registerPlannedGenerationChanges = async ({
+  result,
+  modules,
+  templateDir
+}) => {
+  const staticDir = path.join(templateDir, 'static')
+
+  const templateFiles = await listFilesRecursive(staticDir)
+
+  for (const target of templateFiles) {
+    addPlannedChange(result, {
+      type: 'create',
+      target,
+      scope: 'base-template'
+    })
+  }
 
   const generatedFiles = [
     '.moleculer-gen/config.json',
@@ -115,13 +152,14 @@ export const generate = async ({
    */
   await ensureEmptyDir(projectDir)
 
-  registerPlannedGenerationChanges({
+  await registerPlannedGenerationChanges({
     result: generationResult,
-    modules
+    modules,
+    templateDir
   })
 
   logger.debug(
-    'Project generation changes:',
+    'Project generation plan:',
     generationResult.plannedChanges
   )
 
