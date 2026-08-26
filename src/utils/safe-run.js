@@ -26,7 +26,7 @@ export const safeRun = (fn) => async (...args) => {
     addError(result, {
       code:
         err?.code ??
-        (isAppError ? 'USER_ERROR' : 'INTERNAL_ERROR'),
+        (isAppError ? 'APPLICATION_ERROR' : 'INTERNAL_ERROR'),
 
       message: isAppError
         ? err.message
@@ -42,7 +42,7 @@ export const safeRun = (fn) => async (...args) => {
       success: false,
       error: err,
       exitCode: isAppError
-        ? ExitCodes.USER_ERROR.code
+        ? ExitCodes.APPLICATION_ERROR.code
         : ExitCodes.INTERNAL_ERROR.code
     }
   }
