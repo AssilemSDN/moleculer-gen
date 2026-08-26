@@ -1,6 +1,7 @@
 import { generateDefaultNames } from '../../utils/common-helpers.js'
 import { AppError } from '../../errors/AppError.js'
 import { addServiceConfigSchema } from '../../schemas/add-service-config.schema.js'
+import { ErrorCodes } from '../../errors/error-codes.js'
 
 /**
  * Validate and normalize a service configuration.
@@ -16,7 +17,7 @@ export const validateAddServiceConfig = (config) => {
   if (!result.success) {
     throw new AppError('Invalid service config',
       {
-        code: 'INVALID_CONFIG',
+        code: ErrorCodes.INVALID_CONFIG,
         cause: result.error
       }
     )

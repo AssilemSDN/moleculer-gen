@@ -18,6 +18,7 @@ import { loadJsonConfigFile } from '../utils/config-helpers.js'
 /* Generate new services */
 import { validateAddServicesConfig } from '../validators/config/validate-add-services-config.js'
 import { addNewServiceToProject } from '../generators/add-service/add-new-service-to-project.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -37,7 +38,7 @@ const skippableErrorCodes = new Set([
  */
 const loadServicesConfigFromFile = async (configFile) => {
   const config = await loadJsonConfigFile(configFile, {
-    invalidJsonCode: 'INVALID_SERVICES_CONFIG',
+    invalidJsonCode: ErrorCodes.INVALID_CONFIG,
     label: 'Services config'
   })
   return validateAddServicesConfig(config)
@@ -54,7 +55,7 @@ export const addServices = safeRun(
       throw new AppError(
         'Missing required configFile argument',
         {
-          code: 'MISSING_CONFIG_FILE'
+          code: ErrorCodes.MISSING_REQUIRED_OPTION
         }
       )
     }
@@ -71,7 +72,7 @@ export const addServices = safeRun(
       throw new AppError(
         'The project does not seem initialized (.moleculer-gen folder or config.json missing)',
         {
-          code: 'PROJECT_NOT_INITIALIZED'
+          code: ErrorCodes.PROJECT_NOT_INITIALIZED
         }
       )
     }
@@ -88,7 +89,7 @@ export const addServices = safeRun(
       throw new AppError(
         'projectNameSanitized is missing from project config',
         {
-          code: 'PROJECT_NAME_SANITIZED_MISSING'
+          code: ErrorCodes.INVALID_CONFIG
         }
       )
     }
@@ -99,7 +100,7 @@ export const addServices = safeRun(
       throw new AppError(
         'Invalid services config: services must not be empty',
         {
-          code: 'INVALID_SERVICES_CONFIG'
+          code: ErrorCodes.INVALID_CONFIG
         }
       )
     }

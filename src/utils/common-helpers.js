@@ -8,6 +8,7 @@ import pluralize from 'pluralize-esm'
 import slugify from 'slugify'
 
 import { AppError } from '../errors/AppError.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 /**
  * Generates conventional file and identifier names for a service.
@@ -48,7 +49,7 @@ export const generateDefaultNames = (serviceName) => {
 export const sanitizeName = (name) => {
   if (typeof name !== 'string' || !name.trim()) {
     throw new AppError('Name must be a non-empty string.', {
-      code: 'INVALID_NAME'
+      code: ErrorCodes.INVALID_NAME
     })
   }
 
@@ -60,7 +61,7 @@ export const sanitizeName = (name) => {
 
   if (!sanitized) {
     throw new AppError('Name invalid after sanitization.', {
-      code: 'INVALID_NAME'
+      code: ErrorCodes.INVALID_NAME
     })
   }
 
@@ -77,14 +78,14 @@ export const sanitizeName = (name) => {
 export const validateProjectName = (name) => {
   if (typeof name !== 'string' || !name.trim()) {
     throw new AppError('projectName must be a non-empty string.', {
-      code: 'INVALID_PROJECT_NAME'
+      code: ErrorCodes.INVALID_NAME
     })
   }
 
   if (name.includes('..') || name.includes('/') || name.includes('\\')) {
     throw new AppError(
       'projectName cannot contain ".." or path separators.',
-      { code: 'INVALID_PROJECT_NAME' }
+      { code: ErrorCodes.INVALID_NAME }
     )
   }
 
@@ -102,14 +103,14 @@ export const validateProjectName = (name) => {
 export const validateSanitizedName = (fieldName, name) => {
   if (typeof name !== 'string' || !name.trim()) {
     throw new AppError(`${fieldName} must be a non-empty string.`, {
-      code: 'INVALID_SANITIZED_NAME'
+      code: ErrorCodes.INVALID_NAME
     })
   }
 
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name)) {
     throw new AppError(
       `${fieldName} must contain only lowercase letters, numbers and single hyphens.`,
-      { code: 'INVALID_SANITIZED_NAME' }
+      { code: ErrorCodes.INVALID_NAME }
     )
   }
 
@@ -137,7 +138,7 @@ export const ensurePathInside = (baseDir, targetPath) => {
     throw new AppError(
       `Target path must remain inside "${resolvedBase}".`,
       {
-        code: 'PATH_OUTSIDE_BASE_DIRECTORY',
+        code: ErrorCodes.PATH_OUTSIDE_BASE_DIRECTORY,
         details: {
           baseDir: resolvedBase,
           targetPath: resolvedTarget

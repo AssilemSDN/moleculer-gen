@@ -11,6 +11,7 @@ import {
 
 import { ServiceModule } from '../../../dist/modules/backend-services/ServiceModule.js'
 import { AppError } from '../../errors/AppError.js'
+import { ErrorCodes } from '../../errors/error-codes.js'
 import { buildDockerService } from '../../utils/docker-helpers.js'
 
 /**
@@ -37,7 +38,7 @@ export const updateDockerCompose = async (
   if (!(await exists(composePath))) {
     throw new AppError(
       `docker-compose.yaml not found at ${composePath}`,
-      { code: 'DOCKER_COMPOSE_NOT_FOUND' }
+      { code: ErrorCodes.PROJECT_FILE_NOT_FOUND }
     )
   }
 
@@ -69,7 +70,7 @@ export const updateDockerCompose = async (
   if (await exists(serviceYamlPath)) {
     throw new AppError(
       `Docker service YAML already exists: ${serviceYamlPath}`,
-      { code: 'DOCKER_SERVICE_ALREADY_EXISTS' }
+      { code: ErrorCodes.DOCKER_SERVICE_ALREADY_EXISTS }
     )
   }
 

@@ -9,6 +9,7 @@ import {
 } from '../../utils/fs-helpers.js'
 
 import { AppError } from '../../errors/AppError.js'
+import { ErrorCodes } from '../../errors/error-codes.js'
 
 export const validateServiceNameAvailable = ({
   serviceName,
@@ -26,7 +27,7 @@ export const validateServiceNameAvailable = ({
   ) {
     throw new AppError(
       `Service "${serviceName}" already declared in .moleculer-gen/config.json`,
-      { code: 'SERVICE_ALREADY_EXISTS' }
+      { code: ErrorCodes.SERVICE_ALREADY_EXISTS }
     )
   }
 }
@@ -57,7 +58,7 @@ export const validateServiceCanBeAdded = async ({
   if (await exists(serviceDir)) {
     throw new AppError(
       `Service directory already exists: ${serviceDir}`,
-      { code: 'SERVICE_ALREADY_EXISTS' }
+      { code: ErrorCodes.SERVICE_ALREADY_EXISTS }
     )
   }
 
@@ -76,7 +77,7 @@ export const validateServiceCanBeAdded = async ({
   if (await exists(dockerServicePath)) {
     throw new AppError(
       `Docker service YAML already exists: ${dockerServicePath}`,
-      { code: 'DOCKER_SERVICE_ALREADY_EXISTS' }
+      { code: ErrorCodes.DOCKER_SERVICE_ALREADY_EXISTS }
     )
   }
 
@@ -97,7 +98,7 @@ export const validateServiceCanBeAdded = async ({
     if (await exists(modelPath)) {
       throw new AppError(
         `Model file already exists: ${modelPath}`,
-        { code: 'MODEL_ALREADY_EXISTS' }
+        { code: ErrorCodes.MODEL_ALREADY_EXISTS }
       )
     }
   }

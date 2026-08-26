@@ -4,7 +4,7 @@
 
 /**
  * Custom error class for application-specific errors.
- * 
+ *
  * @class AppError
  * @extends Error
  * @param {string} message - Human-readable error message
@@ -15,7 +15,7 @@
  */
 export class AppError extends Error {
   constructor (message, {
-    code = 'APP_ERROR',
+    code,
     details = null,
     cause
   } = {}) {

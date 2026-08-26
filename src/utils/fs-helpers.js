@@ -5,6 +5,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import * as yaml from 'js-yaml'
 import { AppError } from '../errors/AppError.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 /**
  * Generic wrapper to handle FS errors.
@@ -51,7 +52,7 @@ export const resolvePathInside = (baseDir, targetPath) => {
   if (escapesBase) {
     throw new AppError(`Path escapes allowed directory: ${targetPath}`,
       {
-        code: 'INVALID_PATH',
+        code: ErrorCodes.PATH_OUTSIDE_BASE_DIRECTORY,
         details: {
           baseDir: resolvedBase,
           targetPath,
@@ -105,7 +106,7 @@ export const ensureEmptyDir = async (dirPath) => {
     const files = await fs.readdir(dirPath)
     if (files.length > 0) {
       throw new AppError(`Directory is not empty: ${dirPath}`, {
-        code: 'FS_DIR_NOT_EMPTY'
+        code: ErrorCodes.TARGET_DIRECTORY_NOT_EMPTY
       })
     }
   } catch (err) {

@@ -26,6 +26,7 @@ import { ApiGatewayModule } from '../../dist/modules/backend-services/ApiGateway
 
 // Generator
 import { generate } from '../generators/init-project/generate.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -40,7 +41,7 @@ const TEMPLATE_DIR = path.join(__dirname, '../../templates')
  */
 const loadInitConfigFromFile = async (configFile) => {
   const config = await loadJsonConfigFile(configFile, {
-    invalidJsonCode: 'INVALID_JSON',
+    invalidJsonCode: ErrorCodes.INVALID_CONFIG,
     label: 'Init config'
   })
 
