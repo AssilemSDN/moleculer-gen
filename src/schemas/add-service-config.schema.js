@@ -5,7 +5,7 @@ export const addServiceConfigSchema = z.object({
   isCrud: z.boolean().optional(),
   exposeApi: z.boolean().optional(),
 
-  serviceFileName: z.string().min(1).optional(),
+  serviceFileName: z.string().trim().min(1).optional(),
   serviceDirectoryName: z.string().trim().min(1).optional(),
 
   modelFileName: z.string().trim().min(1).optional(),

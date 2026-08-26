@@ -32,13 +32,13 @@ export const validateMoleculerConfig = async projectDir => {
   if (!moleculerConfig || typeof moleculerConfig !== 'object' || Array.isArray(moleculerConfig)) {
     throw new AppError(
       'Invalid .moleculer-gen/config.json: expected an object',
-      { code: 'MOLECULER_INVALID_CONFIG' }
+      { code: 'INVALID_CONFIG' }
     )
   }
 
   if (!moleculerConfig.projectName || typeof moleculerConfig.projectName !== 'string') {
     errors.push({
-      code: 'MOLECULER_INVALID_CONFIG',
+      code: 'INVALID_CONFIG',
       message: 'Invalid .moleculer-gen/config.json: missing or invalid "projectName"',
       details: {
         field: 'projectName'
@@ -48,7 +48,7 @@ export const validateMoleculerConfig = async projectDir => {
 
   if (!moleculerConfig.projectNameSanitized || typeof moleculerConfig.projectNameSanitized !== 'string') {
     errors.push({
-      code: 'MOLECULER_INVALID_CONFIG',
+      code: 'INVALID_CONFIG',
       message: 'Invalid .moleculer-gen/config.json: missing or invalid "projectNameSanitized"',
       details: {
         field: 'projectNameSanitized'
@@ -68,7 +68,7 @@ export const validateMoleculerConfig = async projectDir => {
 
   if (!moleculerConfig.transporter || typeof moleculerConfig.transporter !== 'string') {
     errors.push({
-      code: 'MOLECULER_INVALID_CONFIG',
+      code: 'INVALID_CONFIG',
       message: 'Invalid .moleculer-gen/config.json: missing or invalid "transporter"',
       details: {
         field: 'transporter'
@@ -78,7 +78,7 @@ export const validateMoleculerConfig = async projectDir => {
 
   if (moleculerConfig.plugins !== undefined && !Array.isArray(moleculerConfig.plugins)) {
     errors.push({
-      code: 'MOLECULER_INVALID_CONFIG',
+      code: 'INVALID_CONFIG',
       message: 'Invalid .moleculer-gen/config.json: "plugins" must be an array',
       details: {
         field: 'plugins'
@@ -94,7 +94,7 @@ export const validateMoleculerConfig = async projectDir => {
     )
   ) {
     errors.push({
-      code: 'MOLECULER_INVALID_CONFIG',
+      code: 'INVALID_CONFIG',
       message: 'Invalid .moleculer-gen/config.json: "services" must be an object',
       details: {
         field: 'services'
