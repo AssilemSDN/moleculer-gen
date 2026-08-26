@@ -21,6 +21,7 @@ import {
 } from '../utils/fs-helpers.js'
 
 import { loadJsonConfigFile } from '../utils/config-helpers.js'
+import { validateAddServiceConfig } from '../validators/config/validate-add-service-config.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -37,7 +38,6 @@ export const loadServiceConfigFromFile = async (configFile) => {
     invalidJsonCode: 'INVALID_SERVICE_CONFIG',
     label: 'Service config'
   })
-
   return validateAddServiceConfig(config)
 }
 
