@@ -41,12 +41,12 @@ export const validateProject = safeRun(async () => {
     logger.debug('Validate command result:', {
       ...commandResult,
       success: false,
-      exitCode: ExitCodes.USER_ERROR.code
+      exitCode: ExitCodes.APPLICATION_ERROR.code
     })
     return {
       ...commandResult,
       success: false,
-      exitCode: ExitCodes.USER_ERROR.code
+      exitCode: ExitCodes.APPLICATION_ERROR.code
     }
   }
 
