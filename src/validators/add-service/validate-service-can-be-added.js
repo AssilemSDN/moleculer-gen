@@ -10,21 +10,37 @@ import {
 
 import { AppError } from '../../errors/AppError.js'
 
+export const validateServiceNameAvailable = ({
+  serviceName,
+  moleculerGenConfig
+}) => {
+  const existingServices =
+    moleculerGenConfig.services ?? {}
+
+  const existingService =
+    existingServices[serviceName]
+
+  if (
+    existingService !== undefined &&
+    existingService !== null
+  ) {
+    throw new AppError(
+      `Service "${serviceName}" already declared in .moleculer-gen/config.json`,
+      { code: 'SERVICE_ALREADY_EXISTS' }
+    )
+  }
+}
+
 export const validateServiceCanBeAdded = async ({
   projectDir,
   serviceConfig,
   moleculerGenConfig
 }) => {
   // Check if service already declared in moleculer-gen config
-  const existingServices = moleculerGenConfig.services ?? {}
-  const existingService = existingServices[serviceConfig.serviceName]
-
-  if (existingService !== undefined && existingService !== null) {
-    throw new AppError(
-      `Service "${serviceConfig.serviceName}" already declared in .moleculer-gen/config.json`,
-      { code: 'SERVICE_ALREADY_EXISTS' }
-    )
-  }
+  validateServiceNameAvailable({
+    serviceName: serviceConfig.serviceName,
+    moleculerGenConfig
+  })
 
   // Check if service directory already exists
   const servicesDir = path.join(

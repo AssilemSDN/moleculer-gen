@@ -7,8 +7,26 @@ import { camelCase } from 'change-case'
 import { prompt } from './prompt.js'
 import { generateDefaultNames } from '../utils/common-helpers.js'
 
-export const addServicePrompts = async () => {
-  const baseAnswers = await prompt([
+export const addServicePrompts = async ({
+  validateService
+} = {}) => {
+  const serviceName = await promptServiceName()
+  if (validateService) {
+    await validateService(serviceName)
+  }
+  const details = await promptServiceDetails(serviceName)
+  return {
+    serviceName,
+    ...details
+  }
+}
+
+/**
+ *
+ * @returns
+ */
+export const promptServiceName = async () => {
+  const { serviceName } = await prompt([
     {
       type: 'input',
       name: 'serviceName',
@@ -28,18 +46,26 @@ export const addServicePrompts = async () => {
         return true
       },
       filter: input => camelCase(input.trim())
-    },
+    }
+  ])
+  return serviceName
+}
+
+/**
+ *
+ * @param {*} serviceName
+ * @returns
+ */
+export const promptServiceDetails = async (serviceName) => {
+  const defaults = generateDefaultNames(serviceName)
+
+  const baseAnswers = await prompt([
     {
       type: 'confirm',
       name: 'isCrud',
       message: 'CRUD service:',
       default: true
-    }
-  ])
-
-  const defaults = generateDefaultNames(baseAnswers.serviceName)
-
-  const serviceAnswers = await prompt([
+    },
     {
       type: 'input',
       name: 'serviceFileName',
@@ -58,7 +84,7 @@ export const addServicePrompts = async () => {
   let crudAnswers = {}
 
   if (baseAnswers.isCrud) {
-    const { exposeApi: exposeApiAnswer } = await prompt([
+    const apiAnswers = await prompt([
       {
         type: 'confirm',
         name: 'exposeApi',
@@ -67,7 +93,7 @@ export const addServicePrompts = async () => {
       }
     ])
 
-    exposeApi = exposeApiAnswer
+    exposeApi = apiAnswers.exposeApi
 
     crudAnswers = await prompt([
       {
@@ -106,7 +132,6 @@ export const addServicePrompts = async () => {
   return {
     ...baseAnswers,
     exposeApi,
-    ...serviceAnswers,
     ...crudAnswers
   }
 }
