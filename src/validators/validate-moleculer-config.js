@@ -89,17 +89,17 @@ export const validateMoleculerConfig = async projectDir => {
   if (moleculerConfig.services !== undefined &&
     (
       moleculerConfig.services === null ||
-      typeof moleculerConfig.services !== 'object'
+      typeof moleculerConfig.services !== 'object' ||
+      Array.isArray(moleculerConfig.services)
     )
   ) {
     errors.push({
       code: 'MOLECULER_INVALID_CONFIG',
-      message: 'Invalid .moleculer-gen/config.json: "services" must be an object or an array',
+      message: 'Invalid .moleculer-gen/config.json: "services" must be an object',
       details: {
-        field: 'plugins'
+        field: 'services'
       }
     })
-    errors.push()
   }
 
   if (errors.length === 0) {
