@@ -2,6 +2,7 @@
   PATH /src/validators/project-validator.js
 */
 
+import { logger } from '../utils/logger.js'
 import { validateMoleculerConfig } from './validate-moleculer-config.js'
 
 /**
@@ -24,8 +25,19 @@ export const projectValidator = async (projectDir = process.cwd()) => {
     errors.push(...result.errors)
     warnings.push(...result.warnings)
   } catch (err) {
-    errors.push(err.message)
+    errors.push({
+      code: err.code ?? 'PROJECT_VALIDATION_ERROR',
+      message: err.message,
+      details: err.details ?? null
+    })
   }
+
+  logger.debug('Project validation result:', {
+    valid: errors.length === 0,
+    checks,
+    errors,
+    warnings
+  })
 
   return {
     valid: errors.length === 0,

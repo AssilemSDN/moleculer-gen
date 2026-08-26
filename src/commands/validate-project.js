@@ -11,6 +11,7 @@ import {
 } from '../utils/command-result.js'
 import { projectValidator } from '../validators/project-validator.js'
 import { ExitCodes } from '../utils/exit-codes.js'
+import { logger } from '../utils/logger.js'
 
 export const validateProject = safeRun(async () => {
   const commandResult = createCommandResult()
@@ -34,11 +35,14 @@ export const validateProject = safeRun(async () => {
 
   if (!result.valid) {
     for (const error of result.errors) {
-      addError(commandResult, {
-        code: 'PROJECT_VALIDATION_ERROR',
-        message: error
-      })
+      addError(commandResult, error)
     }
+
+    logger.debug('Validate command result:', {
+      ...commandResult,
+      success: false,
+      exitCode: ExitCodes.USER_ERROR.code
+    })
     return {
       ...commandResult,
       success: false,
@@ -46,5 +50,6 @@ export const validateProject = safeRun(async () => {
     }
   }
 
+  logger.debug('Validate command result:', commandResult)
   return commandResult
 })
