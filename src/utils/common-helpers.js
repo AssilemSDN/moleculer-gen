@@ -148,3 +148,17 @@ export const ensurePathInside = (baseDir, targetPath) => {
 
   return resolvedTarget
 }
+
+export const toRelativeProjectPath = (
+  projectDir,
+  target
+) => {
+  const relative = path.isAbsolute(target)
+    ? path.relative(projectDir, target)
+    : target
+
+  return relative.replaceAll(
+    path.sep,
+    path.posix.sep
+  )
+}

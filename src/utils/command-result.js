@@ -1,3 +1,5 @@
+import { toRelativeProjectPath } from './common-helpers.js'
+
 /*
   PATH /src/utils/command-result.js
 */
@@ -12,8 +14,18 @@ export const createCommandResult = ({ dryRun = false } = {}) => ({
   data: {}
 })
 
-export const addPlannedChange = (result, plannedChange) => {
-  result.plannedChanges.push(plannedChange)
+export const addPlannedChange = (result, plannedChange, { projectDir } = {}) => {
+  const target = projectDir
+    ? toRelativeProjectPath(
+      projectDir,
+      plannedChange.target
+    )
+    : plannedChange.target
+
+  result.plannedChanges.push({
+    ...plannedChange,
+    target
+  })
 }
 
 export const addCheck = (result, check) => {

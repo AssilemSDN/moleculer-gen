@@ -1,8 +1,6 @@
 /*
   PATH /src/cli/renderer/render-command-result.js
 */
-import path from 'path'
-
 import { logger } from '../../utils/logger.js'
 
 const renderNextSteps = (nextSteps) => {
@@ -34,18 +32,7 @@ const formatChange = (change) => {
   const type = (change?.type ?? 'change')
     .toUpperCase()
     .padEnd(7)
-
-  let target = change.target
-
-  if (target && path.isAbsolute(target)) {
-    const relativePath = path.relative(
-      process.cwd(),
-      target
-    )
-    target = relativePath || '.'
-  }
-
-  return `${type} ${target}`
+  return `${type} ${change.target}`
 }
 
 const renderDryRun = (plannedChanges) => {

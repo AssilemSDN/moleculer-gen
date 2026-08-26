@@ -58,30 +58,30 @@ export const generateNewService = async (
   addPlannedChange(result, {
     type: 'create',
     target: serviceFilePath
-  })
+  }, { outputDir })
 
   if (isCrud) {
     addPlannedChange(result, {
       type: 'create',
       target: modelFilePath
-    })
+    }, { outputDir })
   }
 
   addPlannedChange(result, {
     type: 'create',
     target: path.join('docker', 'services', `${serviceDirectoryName}.yaml`)
-  })
+  }, { outputDir })
 
   addPlannedChange(result, {
     type: 'update',
     target: '.moleculer-gen/config.json'
-  })
+  }, { outputDir })
 
   if (exposeApi) {
     addPlannedChange(result, {
       type: 'update',
       target: 'src/config/routes.config.js'
-    })
+    }, { outputDir })
   }
 
   //  1- dry-run mode : no real service generation

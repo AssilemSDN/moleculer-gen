@@ -11,7 +11,7 @@ import {
 } from '../utils/command-result.js'
 import { addServicePrompts } from '../prompts/add-service-prompts.js'
 import { addNewServiceToProject } from '../generators/add-service/add-new-service-to-project.js'
-import { validateServiceCanBeAdded, validateServiceNameAvailable } from '../validators/add-service/validate-service-can-be-added.js'
+import { validateServiceNameAvailable } from '../validators/add-service/validate-service-can-be-added.js'
 
 import { AppError } from '../errors/AppError.js'
 
@@ -92,12 +92,12 @@ export const addService = safeRun(
     const answers = configFile
       ? await loadServiceConfigFromFile(configFile)
       : await addServicePrompts({
-          validateService: serviceName =>
-            validateServiceNameAvailable({
-              serviceName,
-              moleculerGenConfig
-            })
-        })
+        validateService: serviceName =>
+          validateServiceNameAvailable({
+            serviceName,
+            moleculerGenConfig
+          })
+      })
 
     const serviceResult = await addNewServiceToProject({
       projectNameSanitized,
@@ -109,7 +109,7 @@ export const addService = safeRun(
     })
 
     for (const plannedChange of serviceResult.plannedChanges) {
-      addPlannedChange(result, plannedChange)
+      addPlannedChange(result, plannedChange, { projectDir })
     }
 
     result.data = serviceResult.serviceConfig

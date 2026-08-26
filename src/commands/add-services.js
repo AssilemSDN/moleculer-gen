@@ -125,7 +125,7 @@ export const addServices = safeRun(
           addPlannedChange(result, {
             ...plannedChange,
             service: serviceName
-          })
+          }, { projectDir })
         }
       } catch (error) {
         if (skippableErrorCodes.has(error.code)) {
