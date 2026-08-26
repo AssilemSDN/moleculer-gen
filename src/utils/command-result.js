@@ -8,6 +8,7 @@ export const createCommandResult = ({ dryRun = false } = {}) => ({
   checks: [],
   warnings: [],
   errors: [],
+  nextSteps: [],
   data: {}
 })
 
@@ -25,4 +26,8 @@ export const addWarning = (result, warning) => {
 
 export const addError = (result, error) => {
   result.errors.push(error)
+}
+
+export const addNextStep = (result, nextStep) => {
+  result.nextSteps.push(nextStep)
 }

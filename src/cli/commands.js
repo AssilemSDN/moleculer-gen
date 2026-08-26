@@ -25,11 +25,12 @@ export const registerCommands = (program) => {
         },
         {
           successMessage: (data, result) => {
-            const projectName = data?.projectName ?? 'Project'
+            const projectName = data?.projectName
+            const projectNameSanitized = data?.projectNameSanitized
             if (result.dryRun) {
-              return `Project "${projectName}" can be initialized`
+              return `Project "${projectName}" can be initialized in ./${projectNameSanitized}`
             }
-            return `Project "${projectName}" initialized`
+            return `Project "${projectName}" initialized in ./${projectNameSanitized}`
           }
         }
       )

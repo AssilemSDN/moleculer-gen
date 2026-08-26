@@ -5,6 +5,24 @@ import path from 'path'
 
 import { logger } from '../../utils/logger.js'
 
+const renderNextSteps = (nextSteps) => {
+  if (nextSteps.length === 0) {
+    return
+  }
+
+  logger.newLine()
+  logger.plain('Next steps:')
+
+  for (const step of nextSteps) {
+    if (step.type === 'command') {
+      logger.plain(`  $ ${step.value}`)
+      continue
+    }
+
+    logger.plain(`  ${step.value}`)
+  }
+}
+
 const getMessage = (entry) => {
   if (typeof entry === 'string') {
     return entry
@@ -102,6 +120,7 @@ export const renderCommandResult = ({
   const warnings = result.warnings ?? []
   const errors = result.errors ?? []
   const plannedChanges = result.plannedChanges ?? []
+  const nextSteps = result.nextSteps ?? []
 
   /*
    * Successful checks
@@ -122,12 +141,13 @@ export const renderCommandResult = ({
     logger.error(getMessage(error))
   }
   /*
-   * Fatal command failure
+   * Command failure
    */
   if (!result.success) {
     if (errors.length === 0) {
       logger.error('An unexpected internal error occurred.')
     }
+    renderNextSteps(nextSteps)
     if (result.error) {
       logger.debug('Raw error: ', result.error)
     }
@@ -156,6 +176,7 @@ export const renderCommandResult = ({
     result,
     plannedChanges
   })
+  renderNextSteps(nextSteps)
   logger.debug('Command result:', result)
 }
 

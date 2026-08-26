@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url'
 import { initPrompts } from '../prompts/init-prompts.js'
 import { safeRun } from '../utils/safe-run.js'
 import { loadJsonConfigFile } from '../utils/config-helpers.js'
-import { createCommandResult } from '../utils/command-result.js'
+import { addNextStep, createCommandResult } from '../utils/command-result.js'
 import { logger } from '../utils/logger.js'
 
 import { validateInitProjectConfig } from '../validators/config/validate-init-project-config.js'
@@ -146,6 +146,27 @@ export const initProject = safeRun(
       result
     })
 
+    if (!dryRun) {
+      addNextStep(result, {
+        type: 'command',
+        value: `cd ./${projectNameSanitized}`
+      })
+
+      addNextStep(result, {
+        type: 'command',
+        value: 'moleculer-gen add-service'
+      })
+
+      addNextStep(result, {
+        type: 'command',
+        value: 'make build'
+      })
+
+      addNextStep(result, {
+        type: 'command',
+        value: 'make start'
+      })
+    }
     return result
   }
 )
