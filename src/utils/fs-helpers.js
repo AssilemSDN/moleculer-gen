@@ -8,9 +8,9 @@ import { AppError } from '../errors/AppError.js'
 import { ErrorCodes } from '../errors/error-codes.js'
 
 /**
- * Generic wrapper to handle FS errors.
+ * Generic wrapper to handle permissions errors.
  */
-const handleFsError = (fn, msg) => async (...args) => {
+const handlePermissionErrors = (fn, msg) => async (...args) => {
   try {
     return await fn(...args)
   } catch (err) {
@@ -163,8 +163,34 @@ export const readFile = handleFsError(
  * @param {string} filePath
  * @returns {Promise<boolean>}
  */
-export const exists = async filePath =>
-  fs.access(filePath).then(() => true).catch(() => false)
+export const exists = async filePath => {
+  try {
+    await fs.access(filePath)
+    return true
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      return false
+    }
+
+    if (
+      error?.code === 'EACCES' ||
+      error?.code === 'EPERM'
+    ) {
+      throw new AppError(
+        `Impossible to access the path: ${filePath}`,
+        {
+          code: ErrorCodes.PERMISSION_DENIED,
+          cause: error,
+          details: {
+            path: filePath
+          }
+        }
+      )
+    }
+
+    throw error
+  }
+}
 
 /**
  * Read a JSON file and parse its content.
