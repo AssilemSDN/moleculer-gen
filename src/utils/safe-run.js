@@ -7,6 +7,7 @@ import {
   createCommandResult,
   addError
 } from './command-result.js'
+import { AppError } from '../errors/AppError.js'
 
 /**
  * Wraps an async command and ensures a consistent execution result.
@@ -21,7 +22,7 @@ export const safeRun = (fn) => async (...args) => {
     )
   } catch (err) {
     const result = createCommandResult({ dryRun })
-    const isAppError = err?.name === 'AppError'
+    const isAppError = err instanceof AppError
 
     addError(result, {
       code:
