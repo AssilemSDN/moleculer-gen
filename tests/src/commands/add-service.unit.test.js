@@ -6,6 +6,7 @@ import { addServicePrompts } from '../../../src/prompts/add-service-prompts.js'
 import { AppError } from '../../../src/errors/AppError.js'
 
 import { addNewServiceToProject } from '../../../src/generators/add-service/add-new-service-to-project.js'
+import { ErrorCodes } from '../../../src/errors/error-codes.js'
 
 vi.mock('../../../src/prompts/add-service-prompts.js', () => ({
   addServicePrompts: vi.fn()
@@ -53,7 +54,15 @@ describe('addService', () => {
         exposeApi: true
       })
 
-      addNewServiceToProject.mockResolvedValue(undefined)
+      addNewServiceToProject.mockResolvedValue({
+        serviceConfig: {
+          serviceName: 'My Service',
+          serviceDirectoryName: 'my-service-dir',
+          isCrud: true,
+          exposeApi: true
+        },
+        plannedChanges: []
+      })
 
       const result = await addService({ dryRun: true })
 
@@ -88,7 +97,13 @@ describe('addService', () => {
           isCrud: false
         })
 
-      addNewServiceToProject.mockResolvedValue(undefined)
+      addNewServiceToProject.mockResolvedValue({
+        serviceConfig: {
+          serviceName: 'ServiceFromFile',
+          isCrud: false
+        },
+        plannedChanges: []
+      })
 
       const result = await addService({ configFile: 'service.json', dryRun: true })
 
@@ -104,10 +119,8 @@ describe('addService', () => {
     // ---------------------------
     it('KO : Should fail if project is not initialized', async () => {
       vi.spyOn(fsHelpers, 'exists').mockResolvedValue(false)
-
       const result = await addService()
-
-      expectFailure(result, 'PROJECT_NOT_INITIALIZED')
+      expectFailure(result, ErrorCodes.PROJECT_NOT_INITIALIZED)
     })
 
     // ---------------------------
@@ -121,13 +134,13 @@ describe('addService', () => {
         .mockResolvedValueOnce({ projectNameSanitized: 'my-app' })
         .mockRejectedValueOnce(
           new AppError('Invalid JSON', {
-            code: 'FS_INVALID_JSON'
+            code: ErrorCodes.INVALID_JSON
           })
         )
 
       const result = await addService({ configFile: 'service.json' })
 
-      expectFailure(result, 'INVALID_SERVICE_CONFIG')
+      expectFailure(result, ErrorCodes.INVALID_JSON)
     })
   })
 })

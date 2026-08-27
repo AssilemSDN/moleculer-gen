@@ -18,6 +18,7 @@ import {
   expectCommandSuccess,
   getGeneratedModuleKeys
 } from './init-project-common.js'
+import { ErrorCodes } from '../../../src/errors/error-codes.js'
 
 vi.mock(
   '../../../src/generators/init-project/generate.js',
@@ -125,7 +126,8 @@ describe('initProject - config file', () => {
     {
       name: 'config file does not exist',
       exists: false,
-      expectedError: 'Config file not found'
+      expectedError: 'Init config file not found',
+      expectedCode: ErrorCodes.CONFIG_NOT_FOUND
     },
     {
       name: 'config file contains invalid JSON',
@@ -133,10 +135,11 @@ describe('initProject - config file', () => {
       readError: new AppError(
         'Invalid JSON',
         {
-          code: 'FS_INVALID_JSON'
+          code: ErrorCodes.INVALID_JSON
         }
       ),
-      expectedError: 'Invalid JSON'
+      expectedError: 'Invalid JSON',
+      expectedCode: ErrorCodes.INVALID_JSON
     },
     {
       name: 'config has invalid database key',
@@ -144,7 +147,8 @@ describe('initProject - config file', () => {
       config: createInitConfig({
         database: 'unknown'
       }),
-      expectedError: 'Invalid database key'
+      expectedError: 'Invalid database key',
+      expectedCode: ErrorCodes.INVALID_CONFIG
     }
   ]
 
@@ -152,7 +156,8 @@ describe('initProject - config file', () => {
     exists,
     config,
     readError,
-    expectedError
+    expectedError,
+    expectedCode
   }) => {
     fsHelpers.exists.mockResolvedValue(exists)
 
@@ -166,7 +171,7 @@ describe('initProject - config file', () => {
       configFile: 'config.json'
     })
 
-    const error = expectCommandFailure(result)
+    const error = expectCommandFailure(result, expectedCode)
 
     expect(error.message).toContain(expectedError)
     expect(generate).not.toHaveBeenCalled()

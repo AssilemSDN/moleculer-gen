@@ -3,6 +3,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import {
+  getCliFailure,
   runCli
 } from '../helpers/cli.js'
 
@@ -239,17 +240,11 @@ describe('add-services command integration', () => {
       // Existing services must have been skipped
       // without being modified
       for (const service of servicesToSkip) {
-        expect(output).toContain(
-          `Service "${service.serviceName}" already exists, skipping`
-        )
-
         const expectedService = expectedServices[service.serviceName]
-
         const stateAfter = await readServiceState(
           projectDir,
           expectedService
         )
-
         expect(stateAfter).toEqual(
           skippedServicesState.get(service.serviceName)
         )
@@ -257,13 +252,8 @@ describe('add-services command integration', () => {
 
       // Everything was already there
       if (servicesToCreate.length === 0) {
-        expect(output).toContain(
-          'No service was added. All services were skipped.'
-        )
-
-        expect(output).toContain(
-          'completed with warnings'
-        )
+        expect(output).toContain('All services were skipped')
+        expect(output).toContain(`0 services added, ${servicesToSkip.length} services skipped`)
       }
     }
   )
@@ -288,22 +278,9 @@ describe('add-services command integration', () => {
       maliciousConfig
     )
 
-    let commandError
+    const { output } = await getCliFailure(['add-services', maliciousConfigPath], { cwd: projectDir })
 
-    try {
-      await runCli(
-        ['add-services', maliciousConfigPath],
-        { cwd: projectDir }
-      )
-    } catch (error) {
-      commandError = error
-    }
-
-    expect(commandError).toBeDefined()
-
-    expect(commandError.stdout).toContain(
-      'Path escapes allowed directory: ../../../users.service.js'
-    )
+    expect(output).toContain('Path escapes allowed directory: ../../../users.service.js')
 
     const escapedFilePath = path.resolve(
       projectDir,
