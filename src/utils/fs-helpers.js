@@ -74,7 +74,7 @@ export const resolvePathInside = (baseDir, targetPath) => {
  * @returns {Promise<void>}
  * @throws {AppError} PERMISSION_DENIED if creation is not permitted
  */
-export const mkdirp = handleFsError(
+export const mkdirp = handlePermissionErrors(
   async (dirPath) => {
     await fs.mkdir(dirPath, { recursive: true })
   },
@@ -89,7 +89,7 @@ export const mkdirp = handleFsError(
  * @returns {Promise<void>}
  * @throws {AppError} PERMISSION_DENIED if copy is not permitted
  */
-export const copyDir = handleFsError(
+export const copyDir = handlePermissionErrors(
   async (srcDir, destDir, opts = {}) => {
     await fs.cp(srcDir, destDir, { recursive: true, ...opts })
   },
@@ -138,7 +138,7 @@ export const ensureEmptyDir = async (dirPath) => {
  * @returns {Promise<void>}
  * @throws {AppError} PERMISSION_DENIED if writing is not permitted
  */
-export const writeFile = handleFsError(
+export const writeFile = handlePermissionErrors(
   async (filePath, content, opts = {}) => {
     await mkdirp(path.dirname(filePath))
     await fs.writeFile(filePath, content, opts)
@@ -153,7 +153,7 @@ export const writeFile = handleFsError(
  * @returns {Promise<string>} - File content
  * @throws {AppError} PERMISSION_DENIED if reading is not permitted
  */
-export const readFile = handleFsError(
+export const readFile = handlePermissionErrors(
   async (filePath, opts = {}) => fs.readFile(filePath, { encoding: 'utf8', ...opts }),
   'Impossible to read the file'
 )
@@ -200,8 +200,20 @@ export const exists = async filePath => {
  */
 export const readJsonFile = async filePath => {
   const content = await readFile(filePath)
-
-  return JSON.parse(content)
+  try {
+    return JSON.parse(content)
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      throw new AppError(`Invalid JSON file: ${filePath}`, {
+        code: ErrorCodes.INVALID_JSON,
+        cause: error,
+        details: {
+          path: filePath
+        }
+      })
+    }
+    throw error
+  }
 }
 
 /**
@@ -212,8 +224,20 @@ export const readJsonFile = async filePath => {
  */
 export const readYAML = async filePath => {
   const content = await readFile(filePath)
-
-  return yaml.load(content)
+  try {
+    return yaml.load(content)
+  } catch (error) {
+    if (error instanceof yaml.YAMLException) {
+      throw new AppError(`Invalid YAML file: ${filePath}`, {
+        code: ErrorCodes.INVALID_YAML,
+        cause: error,
+        details: {
+          path: filePath
+        }
+      })
+    }
+    throw error
+  }
 }
 
 /**

@@ -1,7 +1,13 @@
 export const ErrorCodes = Object.freeze({
   INTERNAL_ERROR: 'INTERNAL_ERROR',
 
+  // Parsing error in config
+  INVALID_JSON: 'INVALID_JSON',
+  INVALID_YAML: 'INVALID_YAML',
+
+  // Missing field in config
   INVALID_CONFIG: 'INVALID_CONFIG',
+
   CONFIG_NOT_FOUND: 'CONFIG_NOT_FOUND',
   MISSING_REQUIRED_OPTION: 'MISSING_REQUIRED_OPTION',
 
