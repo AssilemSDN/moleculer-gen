@@ -38,8 +38,7 @@ const skippableErrorCodes = new Set([
  */
 const loadServicesConfigFromFile = async (configFile) => {
   const config = await loadJsonConfigFile(configFile, {
-    invalidJsonCode: ErrorCodes.INVALID_CONFIG,
-    label: 'Services config'
+    configType: 'Services config'
   })
   return validateAddServicesConfig(config)
 }
@@ -130,7 +129,11 @@ export const addServices = safeRun(
         }
       } catch (error) {
         if (skippableErrorCodes.has(error.code)) {
-          skipped.push(serviceName)
+          skipped.push({
+            serviceName,
+            code: error.code,
+            message: error.message
+          })
           continue
         }
         throw error

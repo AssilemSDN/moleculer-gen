@@ -41,8 +41,7 @@ const TEMPLATE_DIR = path.join(__dirname, '../../templates')
  */
 const loadInitConfigFromFile = async (configFile) => {
   const config = await loadJsonConfigFile(configFile, {
-    invalidJsonCode: ErrorCodes.INVALID_CONFIG,
-    label: 'Init config'
+    configType: 'Init config'
   })
 
   return validateInitProjectConfig(config)

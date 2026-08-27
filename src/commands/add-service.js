@@ -36,8 +36,7 @@ const TEMPLATE_DIR = path.join(__dirname, '../../templates')
  */
 export const loadServiceConfigFromFile = async (configFile) => {
   const config = await loadJsonConfigFile(configFile, {
-    invalidJsonCode: ErrorCodes.INVALID_CONFIG,
-    label: 'Service config'
+    configType: 'Service config'
   })
   return validateAddServiceConfig(config)
 }
