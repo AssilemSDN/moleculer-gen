@@ -5,24 +5,28 @@ import fs from 'fs/promises'
 import path from 'path'
 import * as yaml from 'js-yaml'
 import { AppError } from '../errors/AppError.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 /**
- * Generic wrapper to handle FS errors.
+ * Generic wrapper to handle permissions errors.
  */
-const handleFsError = (fn, msg, code) => async (...args) => {
+const handlePermissionErrors = (fn, msg) => async (...args) => {
   try {
     return await fn(...args)
   } catch (err) {
     if (err instanceof AppError) {
       throw err
     }
-    throw new AppError(`${msg}: ${args[0]}`, {
-      code,
-      cause: err,
-      details: {
-        path: args[0]
-      }
-    })
+    if (err?.code === 'EACCES' || err?.code === 'EPERM') {
+      throw new AppError(`${msg}: ${args[0]}`, {
+        code: ErrorCodes.PERMISSION_DENIED,
+        cause: err,
+        details: {
+          path: args[0]
+        }
+      })
+    }
+    throw err
   }
 }
 
@@ -51,7 +55,7 @@ export const resolvePathInside = (baseDir, targetPath) => {
   if (escapesBase) {
     throw new AppError(`Path escapes allowed directory: ${targetPath}`,
       {
-        code: 'INVALID_PATH',
+        code: ErrorCodes.PATH_OUTSIDE_BASE_DIRECTORY,
         details: {
           baseDir: resolvedBase,
           targetPath,
@@ -68,14 +72,13 @@ export const resolvePathInside = (baseDir, targetPath) => {
  * Create a directory recursively.
  * @param {string} dirPath - Path to create
  * @returns {Promise<void>}
- * @throws {AppError} FS_MKDIR_ERROR if creation fails
+ * @throws {AppError} PERMISSION_DENIED if creation is not permitted
  */
-export const mkdirp = handleFsError(
+export const mkdirp = handlePermissionErrors(
   async (dirPath) => {
     await fs.mkdir(dirPath, { recursive: true })
   },
-  'Impossible to create the directory',
-  'FS_MKDIR_ERROR'
+  'Impossible to create the directory'
 )
 
 /**
@@ -84,34 +87,46 @@ export const mkdirp = handleFsError(
  * @param {string} destDir - Destination directory
  * @param {object} [opts] - Optional fs.cp options
  * @returns {Promise<void>}
- * @throws {AppError} FS_COPYDIR_ERROR if copy fails
+ * @throws {AppError} PERMISSION_DENIED if copy is not permitted
  */
-export const copyDir = handleFsError(
+export const copyDir = handlePermissionErrors(
   async (srcDir, destDir, opts = {}) => {
     await fs.cp(srcDir, destDir, { recursive: true, ...opts })
   },
-  'Impossible to copy files from',
-  'FS_COPYDIR_ERROR'
+  'Impossible to copy files from'
 )
 
 /**
  * Ensure a directory exists and is empty.
  * @param {string} dirPath
  * @returns {Promise<void>}
- * @throws {AppError} FS_DIR_NOT_EMPTY if directory exists and is not empty
+ * @throws {AppError} TARGET_DIRECTORY_NOT_EMPTY if directory exists and is not empty
  */
 export const ensureEmptyDir = async (dirPath) => {
   try {
     const files = await fs.readdir(dirPath)
     if (files.length > 0) {
-      throw new AppError(`${dirPath} is not empty`, {
-        code: 'FS_DIR_NOT_EMPTY'
+      throw new AppError(`Directory is not empty: ${dirPath}`, {
+        code: ErrorCodes.TARGET_DIRECTORY_NOT_EMPTY
       })
     }
   } catch (err) {
-    if (err.code !== 'ENOENT') {
+    if (err instanceof AppError) {
       throw err
     }
+    if (err?.code === 'ENOENT') {
+      return
+    }
+    if (err?.code === 'EACCES' || err?.code === 'EPERM') {
+      throw new AppError(`Impossible to read the directory: ${dirPath}`, {
+        code: ErrorCodes.PERMISSION_DENIED,
+        cause: err,
+        details: {
+          path: dirPath
+        }
+      })
+    }
+    throw err
   }
 }
 
@@ -121,15 +136,14 @@ export const ensureEmptyDir = async (dirPath) => {
  * @param {string} content
  * @param {object} [opts] - Optional fs.writeFile options
  * @returns {Promise<void>}
- * @throws {AppError} FS_WRITE_ERROR if writing fails
+ * @throws {AppError} PERMISSION_DENIED if writing is not permitted
  */
-export const writeFile = handleFsError(
+export const writeFile = handlePermissionErrors(
   async (filePath, content, opts = {}) => {
     await mkdirp(path.dirname(filePath))
     await fs.writeFile(filePath, content, opts)
   },
-  'Impossible to write the file',
-  'FS_WRITE_ERROR'
+  'Impossible to write the file'
 )
 
 /**
@@ -137,37 +151,68 @@ export const writeFile = handleFsError(
  * @param {string} filePath
  * @param {object} [opts] - Optional fs.readFile options
  * @returns {Promise<string>} - File content
- * @throws {AppError} FS_READ_ERROR if reading fails
+ * @throws {AppError} PERMISSION_DENIED if reading is not permitted
  */
-export const readFile = handleFsError(
+export const readFile = handlePermissionErrors(
   async (filePath, opts = {}) => fs.readFile(filePath, { encoding: 'utf8', ...opts }),
-  'Impossible to read the file',
-  'FS_READ_ERROR'
+  'Impossible to read the file'
 )
+
 /**
  * Check if a path exists.
  * @param {string} filePath
  * @returns {Promise<boolean>}
  */
-export const exists = async filePath =>
-  fs.access(filePath).then(() => true).catch(() => false)
+export const exists = async filePath => {
+  try {
+    await fs.access(filePath)
+    return true
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      return false
+    }
+
+    if (
+      error?.code === 'EACCES' ||
+      error?.code === 'EPERM'
+    ) {
+      throw new AppError(
+        `Impossible to access the path: ${filePath}`,
+        {
+          code: ErrorCodes.PERMISSION_DENIED,
+          cause: error,
+          details: {
+            path: filePath
+          }
+        }
+      )
+    }
+
+    throw error
+  }
+}
+
 /**
  * Read a JSON file and parse its content.
  * @param {*} filePath
  * @returns the parsed JSON content
- * @throws {AppError} FS_READ_ERROR if reading fails
- * @throws {AppError} FS_INVALID_JSON if JSON parsing fails
+ * @throws {AppError} INVALID_JSON if JSON parsing fails
  */
 export const readJsonFile = async filePath => {
   const content = await readFile(filePath)
-
   try {
     return JSON.parse(content)
-  } catch (err) {
-    throw new AppError(`Invalid JSON file: ${filePath}`, {
-      code: 'FS_INVALID_JSON',
-      details: err
-    })
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      throw new AppError(`Invalid JSON file: ${filePath}`, {
+        code: ErrorCodes.INVALID_JSON,
+        cause: error,
+        details: {
+          path: filePath
+        }
+      })
+    }
+    throw error
   }
 }
 
@@ -175,19 +220,23 @@ export const readJsonFile = async filePath => {
  * Read a YAML file and parse its content.
  * @param {string} filePath
  * @returns {Promise<any>} - Parsed YAML content
- * @throws {AppError} FS_READ_ERROR if reading fails
- * @throws {AppError} FS_INVALID_YAML if YAML parsing fails
+ * @throws {AppError} INVALID_YAML if YAML parsing fails
  */
 export const readYAML = async filePath => {
   const content = await readFile(filePath)
-
   try {
     return yaml.load(content)
-  } catch (err) {
-    throw new AppError(`Invalid YAML file: ${filePath}`, {
-      code: 'FS_INVALID_YAML',
-      details: err
-    })
+  } catch (error) {
+    if (error instanceof yaml.YAMLException) {
+      throw new AppError(`Invalid YAML file: ${filePath}`, {
+        code: ErrorCodes.INVALID_YAML,
+        cause: error,
+        details: {
+          path: filePath
+        }
+      })
+    }
+    throw error
   }
 }
 
@@ -197,7 +246,7 @@ export const readYAML = async filePath => {
  * @param {any} data - Object to dump to YAML
  * @param {object} [opts] - Optional fs.writeFile options
  * @returns {Promise<any>} - Resolves true on success
- * @throws {AppError} FS_WRITE_ERROR if writing fails
+ * @throws {AppError} PERMISSION_DENIED if writing is not permitted
  */
 export const writeYAML = async (filePath, data, opts = {}) => {
   const content = yaml.dump(data, { noRefs: true, indent: 2 })

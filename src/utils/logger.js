@@ -22,17 +22,31 @@ export const logger = {
    * @param  {...any} args - Arguments to log
    */
   log (level, ...args) {
-    if (LEVELS[level] <= LEVELS[this.level]) {
+    if (LEVELS[level] > LEVELS[this.level]) { return }
+    if (level === 'debug') {
       const time = new Date().toISOString()
-      let prefix = `[${time}] [${level.toUpperCase()}]`
-      switch (level) {
-        case 'error': prefix = chalk.red(prefix); break
-        case 'warn': prefix = chalk.yellow(prefix); break
-        case 'info': prefix = chalk.cyan(prefix); break
-        case 'debug': prefix = chalk.gray(prefix); break
-      }
-      console.log(prefix, ...args)
+      console.error(
+        chalk.gray(`[${time}] [DEBUG]`),
+        ...args
+      )
+      return
     }
+    if (level === 'warn' || level === 'error') {
+      console.error(...args)
+      return
+    }
+    console.log(...args)
+  },
+
+  newLine () {
+    if (LEVELS.info > LEVELS[this.level]) {
+      return
+    }
+    console.log()
+  },
+
+  plain (...args) {
+    this.log('info', ...args)
   },
 
   /** Log a debug message */

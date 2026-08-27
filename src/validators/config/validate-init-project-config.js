@@ -4,6 +4,7 @@ import { AppError } from '../../errors/AppError.js'
 import { sanitizeName } from '../../utils/common-helpers.js'
 
 import { modulesRegistry } from '../../../dist/modules/registry.js'
+import { ErrorCodes } from '../../errors/error-codes.js'
 
 /**
  * Validate and normalize a project configuration.
@@ -16,7 +17,7 @@ export const validateInitProjectConfig = (config) => {
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
     throw new AppError(
       'Invalid project config: must be a JSON object',
-      { code: 'INVALID_CONFIG' }
+      { code: ErrorCodes.INVALID_CONFIG }
     )
   }
 
@@ -30,7 +31,7 @@ export const validateInitProjectConfig = (config) => {
     if (!(field in config)) {
       throw new AppError(
         `Missing required config field: ${field}`,
-        { code: 'INVALID_CONFIG' }
+        { code: ErrorCodes.INVALID_CONFIG }
       )
     }
   }
@@ -38,14 +39,14 @@ export const validateInitProjectConfig = (config) => {
   if (!Object.hasOwn(modulesRegistry.database, config.database)) {
     throw new AppError(
       `Invalid database key: ${config.database}`,
-      { code: 'INVALID_CONFIG' }
+      { code: ErrorCodes.INVALID_CONFIG }
     )
   }
 
   if (!Object.hasOwn(modulesRegistry.transporter, config.transporter)) {
     throw new AppError(
       `Invalid transporter key: ${config.transporter}`,
-      { code: 'INVALID_CONFIG' }
+      { code: ErrorCodes.INVALID_CONFIG }
     )
   }
 
@@ -54,7 +55,7 @@ export const validateInitProjectConfig = (config) => {
   if (!Array.isArray(pluginKeys)) {
     throw new AppError(
       'Invalid plugins config: must be an array',
-      { code: 'INVALID_CONFIG' }
+      { code: ErrorCodes.INVALID_CONFIG }
     )
   }
 
@@ -62,7 +63,7 @@ export const validateInitProjectConfig = (config) => {
     if (!Object.hasOwn(modulesRegistry.plugin, pluginKey)) {
       throw new AppError(
         `Invalid plugin key: ${pluginKey}`,
-        { code: 'INVALID_CONFIG' }
+        { code: ErrorCodes.INVALID_CONFIG }
       )
     }
   }

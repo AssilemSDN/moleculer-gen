@@ -4,6 +4,7 @@
 import path from 'path'
 import { exists, readJsonFile } from './fs-helpers.js'
 import { AppError } from '../errors/AppError.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 /**
  * Load a JSON configuration file.
@@ -11,15 +12,13 @@ import { AppError } from '../errors/AppError.js'
  * @param {string} configFile Path to the configuration file.
  * @param {object} [options]
  * @param {string} [options.notFoundCode='CONFIG_NOT_FOUND']
- * @param {string} [options.invalidJsonCode='INVALID_CONFIG']
  * @param {string} [options.configType='Config']
  * @returns {Promise<object>}
  */
 export const loadJsonConfigFile = async (
   configFile,
   {
-    notFoundCode = 'CONFIG_NOT_FOUND',
-    invalidJsonCode = 'INVALID_CONFIG',
+    notFoundCode = ErrorCodes.CONFIG_NOT_FOUND,
     configType = 'Config'
   } = {}
 ) => {
@@ -27,19 +26,12 @@ export const loadJsonConfigFile = async (
 
   if (!(await exists(configPath))) {
     throw new AppError(`${configType} file not found: ${configPath}`, {
-      code: notFoundCode
+      code: notFoundCode,
+      details: {
+        path: configPath
+      }
     })
   }
 
-  try {
-    return await readJsonFile(configPath)
-  } catch (error) {
-    if (error.code === 'FS_INVALID_JSON') {
-      throw new AppError(`Invalid JSON in ${configType.toLowerCase()} file: ${configPath}`, {
-        code: invalidJsonCode
-      })
-    }
-
-    throw error
-  }
+  return readJsonFile(configPath)
 }

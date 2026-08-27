@@ -2,6 +2,7 @@ import path from 'path'
 import { describe, expect, it } from 'vitest'
 
 import { resolvePathInside } from '../../../src/utils/fs-helpers.js'
+import { ErrorCodes } from '../../../src/errors/error-codes.js'
 
 /// /////////// Tests : function resolvePathInside //////////////
 describe('resolvePathInside', () => {
@@ -74,7 +75,7 @@ describe('resolvePathInside', () => {
       ).toThrow(
         expect.objectContaining({
           name: 'AppError',
-          code: 'INVALID_PATH'
+          code: ErrorCodes.PATH_OUTSIDE_BASE_DIRECTORY
         })
       )
     }

@@ -9,6 +9,28 @@ import {
 } from '../../utils/fs-helpers.js'
 
 import { AppError } from '../../errors/AppError.js'
+import { ErrorCodes } from '../../errors/error-codes.js'
+
+export const validateServiceNameAvailable = ({
+  serviceName,
+  moleculerGenConfig
+}) => {
+  const existingServices =
+    moleculerGenConfig.services ?? {}
+
+  const existingService =
+    existingServices[serviceName]
+
+  if (
+    existingService !== undefined &&
+    existingService !== null
+  ) {
+    throw new AppError(
+      `Service "${serviceName}" already declared in .moleculer-gen/config.json`,
+      { code: ErrorCodes.SERVICE_ALREADY_EXISTS }
+    )
+  }
+}
 
 export const validateServiceCanBeAdded = async ({
   projectDir,
@@ -16,15 +38,10 @@ export const validateServiceCanBeAdded = async ({
   moleculerGenConfig
 }) => {
   // Check if service already declared in moleculer-gen config
-  const existingServices = moleculerGenConfig.services ?? {}
-  const existingService = existingServices[serviceConfig.serviceName]
-
-  if (existingService !== undefined && existingService !== null) {
-    throw new AppError(
-      `Service "${serviceConfig.serviceName}" already declared in .moleculer-gen/config.json`,
-      { code: 'SERVICE_ALREADY_EXISTS' }
-    )
-  }
+  validateServiceNameAvailable({
+    serviceName: serviceConfig.serviceName,
+    moleculerGenConfig
+  })
 
   // Check if service directory already exists
   const servicesDir = path.join(
@@ -41,7 +58,7 @@ export const validateServiceCanBeAdded = async ({
   if (await exists(serviceDir)) {
     throw new AppError(
       `Service directory already exists: ${serviceDir}`,
-      { code: 'SERVICE_ALREADY_EXISTS' }
+      { code: ErrorCodes.SERVICE_ALREADY_EXISTS }
     )
   }
 
@@ -60,7 +77,7 @@ export const validateServiceCanBeAdded = async ({
   if (await exists(dockerServicePath)) {
     throw new AppError(
       `Docker service YAML already exists: ${dockerServicePath}`,
-      { code: 'DOCKER_SERVICE_ALREADY_EXISTS' }
+      { code: ErrorCodes.DOCKER_SERVICE_ALREADY_EXISTS }
     )
   }
 
@@ -81,7 +98,7 @@ export const validateServiceCanBeAdded = async ({
     if (await exists(modelPath)) {
       throw new AppError(
         `Model file already exists: ${modelPath}`,
-        { code: 'MODEL_ALREADY_EXISTS' }
+        { code: ErrorCodes.MODEL_ALREADY_EXISTS }
       )
     }
   }

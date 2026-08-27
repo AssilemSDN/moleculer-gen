@@ -2,6 +2,7 @@
   PATH /src/validators/project-validator.js
 */
 
+import { AppError } from '../errors/AppError.js'
 import { logger } from '../utils/logger.js'
 import { validateMoleculerConfig } from './validate-moleculer-config.js'
 
@@ -14,32 +15,39 @@ import { validateMoleculerConfig } from './validate-moleculer-config.js'
  * @param {string} projectDir - The root directory of the Moleculer project to validate.
  */
 export const projectValidator = async (projectDir = process.cwd()) => {
+  const checks = []
   const errors = []
   const warnings = []
-
-  logger.info('Checking .moleculer-gen/config.json...')
 
   try {
     const result = await validateMoleculerConfig(projectDir)
 
+    checks.push(...result.checks)
     errors.push(...result.errors)
     warnings.push(...result.warnings)
   } catch (err) {
-    errors.push(err.message)
+    // Unexpected errors must reach safeRun and be reported as internal errors.
+    if (!(err instanceof AppError)) {
+      throw err
+    }
+    // User error.
+    errors.push({
+      code: err.code,
+      message: err.message,
+      details: err.details ?? null
+    })
   }
 
-  // Logging errors and warnings
-
-  for (const error of errors) {
-    logger.error(`${error}`)
-  }
-
-  for (const warning of warnings) {
-    logger.warn(`${warning}`)
-  }
+  logger.debug('Project validation result:', {
+    valid: errors.length === 0,
+    checks,
+    errors,
+    warnings
+  })
 
   return {
     valid: errors.length === 0,
+    checks,
     errors,
     warnings
   }

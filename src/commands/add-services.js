@@ -5,16 +5,21 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 import { AppError } from '../errors/AppError.js'
+
 import { safeRun } from '../utils/safe-run.js'
-import { logger } from '../utils/logger.js'
+import {
+  createCommandResult,
+  addPlannedChange,
+  addWarning
+} from '../utils/command-result.js'
 /* Helpers */
 import { exists, readJsonFile } from '../utils/fs-helpers.js'
 import { loadJsonConfigFile } from '../utils/config-helpers.js'
 /* Generate new services */
 import { validateAddServicesConfig } from '../validators/config/validate-add-services-config.js'
 import { addNewServiceToProject } from '../generators/add-service/add-new-service-to-project.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
-/* */
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const TEMPLATE_DIR = path.join(__dirname, '../../templates')
@@ -33,8 +38,7 @@ const skippableErrorCodes = new Set([
  */
 const loadServicesConfigFromFile = async (configFile) => {
   const config = await loadJsonConfigFile(configFile, {
-    invalidJsonCode: 'INVALID_SERVICES_CONFIG',
-    label: 'Services config'
+    configType: 'Services config'
   })
   return validateAddServicesConfig(config)
 }
@@ -44,10 +48,14 @@ const loadServicesConfigFromFile = async (configFile) => {
  */
 export const addServices = safeRun(
   async ({ dryRun = false, configFile } = {}) => {
+    const result = createCommandResult({ dryRun })
+
     if (!configFile) {
       throw new AppError(
         'Missing required configFile argument',
-        { code: 'MISSING_CONFIG_FILE' }
+        {
+          code: ErrorCodes.MISSING_REQUIRED_OPTION
+        }
       )
     }
 
@@ -63,7 +71,7 @@ export const addServices = safeRun(
       throw new AppError(
         'The project does not seem initialized (.moleculer-gen folder or config.json missing)',
         {
-          code: 'PROJECT_NOT_INITIALIZED'
+          code: ErrorCodes.PROJECT_NOT_INITIALIZED
         }
       )
     }
@@ -80,7 +88,7 @@ export const addServices = safeRun(
       throw new AppError(
         'projectNameSanitized is missing from project config',
         {
-          code: 'PROJECT_NAME_SANITIZED_MISSING'
+          code: ErrorCodes.INVALID_CONFIG
         }
       )
     }
@@ -90,7 +98,9 @@ export const addServices = safeRun(
     if (config.services.length === 0) {
       throw new AppError(
         'Invalid services config: services must not be empty',
-        { code: 'INVALID_SERVICES_CONFIG' }
+        {
+          code: ErrorCodes.INVALID_CONFIG
+        }
       )
     }
 
@@ -98,8 +108,9 @@ export const addServices = safeRun(
     const skipped = []
     // 5. Add services sequentially
     for (const serviceConfig of config.services) {
+      const { serviceName } = serviceConfig
       try {
-        await addNewServiceToProject({
+        const serviceResult = await addNewServiceToProject({
           projectNameSanitized,
           serviceConfig,
           templateDir: TEMPLATE_DIR,
@@ -107,39 +118,52 @@ export const addServices = safeRun(
           moleculerGenConfig,
           dryRun
         })
-        created.push(serviceConfig.serviceName)
-        if (!dryRun) {
-          logger.success(
-            `Service "${serviceConfig.serviceName}" created successfully`
-          )
+
+        created.push(serviceName)
+
+        for (const plannedChange of serviceResult.plannedChanges) {
+          addPlannedChange(result, {
+            ...plannedChange,
+            service: serviceName
+          }, { projectDir })
         }
       } catch (error) {
         if (skippableErrorCodes.has(error.code)) {
-          skipped.push(serviceConfig.serviceName)
-          logger.warn(
-            `⏭ Service "${serviceConfig.serviceName}" already exists, skipping`
-          )
+          skipped.push({
+            serviceName,
+            code: error.code,
+            message: error.message
+          })
           continue
         }
         throw error
       }
     }
 
-    const warnings = []
+    // 6. Add non-blocking warnings
     if (created.length === 0 && skipped.length > 0) {
-      warnings.push('No service was added. All services were skipped.')
-    } else if (created.length > 0 && skipped.length > 0) {
-      warnings.push(
-        `Some services were skipped because they already exist: ${skipped.join(', ')}`
-      )
+      addWarning(result, {
+        code: 'ALL_SERVICES_SKIPPED',
+        message: 'All services were skipped',
+        services: skipped
+      })
+    } else if (skipped.length > 0) {
+      addWarning(result, {
+        code: 'SERVICES_SKIPPED',
+        message: `Skipped services: ${skipped
+          .map(({ serviceName }) => serviceName)
+          .join(', ')}`,
+        services: skipped
+      })
     }
 
-    return {
+    // 7. Expose command data
+    result.data = {
       createdCount: created.length,
       skippedCount: skipped.length,
       created,
-      skipped,
-      warnings
+      skipped
     }
+    return result
   }
 )

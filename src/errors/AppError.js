@@ -4,17 +4,18 @@
 
 /**
  * Custom error class for application-specific errors.
+ *
  * @class AppError
  * @extends Error
  * @param {string} message - Human-readable error message
  * @param {Object} [options]
- * @param {string} [options.code='APP_ERROR'] - Machine-readable error code
+ * @param {string} [options.code] - Machine-readable error code
  * @param {any} [options.details=null] - Additional details for debugging
  * @param {any} [options.cause] - Original error that caused this error
  */
 export class AppError extends Error {
   constructor (message, {
-    code = 'APP_ERROR',
+    code,
     details = null,
     cause
   } = {}) {

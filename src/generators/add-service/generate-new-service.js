@@ -4,7 +4,7 @@
 import path from 'path'
 import { mkdirp, writeFile, resolvePathInside } from '../../utils/fs-helpers.js'
 import { renderTemplate } from '../../utils/render-template.js'
-import { logger } from '../../utils/logger.js'
+import { createCommandResult, addPlannedChange } from '../../utils/command-result.js'
 import { updateMoleculerGenConfig } from './update-moleculer-gen-config.js'
 import { updateRoutesConfig } from './update-routes-config.js'
 import { updateDockerCompose } from './update-docker-compose.js'
@@ -14,7 +14,7 @@ import { updateDockerCompose } from './update-docker-compose.js'
  * @param {string} projectNameSanitized
  * @param {object} answers - User inputs from prompts
  * @param {string} templateDir - Path to templates directory
- * @param {string} outputDir - Project root directory
+ * @param {string} projectDir - Project root directory
  * @param {string} serviceDir - Directory for the service
  * @param {object} [options]
  * @param {boolean} [options.dryRun=false] - Simulate generation
@@ -23,10 +23,12 @@ export const generateNewService = async (
   projectNameSanitized,
   answers,
   templateDir,
-  outputDir,
+  projectDir,
   serviceDir,
   { dryRun = false } = {}
 ) => {
+  const result = createCommandResult({ dryRun })
+
   const {
     isCrud,
     exposeApi,
@@ -37,13 +39,54 @@ export const generateNewService = async (
     schemaName
   } = answers
 
+  const serviceFilePath = resolvePathInside(
+    serviceDir,
+    serviceFileName
+  )
+
+  const modelDir = path.join(
+    projectDir,
+    'src',
+    'data',
+    'model'
+  )
+
+  const modelFilePath = isCrud
+    ? resolvePathInside(modelDir, modelFileName)
+    : null
+
+  addPlannedChange(result, {
+    type: 'create',
+    target: serviceFilePath
+  }, { projectDir })
+
+  if (isCrud) {
+    addPlannedChange(result, {
+      type: 'create',
+      target: modelFilePath
+    }, { projectDir })
+  }
+
+  addPlannedChange(result, {
+    type: 'create',
+    target: path.join('docker', 'services', `${serviceDirectoryName}.yaml`)
+  }, { projectDir })
+
+  addPlannedChange(result, {
+    type: 'update',
+    target: '.moleculer-gen/config.json'
+  }, { projectDir })
+
+  if (exposeApi) {
+    addPlannedChange(result, {
+      type: 'update',
+      target: 'src/config/routes.config.js'
+    }, { projectDir })
+  }
+
   //  1- dry-run mode : no real service generation
   if (dryRun) {
-    logger.info(`[dry-run] Would generate service ${serviceFileName} at ${serviceDir}`)
-    if (isCrud) logger.info(`[dry-run] Would generate model ${modelFileName}`)
-    if (exposeApi) logger.info('[dry-run] Would update api-gateway routes')
-
-    return
+    return result
   }
 
   // 2- Create needed directories
@@ -62,10 +105,7 @@ export const generateNewService = async (
     ...answers,
     servicePath: `src/services/${serviceDirectoryName}/${serviceFileName}`
   })
-  const serviceFilePath = resolvePathInside(
-    serviceDir,
-    serviceFileName
-  )
+
   await writeFile(serviceFilePath, serviceRendered)
 
   // 4- Generate model if CRUD
@@ -79,17 +119,7 @@ export const generateNewService = async (
       modelName,
       schemaName
     })
-    const modelDir = path.join(
-      outputDir,
-      'src',
-      'data',
-      'model'
-    )
 
-    const modelFilePath = resolvePathInside(
-      modelDir,
-      modelFileName
-    )
     await mkdirp(path.dirname(modelFilePath))
     await writeFile(modelFilePath, modelRendered)
   }
@@ -101,4 +131,6 @@ export const generateNewService = async (
   if (exposeApi) {
     await updateRoutesConfig(answers)
   }
+
+  return result
 }

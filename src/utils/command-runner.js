@@ -1,37 +1,38 @@
 /*
   PATH /src/utils/command-runner.js
 */
+
 import { logger } from './logger.js'
 
-export const runCommand = async (commandName, commandFn, options) => {
-  logger.info(`Starting ${commandName}...`)
+import {
+  renderCommandResult,
+  renderUnexpectedError
+} from '../cli/renderer/render-command-result.js'
 
+export const runCommand = async (
+  commandName,
+  commandFn,
+  options = {},
+  {
+    successMessage
+  } = {}
+) => {
+  logger.debug(`Starting ${commandName}...`)
   try {
     const result = await commandFn(options)
-    const warnings = result.warnings ?? []
-
-    if (result.success) {
-      for (const warning of warnings) {
-        logger.warn(warning)
-      }
-
-      if (warnings.length > 0) {
-        logger.warn(`${commandName} completed with warnings.`)
-      } else {
-        logger.success(`${commandName} completed successfully!`)
-      }
-
-      if (result.data !== undefined) {
-        logger.debug('Result:\n', result.data)
-      }
-
-      return
+    renderCommandResult({
+      commandName,
+      result,
+      successMessage
+    })
+    if (!result.success) {
+      process.exitCode ||= result.exitCode ?? 1
     }
-
-    logger.error(`${commandName} failed.`)
-    process.exitCode ||= 1
-  } catch (err) {
-    logger.error(`Unexpected error during ${commandName}:`, err)
-    process.exitCode ||= 1
+  } catch (error) {
+    renderUnexpectedError(
+      commandName,
+      error
+    )
+    process.exitCode ||= 2
   }
 }

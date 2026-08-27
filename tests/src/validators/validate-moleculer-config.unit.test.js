@@ -4,6 +4,7 @@ import os from 'os'
 import path from 'path'
 import { validateMoleculerConfig } from '../../../src/validators/validate-moleculer-config.js'
 import { writeFile } from '../../../src/utils/fs-helpers.js'
+import { ErrorCodes } from '../../../src/errors/error-codes.js'
 
 const writeJson = async (filePath, data) => {
   await writeFile(filePath, JSON.stringify(data, null, 2))
@@ -46,19 +47,19 @@ describe('validateMoleculerConfig', () => {
     expect(result.config).toEqual(config)
   })
 
-  it('should throw CONFIG_NOT_FOUND when .moleculer-gen/config.json is missing', async () => {
+  it('should throw PROJECT_NOT_INITIALIZED when .moleculer-gen/config.json is missing', async () => {
     await expect(validateMoleculerConfig(tmpDir)).rejects.toMatchObject({
       name: 'AppError',
-      code: 'CONFIG_NOT_FOUND'
+      code: ErrorCodes.PROJECT_NOT_INITIALIZED
     })
   })
 
-  it('should throw FS_INVALID_JSON when .moleculer-gen/config.json is invalid JSON', async () => {
+  it('should throw INVALID_JSON when .moleculer-gen/config.json is invalid JSON', async () => {
     await writeRaw(configPath, '{ invalid json')
 
     await expect(validateMoleculerConfig(tmpDir)).rejects.toMatchObject({
       name: 'AppError',
-      code: 'FS_INVALID_JSON'
+      code: ErrorCodes.INVALID_JSON
     })
   })
 
@@ -74,16 +75,20 @@ describe('validateMoleculerConfig', () => {
 
     expect(result.valid).toBe(false)
 
-    expect(result.errors).toEqual(
+    expect(result.errors.map(error => error.message)).toEqual(
       expect.arrayContaining([
         'Invalid .moleculer-gen/config.json: missing or invalid "projectName"',
         'Invalid .moleculer-gen/config.json: missing or invalid "projectNameSanitized"',
         'Invalid .moleculer-gen/config.json: missing or invalid "database"',
         'Invalid .moleculer-gen/config.json: missing or invalid "transporter"',
         'Invalid .moleculer-gen/config.json: "plugins" must be an array',
-        'Invalid .moleculer-gen/config.json: "services" must be an object or an array'
+        'Invalid .moleculer-gen/config.json: "services" must be an object'
       ])
     )
+
+    expect(result.errors.every(
+      error => error.code === ErrorCodes.INVALID_CONFIG
+    )).toBe(true)
 
     expect(result.errors).toHaveLength(6)
   })

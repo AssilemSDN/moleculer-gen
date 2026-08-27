@@ -86,10 +86,12 @@ export const expectCommandSuccess = result => {
   return result.data
 }
 
-export const expectCommandFailure = result => {
+export const expectCommandFailure = (result, code) => {
   expect(result.success).toBe(false)
   expect(result.error).toBeInstanceOf(Error)
-
+  if (code) {
+    expect(result.error.code).toBe(code)
+  }
   return result.error
 }
 
