@@ -150,7 +150,7 @@ export const addServices = safeRun(
     } else if (skipped.length > 0) {
       addWarning(result, {
         code: 'SERVICES_SKIPPED',
-        message: `Skipped services: ${skipped}
+        message: `Skipped services: ${skipped
           .map(({ serviceName }) => serviceName)
           .join(', ')}`,
         services: skipped
