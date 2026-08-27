@@ -33,6 +33,6 @@ export const runCommand = async (
       commandName,
       error
     )
-    process.exitCode ||= 1
+    process.exitCode ||= 2
   }
 }
