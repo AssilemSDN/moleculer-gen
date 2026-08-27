@@ -196,7 +196,7 @@ export const exists = async filePath => {
  * Read a JSON file and parse its content.
  * @param {*} filePath
  * @returns the parsed JSON content
- * @throws {SyntaxError} If JSON parsing fails
+ * @throws {AppError} INVALID_JSON if JSON parsing fails
  */
 export const readJsonFile = async filePath => {
   const content = await readFile(filePath)
@@ -220,7 +220,7 @@ export const readJsonFile = async filePath => {
  * Read a YAML file and parse its content.
  * @param {string} filePath
  * @returns {Promise<any>} - Parsed YAML content
- * @throws {YAMLException} If YAML parsing fails
+ * @throws {AppError} INVALID_YAML if YAML parsing fails
  */
 export const readYAML = async filePath => {
   const content = await readFile(filePath)

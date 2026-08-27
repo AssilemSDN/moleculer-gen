@@ -4,6 +4,7 @@
 import path from 'path'
 import { exists, readJsonFile } from './fs-helpers.js'
 import { AppError } from '../errors/AppError.js'
+import { ErrorCodes } from '../errors/error-codes.js'
 
 /**
  * Load a JSON configuration file.
@@ -11,7 +12,6 @@ import { AppError } from '../errors/AppError.js'
  * @param {string} configFile Path to the configuration file.
  * @param {object} [options]
  * @param {string} [options.notFoundCode='CONFIG_NOT_FOUND']
- * @param {string} [options.invalidJsonCode='INVALID_CONFIG']
  * @param {string} [options.configType='Config']
  * @returns {Promise<object>}
  */

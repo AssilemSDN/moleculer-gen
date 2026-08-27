@@ -144,13 +144,15 @@ export const addServices = safeRun(
     if (created.length === 0 && skipped.length > 0) {
       addWarning(result, {
         code: 'ALL_SERVICES_SKIPPED',
-        message: 'All services already exist',
+        message: 'All services were skipped',
         services: skipped
       })
     } else if (skipped.length > 0) {
       addWarning(result, {
         code: 'SERVICES_SKIPPED',
-        message: `Skipped existing services: ${skipped.join(', ')}`,
+        message: `Skipped services: ${skipped}
+          .map(({ serviceName }) => serviceName)
+          .join(', ')}`,
         services: skipped
       })
     }
