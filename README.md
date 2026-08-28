@@ -55,13 +55,11 @@ Interactive prompts are useful while designing a stack, but the same project can
 
 ![moleculer-gen configuration demo](docs/images/demo-configuration.gif)
 
-The demo configurations are available at:
+The demo configurations are available here:
 
-```text
-examples/config/init-project/demo.json
-examples/config/add-service/demo.json
-examples/config/add-services/demo.json
-```
+- [`init`](./examples/config/init-project/demo.json)
+- [`add-service`](./examples/config/add-service/demo.json)
+- [`add-services`](./examples/config/add-services/demo.json)
 
 ---
 
@@ -101,20 +99,17 @@ The generated project remains a **standard Moleculer.js project** — `moleculer
 
 ### Create a project
 
-Create an empty directory and run the CLI:
+Run the CLI from the directory where you want the project folder to be created:
 
 ```bash
-mkdir my-project
-cd my-project
-
 npx moleculer-gen init
 ```
-
 The interactive setup lets you choose the infrastructure required by your project.
 
-Once generated:
 
+Then enter the generated project directory and start the stack:
 ```bash
+cd ./<generated-project-directory>
 make build
 make start
 ```
@@ -122,8 +117,10 @@ make start
 You can also skip the interactive prompts and use a JSON configuration file for reproducible generation:
 
 ```bash
-npx moleculer-gen init examples/config/init-project/minimal.json
+npx moleculer-gen init ./project.config.json
 ```
+
+> See the [example `init` configurations](./examples/config/init-project/) for the supported format.
 
 ### Extend the project
 
@@ -133,11 +130,21 @@ Add a service interactively:
 npx moleculer-gen add-service
 ```
 
+Or add a service from configuration:
+
+```bash
+npx moleculer-gen add-service ./service.config.json
+```
+
+> See the [example `add-service` configurations](./examples/config/add-service/) for the supported format.
+
 Or generate multiple services from configuration:
 
 ```bash
-npx moleculer-gen add-services examples/config/add-services/demo.json
+npx moleculer-gen add-services ./services.config.json
 ```
+
+> See the [example `add-services` configurations](./examples/config/add-services/) for the supported format.
 
 ## Modular by design
 
@@ -153,7 +160,7 @@ npx moleculer-gen add-services examples/config/add-services/demo.json
 | Infrastructure | Traefik     |
 | Observability  | Prometheus  |
 
-Only the modules selected during initialization are included in the generated project.
+Optional infrastructure modules are only included when selected during initialization.
 
 This keeps generated environments focused while allowing `moleculer-gen` to evolve with additional databases, transporters, and infrastructure integrations.
 
