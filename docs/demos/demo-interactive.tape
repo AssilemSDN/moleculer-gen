@@ -4,7 +4,7 @@ Set Shell "zsh"
 Set Width 1600
 Set Height 800
 Set FontSize 22
-Set TypingSpeed 100ms
+Set TypingSpeed 110ms
 Set PlaybackSpeed 0.50
 Set WaitTimeout 30s
 
@@ -24,7 +24,6 @@ Enter
 Type "cd /tmp/moleculer-gen-vhs-demo"
 Enter
 
-# Clear preparation commands before recording becomes visible
 Ctrl+L
 
 Show
@@ -34,35 +33,33 @@ Sleep 2s
 # Initialize project
 
 Type "moleculer-gen init"
-
-Sleep 700ms
+Sleep 1s
 Enter
+
+# Project name
 
 Wait+Screen /Project name:/
 Sleep 1.5s
 
 Type "Wiwiki Backend"
 Sleep 1.5s
-
 Enter
 
 # Database
 
-Wait+Screen /Choose a database:/
+Wait+Screen /Database:/
 Sleep 1.5s
-
 Enter
 
 # Transporter
 
-Wait+Screen /Choose a transporter:/
+Wait+Screen /Transporter:/
 Sleep 1.5s
-
 Enter
 
 # Optional infrastructure
 
-Wait+Screen /Select optional infrastructure modules:/
+Wait+Screen /Infrastructure modules:/
 Sleep 2s
 
 Down
@@ -73,19 +70,18 @@ Sleep 1.5s
 
 Enter
 
-# Wait until project generation is actually finished
+# Project generation
 
-Wait+Screen /project initialization completed/
+Wait+Screen /Project "Wiwiki Backend" initialized/
 Sleep 3s
 
 # Enter generated project
 
 Type "cd wiwiki-backend"
-
-Sleep 700ms
+Sleep 1s
 Enter
 
-Sleep 5s
+Sleep 2s
 
 Ctrl+L
 Sleep 2s
@@ -93,87 +89,80 @@ Sleep 2s
 # Add service interactively
 
 Type "moleculer-gen add-service"
-
-Sleep 700ms
+Sleep 1s
 Enter
 
 # Service name
 
-Wait+Screen /Service name/
+Wait+Screen /Service name:/
 Sleep 1.5s
 
 Type "Articles"
-
-Sleep 700ms
-Enter
-
-# CRUD
-
-Wait+Screen /Is this a CRUD service?/
 Sleep 1.5s
-
 Enter
 
-# Service file name
+# CRUD service
 
-Wait+Screen /Service file name:/
-Sleep 2s
+Wait+Screen /CRUD service:/
+Sleep 1.5s
+Enter
 
+# Service file
+
+Wait+Screen /Service file:/
+Sleep 1.5s
 Enter
 
 # Service directory
 
-Wait+Screen /Service directory name:/
-Sleep 2s
-
+Wait+Screen /Service directory:/
+Sleep 1.5s
 Enter
 
 # API exposure
 
-Wait+Screen /Expose CRUD operations via API Gateway?/
-Sleep 1.5s
+Wait+Screen /Expose via API Gateway:/
+Sleep 2.5s
 
+Type "n"
+
+Sleep 2s
 Enter
 
 # Model file
 
-Wait+Screen /Model file name:/
-Sleep 2s
-
+Wait+Screen /Model file:/
+Sleep 1.5s
 Enter
 
 # Model name
 
 Wait+Screen /Model name:/
-Sleep 2s
-
+Sleep 1.5s
 Enter
 
 # Model variable
 
-Wait+Screen /Model variable name:/
-Sleep 2s
-
+Wait+Screen /Model variable:/
+Sleep 1.5s
 Enter
 
 # Schema
 
-Wait+Screen /Schema name:/
-Sleep 2s
-
+Wait+Screen /Schema:/
+Sleep 1.5s
 Enter
 
 # Collection
 
-Wait+Screen /Collection\/table name:/
+Wait+Screen /Collection\/table:/
 Sleep 1.5s
-
 Enter
 
-# Wait until service generation is finished
+# Service generation
 
-Wait+Screen /service addition completed/
-Sleep 5s
+Wait+Screen /Service "articles" added/
+Sleep 3s
 
 Ctrl+L
 Sleep 2s
@@ -181,11 +170,14 @@ Sleep 2s
 # Add multiple services from configuration
 
 Type "moleculer-gen add-services ../config/add-services.json"
-
 Sleep 1s
 Enter
 
-Wait+Screen /batch services addition completed/
+Wait+Screen /Skipped services: articles/
+Sleep 1.5s
+
+Wait+Screen /1 service added, 1 service skipped/
 
 # Keep final result visible
-Sleep 10s
+
+Sleep 6s
