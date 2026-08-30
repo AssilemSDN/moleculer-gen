@@ -7,9 +7,13 @@
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
     "outDir": "dist/",
     "rootDir": "src/"
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/errors/**/*.js"
+  ],
   "exclude": ["node_modules", "dist"]
 }
