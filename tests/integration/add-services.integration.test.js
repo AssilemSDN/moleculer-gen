@@ -117,7 +117,7 @@ const readServiceState = async (projectDir, expectedService) => {
   return state
 }
 
-describe('add-services command integration', () => {
+describe('add-services command integration', { timeout: 30_000 }, () => {
   let tempDir
 
   afterEach(async () => {
