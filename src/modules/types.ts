@@ -25,6 +25,14 @@ export type ModuleCategory =
   | DynamicModuleCategory
 
 /**
+ * Used for npm resolution
+ */
+export interface PackageContribution {
+  dependencies?: Record<string, string>
+  devDependencies?: Record<string, string>
+}
+
+/**
  * Meta information used for init prompts / user selection
  */
 export interface ModuleMeta {
@@ -95,7 +103,9 @@ export interface ModuleDefinition {
   /** Environment variables for the module, written to .env files */
   env: Record<string, string>,
   /** Templates for generating files */
-  templates?: ModuleTemplate[]
+  templates?: ModuleTemplate[],
+  /** Dependencies for generating package.json and yarn.lock */
+  package?: PackageContribution
 }
 
 /**

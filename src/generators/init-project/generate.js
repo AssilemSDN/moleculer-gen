@@ -1,6 +1,6 @@
 /*
-  PATH /src/generators/init-project/generate.js
-*/
+ * PATH /src/generators/init-project/generate.js
+ */
 import fs from 'fs/promises'
 import path from 'path'
 
@@ -17,13 +17,22 @@ import {
 
 import { logger } from '../../utils/logger.js'
 
+// Package resolver
+import { basePackage } from '../../../dist/project/package.js'
+import { resolveProjectPackage } from '../../../dist/project/resolve-package.js'
+
+// Generators
 import { generateConfig } from './generate-config.js'
 import { generateModules } from './generate-modules.js'
 import { generatePackageJson } from './generate-package.json.js'
 import { generateApplicationConfig } from './generate-application-config.js'
 import { generateReadme } from './generate-readme.js'
+import { resolvePackageLock } from './resolve-package-lock.js'
 
-const listFilesRecursive = async (directory, baseDirectory = directory) => {
+const listFilesRecursive = async (
+  directory,
+  baseDirectory = directory
+) => {
   const entries = await fs.readdir(directory, {
     withFileTypes: true
   })
@@ -44,6 +53,7 @@ const listFilesRecursive = async (directory, baseDirectory = directory) => {
       baseDirectory,
       entryPath
     )
+
     const normalizedPath = relativePath.replaceAll(
       path.sep,
       path.posix.sep
@@ -51,13 +61,15 @@ const listFilesRecursive = async (directory, baseDirectory = directory) => {
 
     files.push(normalizedPath)
   }
+
   return files.sort()
 }
 
 /**
  * Register all planned changes involved in project generation.
  *
- * Planned changes describe the expected filesystem effects of the project generation.
+ * Planned changes describe the expected filesystem effects of the
+ * project generation.
  */
 const registerPlannedGenerationChanges = async ({
   result,
@@ -79,6 +91,7 @@ const registerPlannedGenerationChanges = async ({
   const generatedFiles = [
     '.moleculer-gen/config.json',
     'package.json',
+    'yarn.lock',
     'README.md',
     'src/config/application.config.js',
     'docker-compose.yaml',
@@ -119,7 +132,6 @@ const registerPlannedGenerationChanges = async ({
  *
  * @param {Object} options
  * @param {Object} options.answers
- * @param {Object} options.context
  * @param {Array} options.modules
  * @param {string} options.templateDir
  * @param {string} options.projectDir
@@ -128,15 +140,14 @@ const registerPlannedGenerationChanges = async ({
  */
 export const generate = async ({
   answers,
-  context = {},
   modules = [],
   templateDir,
   projectDir,
   dryRun = false,
   result
 } = {}) => {
-  const generationResult =
-    result ?? createCommandResult({ dryRun })
+  const generationResult = result ??
+    createCommandResult({ dryRun })
 
   logger.debug('Preparing project generation:', {
     projectDir,
@@ -146,11 +157,18 @@ export const generate = async ({
   /*
    * This is safe during dry-run:
    * ensureEmptyDir only verifies the destination and does not create it.
-   *
-   * Keeping this check means a dry-run cannot report success for a
-   * destination that would fail during the real generation.
    */
   await ensureEmptyDir(projectDir)
+
+  /*
+   * Resolve the final package before touching the filesystem.
+   *
+   * This also validates dependency conflicts during dry-run.
+   */
+  const resolvedPackage = resolveProjectPackage(
+    basePackage,
+    modules
+  )
 
   await registerPlannedGenerationChanges({
     result: generationResult,
@@ -163,12 +181,12 @@ export const generate = async ({
     generationResult.plannedChanges
   )
 
-  // Dry-run stops after building and validating the plan.
+  // Dry-run stops after resolving and validating the generation plan.
   if (dryRun) {
     return generationResult
   }
 
-  // Create required directories
+  // Create required directories.
   const dirs = [
     '.moleculer-gen',
     'docker/services'
@@ -180,19 +198,22 @@ export const generate = async ({
     )
   )
 
-  // Copy base template
+  // Copy base template.
   await copyDir(
     path.join(templateDir, 'static'),
     projectDir
   )
 
-  // Run generation tasks in parallel
+  // Generate independent project files in parallel.
   await Promise.all([
-    generateConfig(answers, projectDir),
+    generateConfig(
+      answers,
+      projectDir
+    ),
     generatePackageJson(
       answers.projectNameSanitized,
       projectDir,
-      context
+      resolvedPackage
     ),
     generateReadme(
       templateDir,
@@ -213,9 +234,15 @@ export const generate = async ({
     )
   ])
 
+  /*
+   * The lockfile must be resolved after package.json has been written.
+   */
+  await resolvePackageLock(projectDir)
+
   logger.debug('Project generation completed:', {
     projectDir,
-    plannedChanges: generationResult.plannedChanges.length
+    plannedChanges:
+      generationResult.plannedChanges.length
   })
 
   return generationResult

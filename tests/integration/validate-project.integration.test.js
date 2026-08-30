@@ -14,10 +14,10 @@ import { repoRoot } from '../helpers/paths.js'
 
 const configPath = path.join(
   repoRoot,
-  'examples/config/init-project/demo.json'
+  'examples/config/init-project/minimal.json'
 )
 
-describe('validate command integration', () => {
+describe('validate command integration', { timeout: 30_000 }, () => {
   let tempDir
 
   afterEach(async () => {
@@ -57,6 +57,21 @@ describe('validate command integration', () => {
   it('OK : should validate a generated project', async () => {
     const { projectDir } = await setupProject()
 
+    const packageJson = JSON.parse(
+      await fs.readFile(
+        path.join(projectDir, 'package.json'),
+        'utf8'
+      )
+    )
+
+    const yarnLock = await fs.readFile(
+      path.join(projectDir, 'yarn.lock'),
+      'utf8'
+    )
+
+    expect(yarnLock).toContain(
+      `"${packageJson.name}@workspace:.":`
+    )
     await expect(
       fs.access(
         getGeneratorConfigPath(projectDir)

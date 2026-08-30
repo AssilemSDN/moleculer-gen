@@ -1277,6 +1277,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"corepack@npm:0.36.0":
+  version: 0.36.0
+  resolution: "corepack@npm:0.36.0"
+  dependenciesMeta:
+    esbuild:
+      built: true
+  bin:
+    corepack: ./dist/corepack.js
+    pnpm: ./dist/pnpm.js
+    pnpx: ./dist/pnpx.js
+    yarn: ./dist/yarn.js
+    yarnpkg: ./dist/yarnpkg.js
+  checksum: 10c0/e5ff3a427082b98c409f641eea0bbc28cd51883089fd82fad7014d463753bc24f94213a171080af008380a141e9afda7bb747bc00aef7ec384732509fea76a8d
+  languageName: node
+  linkType: hard
+
 "cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.6":
   version: 7.0.6
   resolution: "cross-spawn@npm:7.0.6"
@@ -3096,6 +3112,7 @@ __metadata:
     chalk: "npm:6.0.0"
     change-case: "npm:5.4.4"
     commander: "npm:15.0.0"
+    corepack: "npm:0.36.0"
     inquirer: "npm:14.0.2"
     js-yaml: "npm:5.2.3"
     lodash: "npm:4.18.1"
