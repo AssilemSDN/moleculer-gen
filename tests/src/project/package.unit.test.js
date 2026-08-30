@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   basePackage
-} from '../../../dist/project/package.js'
+} from '../../../src/project/package.ts'
 
 describe('basePackage', () => {
   it('contains only project-wide runtime dependencies', () => {
