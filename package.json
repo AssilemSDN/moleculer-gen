@@ -12,7 +12,7 @@
     "test:unit": "yarn build && vitest run tests/src",
     "test:integration": "yarn build && vitest run tests/integration",
     "test:unit:coverage": "yarn build && vitest run tests/src --coverage",
-    "test:integration:coverage": "yarn build && c8 --all --src src --exclude 'src/modules/**' --reporter=text --reporter=lcov --reports-dir coverage/integration vitest run tests/integration",
+    "test:integration:coverage": "yarn build && c8 --all --src src --include 'src/**/*.js' --exclude 'src/modules/**' --reporter=text --reporter=lcov --reports-dir coverage/integration vitest run tests/integration",
     "audit": "yarn npm audit --all --recursive --severity high",
     "audit:prod": "yarn npm audit --all --recursive --environment production --severity high"
   },
