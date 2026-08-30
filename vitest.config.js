@@ -13,11 +13,12 @@ export default defineConfig({
       reportsDirectory: 'coverage/unit',
 
       include: [
-        'src/**/*.js'
+        'src/**/*.ts'
       ],
       exclude: [
         'tests/**',
-        'src/modules/**'
+        'src/modules/**',
+        'node_modules'
       ]
     }
   }
