@@ -18,7 +18,8 @@ export default defineConfig({
       exclude: [
         'tests/**',
         'src/modules/**',
-        'node_modules'
+        'node_modules',
+        '**/*.d.ts'
       ]
     }
   }
