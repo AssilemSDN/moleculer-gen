@@ -2,10 +2,14 @@
  * PATH /src/generators/init-project/resolve-package-lock.js
  */
 import { spawn } from 'node:child_process'
+import { createRequire } from 'node:module'
+import { dirname, join } from 'node:path'
 
 import { AppError } from '../../errors/AppError.js'
 import { ErrorCodes } from '../../errors/error-codes.js'
 import { logger } from '../../utils/logger.js'
+
+const require = createRequire(import.meta.url)
 
 const YARN_ARGS = [
   'yarn',
@@ -14,50 +18,61 @@ const YARN_ARGS = [
 ]
 
 /**
+ * Resolve the Corepack CLI bundled with moleculer-gen.
+ *
+ * Corepack is installed as a runtime dependency so lockfile generation does not depend on a globally
+ * installed Corepack binary or on the Node.js distribution providing one.
+ *
+ * @returns {string} Absolute path to the Corepack CLI entry point
+ */
+const resolveCorepackBin = () => {
+  const packagePath = require.resolve('corepack/package.json')
+  return join(
+    dirname(packagePath),
+    'dist',
+    'corepack.js'
+  )
+}
+
+/**
  * Spawn the package manager process used to resolve the project lockfile.
  *
- * Corepack is used to execute the Yarn version declared by the generated project's packageManager field.
+ * The bundled Corepack CLI is executed with the current Node.js runtime. Corepack then executes the Yarn version
+ * declared by the generated project's packageManager field.
  *
- * On Windows, command shims must be executed through cmd.exe.
+ * Executing the JavaScript entry point directly avoids relying on PATH,
+ * platform-specific command shims, or a globally installed Corepack binary.
  *
  * @param {string} projectDir - Project working directory
  * @returns {import('node:child_process').ChildProcess} Spawned process
  */
 const spawnPackageManager = projectDir => {
-  const options = {
-    cwd: projectDir,
-    stdio: ['ignore', 'pipe', 'pipe']
-  }
-
-  if (process.platform === 'win32') {
-    return spawn(
-      'cmd.exe',
-      [
-        '/d',
-        '/s',
-        '/c',
-        `corepack ${YARN_ARGS.join(' ')}`
-      ],
-      {
-        ...options,
-        windowsHide: true
-      }
-    )
-  }
-  return spawn('corepack', YARN_ARGS, options)
+  const corepackBin = resolveCorepackBin()
+  return spawn(
+    process.execPath,
+    [
+      corepackBin,
+      ...YARN_ARGS
+    ],
+    {
+      cwd: projectDir,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      windowsHide: true
+    }
+  )
 }
 
 /**
  * Resolve the project Yarn lockfile from the generated package.json.
  *
- * Yarn runs in update-lockfile mode so dependency resolution is performed without linking or installing
+ * Yarn runs in update-lockfile mode so dependency resolution is performed  without linking or installing
  * project dependencies.
+ *
  * @async
  * @param {string} projectDir - Generated project directory
  * @param {Function} [spawnProcess=spawnPackageManager] - Process factory
  * @returns {Promise<void>}
- * @throws {AppError} When the package manager cannot start or lockfile
- * resolution fails
+ * @throws {AppError} When the package manager cannot start or lockfile resolution fails
  */
 export const resolvePackageLock = async (
   projectDir,
@@ -66,25 +81,35 @@ export const resolvePackageLock = async (
   logger.debug('Resolving project package lock:', {
     projectDir
   })
-
   await new Promise((resolve, reject) => {
-    const child = spawnProcess(projectDir)
-
-    let stdout = ''
-    let stderr = ''
-    let settled = false
-
+    let child
     /**
-     * Reject lockfile resolution once with a normalized application error.
+     * Reject lockfile resolution with a normalized application error.
      */
     const fail = message => {
-      if (settled) return
-      settled = true
       reject(
         new AppError(message, {
           code: ErrorCodes.PACKAGE_LOCK_RESOLUTION_FAILED
         })
       )
+    }
+    try {
+      child = spawnProcess(projectDir)
+    } catch (error) {
+      fail(`Unable to start package lock resolution: ${error.message}`)
+      return
+    }
+
+    let stdout = ''
+    let stderr = ''
+    let settled = false
+    /**
+     * Reject lockfile resolution once.
+     */
+    const failOnce = message => {
+      if (settled) return
+      settled = true
+      fail(message)
     }
 
     child.stdout?.on('data', chunk => {
@@ -96,7 +121,7 @@ export const resolvePackageLock = async (
     })
 
     child.once('error', error => {
-      fail(`Unable to start package lock resolution: ${error.message}`)
+      failOnce(`Unable to start package lock resolution: ${error.message}`)
     })
 
     child.once('close', code => {
@@ -108,7 +133,7 @@ export const resolvePackageLock = async (
         return
       }
       const output = stderr.trim() || stdout.trim()
-      fail(
+      failOnce(
         output
           ? `Unable to resolve project package lock: ${output}`
           : `Unable to resolve project package lock (exit code ${code})`
