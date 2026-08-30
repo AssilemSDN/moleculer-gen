@@ -41,8 +41,25 @@ export const initPrompts = async () => {
     }
   ])
 
-  let projectNameSanitized = sanitizeName(projectName)
-  projectNameSanitized = path.basename(projectNameSanitized)
+  const defaultProjectNameSanitized = path.basename(sanitizeName(projectName))
+
+  const { projectNameSanitized } = await prompt([
+    {
+      type: 'input',
+      name: 'projectNameSanitized',
+      message: 'Project output directory (press Enter to use default):',
+      default: defaultProjectNameSanitized,
+      validate: input => {
+        if (!input) return true
+
+        if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(input)) {
+          return 'Use only lowercase letters, numbers and single hyphens.'
+        }
+
+        return true
+      }
+    }
+  ])
 
   const { database } = await prompt([
     {
@@ -52,6 +69,7 @@ export const initPrompts = async () => {
       choices: Object.entries(modulesRegistry.database).map(
         ([key, { meta }]) => ({
           name: `${meta.name} – ${meta.description}`,
+          short: meta.name,
           value: key
         })
       )
@@ -66,6 +84,7 @@ export const initPrompts = async () => {
       choices: Object.entries(modulesRegistry.transporter).map(
         ([key, { meta }]) => ({
           name: `${meta.name} – ${meta.description}`,
+          short: meta.name,
           value: key
         })
       )
