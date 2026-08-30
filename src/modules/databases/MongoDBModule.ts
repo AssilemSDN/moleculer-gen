@@ -14,6 +14,13 @@ export const MongoDBModuleMeta: ModuleMeta = {
 export const MongoDBModule: () => ModuleDefinition = (): ModuleDefinition => ({
   meta: MongoDBModuleMeta,
 
+  package: {
+    dependencies: {
+      'moleculer-db-adapter-mongoose': '0.11.0',
+      mongoose: '8.24.1'
+    }
+  },
+  
   docker: {
     serviceName: "mongo",
     image: "${DOCKER_IMAGE_NAME_DB}:${DOCKER_IMAGE_TAG_DB}",

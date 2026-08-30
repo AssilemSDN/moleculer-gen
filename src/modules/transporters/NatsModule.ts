@@ -14,6 +14,13 @@ export const NatsModuleMeta: ModuleMeta = {
 
 export const NatsModule: () => ModuleDefinition = () => ({
   meta: NatsModuleMeta,
+
+  package: {
+    dependencies: {
+      nats: '2.29.3'
+    }
+  },
+
   docker: {
     serviceName: "nats",
     image: "${DOCKER_IMAGE_NAME_TRANSPORTER}:${DOCKER_IMAGE_TAG_TRANSPORTER}",
@@ -23,6 +30,7 @@ export const NatsModule: () => ModuleDefinition = () => ({
     depends_on: [],
     restart: "unless-stopped",
   },
+  
   env: {
     APP_TRANSPORTER_TYPE: "nats",
     APP_TRANSPORTER_HOSTNAME: "nats",
