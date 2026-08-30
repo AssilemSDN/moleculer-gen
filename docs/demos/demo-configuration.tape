@@ -1,4 +1,4 @@
-Output "docs/images/demo-interactive.gif"
+Output "docs/images/demo-configuration.gif"
 
 Set Shell "zsh"
 Set Width 1200
@@ -20,6 +20,12 @@ Enter
 Type "mkdir -p /tmp/moleculer-gen-vhs-demo/config"
 Enter
 
+Type "cp examples/config/init-project/demo.json /tmp/moleculer-gen-vhs-demo/config/init-project.json"
+Enter
+
+Type "cp examples/config/add-service/demo.json /tmp/moleculer-gen-vhs-demo/config/revisions-service.json"
+Enter
+
 Type "cp examples/config/add-services/demo.json /tmp/moleculer-gen-vhs-demo/config/add-services.json"
 Enter
 
@@ -37,62 +43,9 @@ Sleep 1s
 # Initialize project
 # ─────────────────────────────────────────────────────────────
 
-Type "moleculer-gen init"
+Type "moleculer-gen init config/init-project.json"
 Sleep 400ms
 Enter
-
-
-# Project name
-
-Wait+Screen /Project name:/
-Sleep 600ms
-
-Type "Wiwiki"
-Sleep 350ms
-Enter
-
-# Project output directory
-
-Wait+Screen /Project output directory/
-Sleep 600ms
-
-Type "wiwiki-backend"
-Sleep 350ms
-Enter
-
-
-# Database
-
-Wait+Screen /Database:/
-Sleep 600ms
-
-# Keep default database
-Enter
-
-
-# Transporter
-
-Wait+Screen /Transporter:/
-Sleep 600ms
-
-# Keep default transporter
-Enter
-
-
-# Optional infrastructure
-
-Wait+Screen /Infrastructure modules:/
-Sleep 700ms
-
-# Select an additional infrastructure module
-Down
-Sleep 250ms
-
-Space
-Sleep 400ms
-
-Enter
-
 
 # Wait for project generation
 
@@ -118,96 +71,9 @@ Sleep 600ms
 # Add an internal CRUD service interactively
 # ─────────────────────────────────────────────────────────────
 
-Type "moleculer-gen add-service"
+Type "moleculer-gen add-service ../config/revisions-service.json"
 Sleep 350ms
 Enter
-
-
-# Service name
-
-Wait+Screen /Service name:/
-Sleep 500ms
-
-Type "Revisions"
-Sleep 400ms
-Enter
-
-
-# CRUD service
-
-Wait+Screen /CRUD service:/
-Sleep 400ms
-
-# Keep CRUD enabled
-Enter
-
-
-# Service file
-# Accept generated convention
-
-Wait+Screen /Service file:/
-Sleep 400ms
-Enter
-
-
-# Service directory
-# Accept generated convention
-
-Wait+Screen /Service directory:/
-Sleep 400ms
-Enter
-
-
-# API exposure
-# Revisions stays internal
-
-Wait+Screen /Expose via API Gateway:/
-Sleep 600ms
-
-Type "n"
-Sleep 400ms
-Enter
-
-
-# Model file
-# Accept generated convention
-
-Wait+Screen /Model file:/
-Sleep 400ms
-Enter
-
-
-# Model name
-# Accept generated convention
-
-Wait+Screen /Model name:/
-Sleep 400ms
-Enter
-
-
-# Model variable
-# Accept generated convention
-
-Wait+Screen /Model variable:/
-Sleep 400ms
-Enter
-
-
-# Schema
-# Accept generated convention
-
-Wait+Screen /Schema:/
-Sleep 400ms
-Enter
-
-
-# Collection
-# Accept generated convention
-
-Wait+Screen /Collection\/table:/
-Sleep 400ms
-Enter
-
 
 # Wait for service generation
 

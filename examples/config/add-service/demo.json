@@ -1,5 +1,5 @@
 {
-  "serviceName": "articles",
+  "serviceName": "revisions",
   "isCrud": true,
   "exposeApi": true
 }
