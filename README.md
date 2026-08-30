@@ -120,7 +120,7 @@ You can also skip the interactive prompts and use a JSON configuration file for 
 npx moleculer-gen init ./project.config.json
 ```
 
-> See the [example `init` configurations](./examples/config/init-project/) for the supported format.
+> See the example [`init`](./examples/config/init-project/) configurations for the supported format.
 
 ### Extend the project
 
@@ -136,7 +136,7 @@ Or add a service from configuration:
 npx moleculer-gen add-service ./service.config.json
 ```
 
-> See the [example `add-service` configurations](./examples/config/add-service/) for the supported format.
+> See the example [`add-service`](./examples/config/add-service/) configurations for the supported format.
 
 Or generate multiple services from configuration:
 
@@ -144,7 +144,7 @@ Or generate multiple services from configuration:
 npx moleculer-gen add-services ./services.config.json
 ```
 
-> See the [example `add-services` configurations](./examples/config/add-services/) for the supported format.
+> See the example [`add-services`](./examples/config/add-services/) configurations for the supported format.
 
 ## Modular by design
 

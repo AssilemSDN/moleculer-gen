@@ -18,13 +18,13 @@ moleculer-gen
 Run VHS from the repository root:
 
 ```bash
-vhs docs/demos/demo-*.tape
+vhs docs/demos/demo-<name>.tape
 ```
 
 The generated GIF is written to:
 
 ```text
-docs/images/demo-*.gif
+docs/images/demo-<name>.gif
 ```
 
 ## Temporary environment

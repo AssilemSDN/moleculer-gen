@@ -1,14 +1,16 @@
 Output "docs/images/demo-interactive.gif"
 
 Set Shell "zsh"
-Set Width 1600
-Set Height 800
+Set Width 1200
+Set Height 600
 Set FontSize 22
-Set TypingSpeed 110ms
-Set PlaybackSpeed 0.50
-Set WaitTimeout 30s
+Set Framerate 15
+Set CursorBlink false
 
-# Prepare isolated environment
+
+# ─────────────────────────────────────────────────────────────
+# Prepare isolated demo environment
+# ─────────────────────────────────────────────────────────────
 
 Hide
 
@@ -28,156 +30,193 @@ Ctrl+L
 
 Show
 
-Sleep 2s
+Sleep 1s
 
+
+# ─────────────────────────────────────────────────────────────
 # Initialize project
+# ─────────────────────────────────────────────────────────────
 
 Type "moleculer-gen init"
-Sleep 1s
+Sleep 400ms
 Enter
+
 
 # Project name
 
 Wait+Screen /Project name:/
-Sleep 1.5s
+Sleep 600ms
 
 Type "Wiwiki Backend"
-Sleep 1.5s
+Sleep 350ms
 Enter
+
 
 # Database
 
 Wait+Screen /Database:/
-Sleep 1.5s
+Sleep 600ms
+
+# Keep default database
 Enter
+
 
 # Transporter
 
 Wait+Screen /Transporter:/
-Sleep 1.5s
+Sleep 600ms
+
+# Keep default transporter
 Enter
+
 
 # Optional infrastructure
 
 Wait+Screen /Infrastructure modules:/
-Sleep 2s
+Sleep 700ms
 
+# Select an additional infrastructure module
 Down
-Sleep 1s
+Sleep 250ms
 
 Space
-Sleep 1.5s
+Sleep 400ms
 
 Enter
 
-# Project generation
+
+# Wait for project generation
 
 Wait+Screen /Project "Wiwiki Backend" initialized/
-Sleep 3s
+Sleep 1.5s
 
+
+# ─────────────────────────────────────────────────────────────
 # Enter generated project
+# ─────────────────────────────────────────────────────────────
 
 Type "cd wiwiki-backend"
-Sleep 1s
+Sleep 350ms
 Enter
 
-Sleep 2s
+Sleep 700ms
 
 Ctrl+L
-Sleep 2s
+Sleep 600ms
 
-# Add service interactively
+
+# ─────────────────────────────────────────────────────────────
+# Add an internal CRUD service interactively
+# ─────────────────────────────────────────────────────────────
 
 Type "moleculer-gen add-service"
-Sleep 1s
+Sleep 350ms
 Enter
+
 
 # Service name
 
 Wait+Screen /Service name:/
-Sleep 1.5s
+Sleep 500ms
 
-Type "Articles"
-Sleep 1.5s
+Type "Revisions"
+Sleep 400ms
 Enter
+
 
 # CRUD service
 
 Wait+Screen /CRUD service:/
-Sleep 1.5s
+Sleep 400ms
+
+# Keep CRUD enabled
 Enter
+
 
 # Service file
+# Accept generated convention
 
 Wait+Screen /Service file:/
-Sleep 1.5s
+Sleep 400ms
 Enter
+
 
 # Service directory
+# Accept generated convention
 
 Wait+Screen /Service directory:/
-Sleep 1.5s
+Sleep 400ms
 Enter
+
 
 # API exposure
+# Revisions stays internal
 
 Wait+Screen /Expose via API Gateway:/
-Sleep 2.5s
+Sleep 600ms
 
 Type "n"
-
-Sleep 2s
+Sleep 400ms
 Enter
+
 
 # Model file
+# Accept generated convention
 
 Wait+Screen /Model file:/
-Sleep 1.5s
+Sleep 400ms
 Enter
+
 
 # Model name
+# Accept generated convention
 
 Wait+Screen /Model name:/
-Sleep 1.5s
+Sleep 400ms
 Enter
+
 
 # Model variable
+# Accept generated convention
 
 Wait+Screen /Model variable:/
-Sleep 1.5s
+Sleep 400ms
 Enter
+
 
 # Schema
+# Accept generated convention
 
 Wait+Screen /Schema:/
-Sleep 1.5s
+Sleep 400ms
 Enter
+
 
 # Collection
+# Accept generated convention
 
 Wait+Screen /Collection\/table:/
-Sleep 1.5s
+Sleep 400ms
 Enter
 
-# Service generation
 
-Wait+Screen /Service "articles" added/
-Sleep 3s
+# Wait for service generation
 
-Ctrl+L
+Wait+Screen /Service "revisions" added/
+
 Sleep 2s
 
-# Add multiple services from configuration
+Ctrl+L
+Sleep 600ms
+
+# ─────────────────────────────────────────────────────────────
+# Add multiple public services from configuration
+# ─────────────────────────────────────────────────────────────
 
 Type "moleculer-gen add-services ../config/add-services.json"
-Sleep 1s
+Sleep 350ms
 Enter
 
-Wait+Screen /Skipped services: articles/
-Sleep 1.5s
+Wait+Screen /2 services added/
 
-Wait+Screen /1 service added, 1 service skipped/
-
-# Keep final result visible
-
-Sleep 6s
+Sleep 3s
