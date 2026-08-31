@@ -33,7 +33,7 @@ npx moleculer-gen init
 ## 🎬 Demo 
 ### From zero to a generated microservice stack
 
-`moleculer-gen` can generate a complete local microservice environment, add application services, and get the stack running without forcing the project into a proprietary structure.
+`moleculer-gen` can generate a complete local microservice environment, add application services, and get the stack ready to run without forcing the project into a proprietary structure.
 
 ![moleculer-gen interactive demo](docs/images/demo-interactive.gif)
 
@@ -44,9 +44,24 @@ The demo shows the interactive workflow:
 - add a CRUD service
 - add multiple services from configuration
 
-### Run the generated CRUD API
+### Run and interact with the generated microservices
 
-![moleculer-gen runtime demo](docs/images/demo-runtime.gif)
+Once generated, the project can be built and started as a distributed Docker Compose stack, then explored interactively through the Moleculer REPL.
+
+| Run the microservices                                      | Interact using the REPL                                 |
+| ---------------------------------------------------------- | ------------------------------------------------------- |
+| Build and start the generated stack.                       | Explore services and call actions interactively.        |
+| `make build`<br>`make start`                               | `make repl`                                             |
+| ![moleculer-gen runtime demo](./docs/images/demo-run.gif) | ![moleculer-gen REPL demo](./docs/images/demo-repl.gif) |
+
+The REPL can inspect the distributed application directly:
+
+```text
+mol $ services
+mol $ actions
+mol $ call articles.create '{}'
+mol $ call articles.list
+```
 
 
 ### Reproduce the stack from configuration
