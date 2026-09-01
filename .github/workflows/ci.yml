@@ -127,7 +127,7 @@ jobs:
         run: yarn test:unit:coverage
 
       - name: Upload unit coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: ./coverage/unit/lcov.info
           flags: unit
@@ -140,7 +140,7 @@ jobs:
         run: yarn test:integration:coverage
 
       - name: Upload integration coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: ./coverage/integration/lcov.info
           flags: integration
