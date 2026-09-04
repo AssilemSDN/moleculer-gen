@@ -2,39 +2,107 @@
 
 The terminal demos used in the project documentation are generated with [VHS](https://github.com/charmbracelet/vhs).
 
+The recording environment is containerized so demos can be reproduced without installing VHS, Node.js, Yarn, or `moleculer-gen` locally.
+
 > Demo recordings use the canonical configuration files from `examples/config/*/demo.json`.
 
 ## Requirements
 
-The following commands must be available:
+Only Docker is required:
 
 ```bash
-vhs
-moleculer-gen
+docker --version
 ```
 
-## Generate demo
+## Build the demo image
 
-Run VHS from the repository root:
+From the repository root:
 
 ```bash
-vhs docs/demos/demo-<name>.tape
+docker build -f docs/demos/Dockerfile -t moleculer-gen-vhs .
 ```
 
-The generated GIF is written to:
+The image contains the tooling required to execute the demo tapes, including:
+
+* VHS;
+* Node.js;
+* Yarn;
+* the current `moleculer-gen` source tree and dependencies.
+
+## Generate a demo
+
+Demo tapes are stored under:
 
 ```text
-docs/images/demo-<name>.gif
+docs/demos/
 ```
+
+Generated GIFs are written to:
+
+```text
+docs/images/
+```
+
+From the repository root:
+
+```bash
+docker run --rm -v "${PWD}/docs/images:/app/docs/images" moleculer-gen-vhs docs/demos/demo-<name>.tape
+```
+
+For example:
+
+```bash
+docker run --rm -v "${PWD}/docs/images:/app/docs/images"  moleculer-gen-vhs docs/demos/demo-interactive.tape
+```
+
+
+## Available demos
+
+| Demo                     | Tape                                 | Output                               |
+| ------------------------ | ------------------------------------ | ------------------------------------ |
+| Interactive generation   | `docs/demos/demo-interactive.tape`   | `docs/images/demo-interactive.gif`   |
+| Configuration generation | `docs/demos/demo-configuration.tape` | `docs/images/demo-configuration.gif` |
+| Generated runtime        | `docs/demos/demo-runtime.tape`       | `docs/images/demo-runtime.gif`       |
+| Moleculer REPL           | `docs/demos/demo-repl.tape`          | `docs/images/demo-repl.gif`          |
 
 ## Temporary environment
 
-The demo runs inside:
+Generation demos use isolated temporary directories under:
+
+```text
+/tmp/
+```
+
+For example:
 
 ```text
 /tmp/moleculer-gen-vhs-demo
 ```
 
-The directory is removed and recreated at the beginning of each recording.
+The temporary directory is removed and recreated at the beginning of each recording to keep demos deterministic.
 
-The generated project is intentionally left in place after the recording so it can be inspected when debugging the demo.
+Because the demo itself runs inside a disposable Docker container, the temporary environment is automatically discarded when the recording finishes.
+
+Only the generated GIF is persisted to the host through the mounted:
+
+```text
+docs/images/
+```
+
+directory.
+
+## Rebuilding after source changes
+
+The demo image contains a copy of the current repository source.
+
+After changing the CLI, templates, dependencies, or demo tooling, rebuild the image before recording again:
+
+```bash
+docker build -f docs/demos/Dockerfile -t moleculer-gen-vhs .
+```
+
+To force a completely clean rebuild:
+
+```bash
+docker build --no-cache -f docs/demos/Dockerfile -t moleculer-gen-vhs .
+```

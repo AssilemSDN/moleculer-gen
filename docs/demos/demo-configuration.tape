@@ -1,11 +1,6 @@
 Output "docs/images/demo-configuration.gif"
 
-Set Shell "zsh"
-Set Width 1200
-Set Height 600
-Set FontSize 22
-Set Framerate 15
-Set CursorBlink false
+Source ./common.tape
 
 
 # ─────────────────────────────────────────────────────────────

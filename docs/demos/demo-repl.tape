@@ -1,6 +1,6 @@
 Output "docs/images/demo-repl.gif"
 
-Set Shell "zsh"
+Set Shell bash
 Set Width 1200
 Set Height 600
 Set FontSize 22
@@ -11,9 +11,12 @@ Set PlaybackSpeed 1
 Set TypingSpeed 150ms
 Set WaitTimeout 5m
 
+Require make
+Require docker
+
 Hide
 
-Type "cd ~/Documents/moleculer-gen-projects/wiwiki-backend"
+Type "cd \"$MOLECULER_GEN_DEMO_PATH\""
 Enter
 Wait
 
