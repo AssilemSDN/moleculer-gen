@@ -1,6 +1,6 @@
 Output "docs/images/demo-configuration.gif"
 
-Source ./common.tape
+Source "docs/demos/common.tape"
 
 
 # ─────────────────────────────────────────────────────────────

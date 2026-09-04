@@ -1,6 +1,7 @@
 Output "docs/images/demo-interactive.gif"
 
-Source ./common.tape
+Source "docs/demos/common.tape"
+
 
 # ─────────────────────────────────────────────────────────────
 # Prepare isolated demo environment
