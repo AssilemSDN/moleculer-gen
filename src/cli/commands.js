@@ -79,17 +79,33 @@ export const registerCommands = (program) => {
           successMessage: (data, result) => {
             const {
               createdCount = 0,
-              skippedCount = 0
+              skippedCount = 0,
+              created = [],
+              skipped = []
             } = data ?? {}
-            const createdLabel = createdCount === 1 ? 'service' : 'services'
-            const skippedLabel = skippedCount === 1 ? 'service' : 'services'
-            if (result.dryRun) {
-              return `${createdCount} ${createdLabel} can be added`
+
+            const formatServices = (count, services, action) => {
+              if (count <= 0) {
+                return null
+              }
+
+              const label = count === 1 ? 'service' : 'services'
+              const names = services.map(({ serviceName }) => serviceName).join(', ')
+
+              return `${count} ${label} ${action}${names ? ` (${names})` : ''}`
+            }
+            const parts = []
+            if (createdCount > 0) {
+              parts.push(
+                formatServices(createdCount, created, result.dryRun ? 'can be added' : 'added')
+              )
             }
             if (skippedCount > 0) {
-              return `${createdCount} ${createdLabel} added, ${skippedCount} ${skippedLabel} skipped`
+              parts.push(
+                formatServices(skippedCount, skipped, 'skipped')
+              )
             }
-            return `${createdCount} ${createdLabel} added`
+            return parts.join(' - ')
           }
         }
       )

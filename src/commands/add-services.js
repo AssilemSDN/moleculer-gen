@@ -119,7 +119,7 @@ export const addServices = safeRun(
           dryRun
         })
 
-        created.push(serviceName)
+        created.push({ serviceName })
 
         for (const plannedChange of serviceResult.plannedChanges) {
           addPlannedChange(result, {
