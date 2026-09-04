@@ -86,12 +86,16 @@ export const registerCommands = (program) => {
 
             const parts = []
             if (createdCount > 0) {
-              const label = createdCount === 1 ? 'service' : 'services'
-              const names = created.join(', ')
-              const action = result.dryRun ? 'can be added' : 'added'
+              const label = createdCount === 1
+                ? 'service'
+                : 'services'
+
+              const names = created.map(({ serviceName }) => serviceName).join(', ')
 
               parts.push(
-                `${createdCount} ${label} ${action} (${names})`
+                `${createdCount} ${label} ${
+                  result.dryRun ? 'can be added' : 'added'
+                } (${names})`
               )
             }
             if (skippedCount > 0) {
