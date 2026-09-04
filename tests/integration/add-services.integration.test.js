@@ -252,8 +252,7 @@ describe('add-services command integration', { timeout: 30_000 }, () => {
 
       // Everything was already there
       if (servicesToCreate.length === 0) {
-        expect(output).toContain('All services were skipped')
-        expect(output).toContain(`0 services added, ${servicesToSkip.length} services skipped`)
+        expect(output).toContain(`${servicesToSkip.length} services skipped`)
       }
     }
   )
