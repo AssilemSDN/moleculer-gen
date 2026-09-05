@@ -64,7 +64,7 @@ export const promptServiceDetails = async (serviceName) => {
       type: 'confirm',
       name: 'isCrud',
       message: 'CRUD service:',
-      default: true
+      default: false
     },
     {
       type: 'input',
@@ -89,7 +89,7 @@ export const promptServiceDetails = async (serviceName) => {
         type: 'confirm',
         name: 'exposeApi',
         message: 'Expose via API Gateway:',
-        default: true
+        default: false
       }
     ])
 
