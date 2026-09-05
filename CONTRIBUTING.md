@@ -4,7 +4,7 @@ Contributions are welcome!
 
 ## Prerequisites
 
-* Node.js 22, 24 or 26
+* Node.js 22.22.2+, 24.15.0+, or 26+
 * Corepack
 * Git
 
@@ -37,28 +37,47 @@ The reported Yarn version should match the version declared in the `packageManag
 
 ## Development workflow
 
-1. Create a branch from `main`.
-2. Implement your changes.
-3. Add or update tests when required.
-4. Run the project checks.
-5. Commit your changes using a clear commit message.
-6. Push the branch and open a pull request.
+1. For significant changes, check for an existing GitHub issue or open one before starting.
+2. Create a branch from `main`.
+3. Implement your changes.
+4. Add or update tests when behavior changes.
+5. Run the project checks.
+6. Commit your changes using clear commit messages.
+7. Push the branch and open a pull request.
+
+A GitHub issue is expected for changes such as:
+
+* new features;
+* non-trivial bug fixes;
+* significant refactors;
+* architectural changes;
+* breaking changes;
+* changes to user-facing behavior.
+
+An issue is optional for small changes such as:
+
+* documentation or typo fixes;
+* isolated test changes;
+* minor CI or tooling maintenance;
+* dependency updates;
+* other small maintenance changes.
 
 ## Branch naming convention
 
-Branch names must follow this format:
+Use the following format:
 
 ```text
-<type>/<issue-number>-<short-description>
+<type>/[issue-number-]<short-description>
 ```
 
 Where:
 
-- `<type>` uses a Conventional Commits-style keyword describing the nature of the change.
-- `<issue-number>` is the related GitHub issue number.
-- `<short-description>` briefly describes the change using lowercase kebab-case.
+* `<type>` describes the nature of the change.
+* `[issue-number-]` is included when the change is associated with a GitHub issue.
+* `<short-description>` briefly describes the change using lowercase kebab-case.
 
 ### Allowed types
+
 
 | Type       | Usage                                                |
 | ---------- | ---------------------------------------------------- |
@@ -66,7 +85,7 @@ Where:
 | `fix`      | Fix a bug                                            |
 | `docs`     | Update documentation only                            |
 | `test`     | Add or update tests                                  |
-| `refactor` | Restructure code without changing its behavior       |
+| `refactor` | Restructure code without intended behavior changes   |
 | `chore`    | Maintenance, dependencies, tooling, or configuration |
 | `ci`       | Update GitHub Actions or other CI configuration      |
 | `build`    | Update the build system or packaging                 |
@@ -75,14 +94,22 @@ Where:
 
 ### Examples
 
+Branches linked to an issue:
+
 ```text
 feat/42-add-redis-transporter
 fix/87-handle-invalid-config
-docs/91-update-installation-guide
-test/102-add-service-integration-tests
-chore/23-yarn-4-migration
-ci/104-add-node-version-matrix
+refactor/103-simplify-module-registry
 security/115-validate-output-paths
+```
+
+Branches that do not require an issue:
+
+```text
+docs/update-installation-guide
+test/add-service-integration-tests
+chore/update-dev-dependencies
+ci/update-node-version-matrix
 ```
 
 Keep branch names concise and descriptive.
@@ -96,8 +123,7 @@ fix-stuff
 feature/new-feature
 ```
 
-When no GitHub issue exists, create one before starting significant work so that the branch and pull request can be linked to it.
-
+Automated branches created by tools such as Dependabot or Release Please are not required to follow this convention.
 
 ## Run the CLI locally
 
@@ -150,18 +176,59 @@ Run the complete audit of direct and transitive dependencies with:
 yarn audit
 ```
 
+
 ## Pull requests
 
-* Keep pull requests focused on one issue or objective.
-* Link the related issue in the pull request description.
-* Add or update tests when behavior changes.
-* Update the documentation when commands, configuration, or prerequisites change.
-* Do not commit `node_modules`, generated package archives, `.yarn/cache`, or `.yarn/install-state.gz`.
+Keep pull requests focused on one coherent objective.
 
-Use the following syntax in the pull request description to automatically close an issue after merging:
+If a GitHub issue exists:
 
-```
+* link it in the pull request description;
+* use `Closes #123` when merging the pull request should automatically close it.
+
+Example:
+
+```text
 Closes #123
 ```
 
+Pull request titles must follow Conventional Commit syntax because pull requests are squash-merged and their titles become part of the project's release history.
+
+Examples:
+
+```text
+feat: add Redis transporter
+fix: reject duplicate service names
+docs: update installation guide
+test: cover batch validation
+refactor: simplify module generation
+chore: update development dependencies
+ci: update Node.js test matrix
+```
+
+For breaking changes, use `!` and clearly describe the impact in the pull request:
+
+```text
+feat!: change generated project configuration format
+```
+
+Individual commits inside a pull request do not need to follow Conventional Commit syntax, but their messages should remain clear and understandable.
+
+Before opening a pull request:
+
+* add or update tests when behavior changes;
+* update documentation when commands, configuration, generated output, or prerequisites change;
+* mention breaking changes explicitly;
+* make sure all required project checks pass;
+* do not commit `node_modules`, generated package archives, `.yarn/cache`, or `.yarn/install-state.gz`.
+
+All review conversations should be resolved before merging.
+
+
+## Issues
+
 Suggestions, bug reports, and feature requests can be submitted through GitHub Issues.
+
+Before opening a new issue, check whether a similar issue already exists.
+
+Security vulnerabilities should not be reported through a public GitHub issue. Follow the instructions in `SECURITY.md` instead.
