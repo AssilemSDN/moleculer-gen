@@ -165,29 +165,23 @@ This keeps generated environments focused while allowing `moleculer-gen` to evol
 npx moleculer-gen [options] [command]
 ```
 
-| Command        | Mode                 | Description                                     |
-| -------------- | -------------------- | ----------------------------------------------- |
-| `init`         | Interactive / config | Initialize a new Moleculer.js project           |
-| `add-service`  | Interactive / config | Add one service to an existing project          |
-| `add-services` | Config               | Add multiple services from a JSON configuration |
-| `validate`     | Validation           | Validate the consistency of a generated project |
+| Command                                               | Mode                 | Description                                     |
+| ----------------------------------------------------- | -------------------- | ----------------------------------------------- |
+| [`init`](./docs/cli/commands/init.md)                 | Interactive / config | Initialize a new Moleculer.js project           |
+| [`add-service`](./docs/cli/commands/add-service.md)   | Interactive / config | Add one service to an existing project          |
+| [`add-services`](./docs/cli/commands/add-services.md) | Config               | Add multiple services from a JSON configuration |
+| [`validate`](./docs/cli/commands/validate.md)         | Validation           | Validate the project configuration              |
 
 Generation commands support dry runs, allowing changes to be inspected before files are written.
 
-For command options, configuration formats, generated files, and detailed examples, see the documentation.
+For global options, configuration files, and command usage, see the [`CLI reference`](./docs/cli/README.md).
 
 ## 📚 Documentation
 
 The README is intentionally focused on discovering `moleculer-gen` and getting a project running quickly.
 
-Detailed documentation lives under [`docs/`](./docs/).
-
-### Command reference
-
-* [`init`](./docs/cli/init.md)
-* [`add-service`](./docs/cli/add-service.md)
-* [`add-services`](./docs/cli/add-services.md)
-* [`validate`](./docs/cli/validate.md)
+* [`CLI reference`](./docs/cli/README.md) — commands, options, configuration files, and dry runs
+* [`Demo development`](./docs/demos/README.md) — reproduce and maintain the project demos
 
 
 ## 🤝 Contributing
