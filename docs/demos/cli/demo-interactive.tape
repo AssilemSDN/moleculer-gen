@@ -127,9 +127,10 @@ Enter
 
 
 # CRUD service
-# Keep enabled
+# Enable
 
 Wait+Screen /CRUD service:/
+Type "y"
 Sleep 400ms
 Enter
 
@@ -154,10 +155,7 @@ Enter
 # Keep service internal
 
 Wait+Screen /Expose via API Gateway:/
-Sleep 500ms
-
-Type "n"
-Sleep 300ms
+Sleep 400
 Enter
 
 
