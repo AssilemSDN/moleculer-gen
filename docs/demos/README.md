@@ -46,24 +46,22 @@ docs/images/
 From the repository root:
 
 ```bash
-docker run --rm -v "${PWD}/docs/images:/app/docs/images" moleculer-gen-vhs docs/demos/demo-<name>.tape
+docker run --rm -v "${PWD}/docs/images:/app/docs/images" moleculer-gen-vhs docs/demos/cli/demo-<name>.tape
 ```
 
 For example:
 
 ```bash
-docker run --rm -v "${PWD}/docs/images:/app/docs/images"  moleculer-gen-vhs docs/demos/demo-interactive.tape
+docker run --rm -v "${PWD}/docs/images:/app/docs/images"  moleculer-gen-vhs docs/demos/cli/demo-interactive.tape
 ```
 
 
 ## Available demos
 
-| Demo                     | Tape                                 | Output                               |
-| ------------------------ | ------------------------------------ | ------------------------------------ |
-| Interactive generation   | `docs/demos/demo-interactive.tape`   | `docs/images/demo-interactive.gif`   |
-| Configuration generation | `docs/demos/demo-configuration.tape` | `docs/images/demo-configuration.gif` |
-| Generated runtime        | `docs/demos/demo-runtime.tape`       | `docs/images/demo-runtime.gif`       |
-| Moleculer REPL           | `docs/demos/demo-repl.tape`          | `docs/images/demo-repl.gif`          |
+| Demo                     | Tape                                     | Output                               |
+| ------------------------ | ---------------------------------------- | ------------------------------------ |
+| Interactive generation   | `docs/demos/cli/demo-interactive.tape`   | `docs/images/demo-interactive.gif`   |
+| Configuration generation | `docs/demos/cli/demo-configuration.tape` | `docs/images/demo-configuration.gif` |
 
 ## Temporary environment
 

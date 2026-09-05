@@ -24,12 +24,11 @@ Enter
 Ctrl+L
 
 Show
-
 Sleep 1s
 
 
 # ─────────────────────────────────────────────────────────────
-# Initialize project
+# Initialize project interactively
 # ─────────────────────────────────────────────────────────────
 
 Type "moleculer-gen init"
@@ -40,51 +39,50 @@ Enter
 # Project name
 
 Wait+Screen /Project name:/
-Sleep 600ms
+Sleep 500ms
 
 Type "Wiwiki"
-Sleep 350ms
+Sleep 300ms
 Enter
+
 
 # Project output directory
 
 Wait+Screen /Project output directory/
-Sleep 600ms
+Sleep 500ms
 
 Type "wiwiki-backend"
-Sleep 350ms
+Sleep 300ms
 Enter
 
 
 # Database
+# Keep default
 
 Wait+Screen /Database:/
-Sleep 600ms
-
-# Keep default database
+Sleep 500ms
 Enter
 
 
 # Transporter
+# Keep default
 
 Wait+Screen /Transporter:/
-Sleep 600ms
-
-# Keep default transporter
+Sleep 500ms
 Enter
 
 
 # Optional infrastructure
+# Enable an additional module
 
 Wait+Screen /Infrastructure modules:/
-Sleep 700ms
+Sleep 600ms
 
-# Select an additional infrastructure module
 Down
-Sleep 250ms
+Sleep 200ms
 
 Space
-Sleep 400ms
+Sleep 350ms
 
 Enter
 
@@ -100,10 +98,10 @@ Sleep 1.5s
 # ─────────────────────────────────────────────────────────────
 
 Type "cd wiwiki-backend"
-Sleep 350ms
+Sleep 300ms
 Enter
 
-Sleep 700ms
+Sleep 600ms
 
 Ctrl+L
 Sleep 600ms
@@ -121,24 +119,23 @@ Enter
 # Service name
 
 Wait+Screen /Service name:/
-Sleep 500ms
+Sleep 450ms
 
 Type "Revisions"
-Sleep 400ms
+Sleep 300ms
 Enter
 
 
 # CRUD service
+# Keep enabled
 
 Wait+Screen /CRUD service:/
 Sleep 400ms
-
-# Keep CRUD enabled
 Enter
 
 
 # Service file
-# Accept generated convention
+# Keep generated convention
 
 Wait+Screen /Service file:/
 Sleep 400ms
@@ -146,7 +143,7 @@ Enter
 
 
 # Service directory
-# Accept generated convention
+# Keep generated convention
 
 Wait+Screen /Service directory:/
 Sleep 400ms
@@ -154,18 +151,18 @@ Enter
 
 
 # API exposure
-# Revisions stays internal
+# Keep service internal
 
 Wait+Screen /Expose via API Gateway:/
-Sleep 600ms
+Sleep 500ms
 
 Type "n"
-Sleep 400ms
+Sleep 300ms
 Enter
 
 
 # Model file
-# Accept generated convention
+# Keep generated convention
 
 Wait+Screen /Model file:/
 Sleep 400ms
@@ -173,7 +170,7 @@ Enter
 
 
 # Model name
-# Accept generated convention
+# Keep generated convention
 
 Wait+Screen /Model name:/
 Sleep 400ms
@@ -181,7 +178,7 @@ Enter
 
 
 # Model variable
-# Accept generated convention
+# Keep generated convention
 
 Wait+Screen /Model variable:/
 Sleep 400ms
@@ -189,7 +186,7 @@ Enter
 
 
 # Schema
-# Accept generated convention
+# Keep generated convention
 
 Wait+Screen /Schema:/
 Sleep 400ms
@@ -197,7 +194,7 @@ Enter
 
 
 # Collection
-# Accept generated convention
+# Keep generated convention
 
 Wait+Screen /Collection\/table:/
 Sleep 400ms
@@ -207,14 +204,14 @@ Enter
 # Wait for service generation
 
 Wait+Screen /Service "revisions" added/
-
-Sleep 2s
+Sleep 1.8s
 
 Ctrl+L
 Sleep 600ms
 
+
 # ─────────────────────────────────────────────────────────────
-# Add multiple public services from configuration
+# Add multiple services from configuration
 # ─────────────────────────────────────────────────────────────
 
 Type "moleculer-gen add-services ../config/add-services.json"
@@ -222,5 +219,4 @@ Sleep 350ms
 Enter
 
 Wait+Screen /2 services added/
-
-Sleep 3s 
+Sleep 2s

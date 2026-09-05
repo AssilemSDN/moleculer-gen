@@ -1,18 +1,6 @@
-Output "docs/images/demo-run.gif"
+Output "docs/images/demo-configuration.gif"
 
-Set Shell bash
-Set Width 1200
-Set Height 600
-Set FontSize 22
-Set Framerate 15
-Set CursorBlink false
-
-Set PlaybackSpeed 1
-Set TypingSpeed 150ms
-Set WaitTimeout 5m
-
-Require make
-Require docker
+Source "docs/demos/common.tape"
 
 
 # ─────────────────────────────────────────────────────────────
@@ -39,33 +27,6 @@ Enter
 Type "cd /tmp/moleculer-gen-vhs-demo"
 Enter
 
-
-# ─────────────────────────────────────────────────────────────
-# Generate complete demo project
-# ─────────────────────────────────────────────────────────────
-
-Type "moleculer-gen init config/init-project.json"
-Enter
-
-Wait+Screen /Project "Wiwiki" initialized/
-
-Type "cd wiwiki-backend"
-Enter
-
-Type "moleculer-gen add-service ../config/revisions-service.json"
-Enter
-
-Wait+Screen /Service "revisions" added/
-
-Type "moleculer-gen add-services ../config/add-services.json"
-Enter
-
-Wait+Screen /2 services added/
-
-Type "make stop >/dev/null 2>&1 || true"
-Enter
-Wait
-
 Ctrl+L
 
 Show
@@ -73,35 +34,53 @@ Sleep 1s
 
 
 # ─────────────────────────────────────────────────────────────
-# Build
+# Initialize project
 # ─────────────────────────────────────────────────────────────
 
-Type "make build"
+Type "moleculer-gen init config/init-project.json"
+Sleep 400ms
 Enter
-Wait
 
-Sleep 3s
+Wait+Screen /Project "Wiwiki" initialized/
+Sleep 1.5s
+
+
+# ─────────────────────────────────────────────────────────────
+# Enter generated project
+# ─────────────────────────────────────────────────────────────
+
+Type "cd wiwiki-backend"
+Sleep 350ms
+Enter
+
+Sleep 700ms
 
 Ctrl+L
+Sleep 600ms
 
 
 # ─────────────────────────────────────────────────────────────
-# Start
+# Add an internal CRUD service from configuration
 # ─────────────────────────────────────────────────────────────
 
-Type "make start"
+Type "moleculer-gen add-service ../config/revisions-service.json"
+Sleep 350ms
 Enter
-Wait
 
-Sleep 3s
+Wait+Screen /Service "revisions" added/
+Sleep 2s
+
+Ctrl+L
+Sleep 600ms
 
 
 # ─────────────────────────────────────────────────────────────
-# Status
+# Add multiple public services from configuration
 # ─────────────────────────────────────────────────────────────
 
-Type "make ps"
+Type "moleculer-gen add-services ../config/add-services.json"
+Sleep 350ms
 Enter
-Wait
 
-Sleep 8s
+Wait+Screen /2 services added/
+Sleep 2s

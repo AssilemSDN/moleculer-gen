@@ -44,26 +44,6 @@ The demo shows the interactive workflow:
 - add a CRUD service
 - add multiple services from configuration
 
-### Run and interact with the generated microservices
-
-Once generated, the project can be built and started as a distributed Docker Compose stack, then explored interactively through the Moleculer REPL.
-
-| Run the microservices                                      | Interact using the REPL                                 |
-| ---------------------------------------------------------- | ------------------------------------------------------- |
-| Build and start the generated stack.                       | Explore services and call actions interactively.        |
-| `make build`<br>`make start`                               | `make repl`                                             |
-| ![moleculer-gen runtime demo](./docs/images/demo-run.gif) | ![moleculer-gen REPL demo](./docs/images/demo-repl.gif) |
-
-The REPL can inspect the distributed application directly:
-
-```text
-mol $ services
-mol $ actions
-mol $ call articles.create '{}'
-mol $ call articles.list
-```
-
-
 ### Reproduce the stack from configuration
 
 Interactive prompts are useful while designing a stack, but the same project can also be generated non-interactively from JSON configuration files.
