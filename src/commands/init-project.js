@@ -153,7 +153,7 @@ export const initProject = safeRun(
 
       addNextStep(result, {
         type: 'command',
-        value: 'moleculer-gen add-service'
+        value: 'npx moleculer-gen add-service'
       })
 
       addNextStep(result, {

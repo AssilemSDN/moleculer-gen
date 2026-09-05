@@ -33,7 +33,7 @@ import { createRequire } from 'module'
  * //     'GET /': 'users.list',
  * //     'GET /:id': 'users.get',
  * //     'PUT /:id': 'users.update',
- * //     'DELETE /:slug': 'users.remove'
+ * //     'DELETE /:id': 'users.remove'
  * //   },
  * //   bodyParsers: { json: true }
  * // }
