@@ -1,8 +1,8 @@
-## `init`
+# `init`
 
 Create a new Moleculer.js project.
 
-### Usage
+## Usage
 
 Interactive setup:
 
@@ -23,7 +23,7 @@ npx moleculer-gen init --dry-run
 npx moleculer-gen init <config-file> --dry-run
 ```
 
-### Interactive setup
+## Interactive setup
 
 The interactive setup asks for:
 
@@ -46,7 +46,7 @@ Currently available modules are:
 
 The API Gateway is included in every generated project.
 
-### Configuration
+## Configuration
 
 A minimal configuration requires `projectName`, `database`, and `transporter`:
 
@@ -85,7 +85,7 @@ Supported plugin keys:
 
 > Interactive defaults may differ from configuration-file defaults. Omitting `plugins` from a JSON configuration enables no optional plugins.
 
-### Output
+## Output
 
 The project is generated in:
 

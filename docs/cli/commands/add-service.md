@@ -1,10 +1,10 @@
-## `add-service`
+# `add-service`
 
 Add a new service to an existing `moleculer-gen` project.
 
 The command must be run from the project root.
 
-### Usage
+## Usage
 
 Interactive setup:
 
@@ -25,7 +25,7 @@ npx moleculer-gen add-service --dry-run
 npx moleculer-gen add-service <config-file> --dry-run
 ```
 
-### Interactive setup
+## Interactive setup
 
 The interactive setup asks for:
 
@@ -39,7 +39,7 @@ Names are automatically suggested from the service name and can be customized.
 
 CRUD and API exposure are disabled by default.
 
-### Configuration
+## Configuration
 
 A minimal configuration only requires `serviceName`:
 
@@ -82,7 +82,7 @@ Generated names can be overridden with:
 
 Model-related fields are only used for CRUD services.
 
-### Naming
+## Naming
 
 By default, names are derived from `serviceName`.
 
@@ -98,7 +98,7 @@ For example, `articles` generates:
 | Collection        | `articles`            |
 | Schema            | `articleSchema`       |
 
-### Output
+## Output
 
 Every service generates:
 

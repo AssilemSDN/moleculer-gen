@@ -1,10 +1,10 @@
-## `validate`
+# `validate`
 
 Validate the configuration of an existing `moleculer-gen` project.
 
 The command must be run from the project root.
 
-### Usage
+## Usage
 
 ```bash
 npx moleculer-gen validate
@@ -12,7 +12,7 @@ npx moleculer-gen validate
 
 The command currently has no command-specific options.
 
-### Validation
+## Validation
 
 `validate` checks `.moleculer-gen/config.json` and verifies that it contains the expected project metadata.
 
@@ -34,7 +34,7 @@ Project validated
 
 Validation errors return exit code `1`.
 
-### Limitations
+## Limitations
 
 **WIP** : Validation currently only checks the project configuration.
 

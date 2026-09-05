@@ -1,10 +1,10 @@
-## `add-services`
+# `add-services`
 
 Add multiple services to an existing `moleculer-gen` project from a JSON configuration.
 
 The command must be run from the project root.
 
-### Usage
+## Usage
 
 From a JSON configuration:
 
@@ -18,7 +18,7 @@ Preview the generation without writing files:
 npx moleculer-gen add-services <config-file> --dry-run
 ```
 
-### Configuration
+## Configuration
 
 The configuration must contain a non-empty `services` array.
 
@@ -47,7 +47,7 @@ Example:
 
 An empty `services` array is invalid.
 
-### Output
+## Output
 
 Each service generates the same files and configuration as `add-service`, depending on its options.
 

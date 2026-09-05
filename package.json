@@ -22,6 +22,7 @@
     "src",
     "dist",
     "templates",
+    "docs",
     "examples",
     "README.md",
     "LICENSE"
