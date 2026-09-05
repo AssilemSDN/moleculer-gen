@@ -155,7 +155,7 @@ Enter
 # Keep service internal
 
 Wait+Screen /Expose via API Gateway:/
-Sleep 400
+Sleep 400ms
 Enter
 
 
