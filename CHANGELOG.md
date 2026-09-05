@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.7.0](https://github.com/AssilemSDN/moleculer-gen/compare/v0.6.0...v0.7.0) (2026-09-05)
+
+
+### Features
+
+* add warnings exit support ([8b60ee6](https://github.com/AssilemSDN/moleculer-gen/commit/8b60ee6739687b9597362a56cd33ad7516627756))
+* add working new services cli command, skip existing services ([036e229](https://github.com/AssilemSDN/moleculer-gen/commit/036e229ebb9388f1642b1355625e3fcf2880079e))
+* **cli:** add batch multiple services generation ([64d698e](https://github.com/AssilemSDN/moleculer-gen/commit/64d698ea4e6f341fa53efd693e05b2c1dfea655a))
+* **cli:** add-services skeleton command ([4ab7ad4](https://github.com/AssilemSDN/moleculer-gen/commit/4ab7ad4e489779f16765b3e6b9270408d8e91b05))
+* **cli:** improve command output and error handling ([#57](https://github.com/AssilemSDN/moleculer-gen/issues/57)) ([67fe8de](https://github.com/AssilemSDN/moleculer-gen/commit/67fe8de35ce57df83c998f83e9456ac351c1baae))
+* **module:** add centralized module registry ([#34](https://github.com/AssilemSDN/moleculer-gen/issues/34)) ([150823b](https://github.com/AssilemSDN/moleculer-gen/commit/150823b77fb6b9da932d28096af4b39a2bfd65ba))
+* **prompts:** allow custom project output directory ([9d16b90](https://github.com/AssilemSDN/moleculer-gen/commit/9d16b90b6f525c4acce06e5bb411eb0a69d1b973))
+* **repl:** add Docker REPL support ([#36](https://github.com/AssilemSDN/moleculer-gen/issues/36)) ([e7d1e86](https://github.com/AssilemSDN/moleculer-gen/commit/e7d1e869b298bb4cae6109c5f0ba586040160cea))
+* **template:** support build args and mark ps as phony ([02615a0](https://github.com/AssilemSDN/moleculer-gen/commit/02615a0daff0fd747e24a85707670562abb583e8))
+
+
+### Bug Fixes
+
+* add others skipabble errors ([1bfbcd3](https://github.com/AssilemSDN/moleculer-gen/commit/1bfbcd3c3d6a2aef9382ab8f2745685c52b589ad))
+* cli command behavior ([#63](https://github.com/AssilemSDN/moleculer-gen/issues/63)) ([e5df3ee](https://github.com/AssilemSDN/moleculer-gen/commit/e5df3ee0fd193cac38654669720c14462c4546b8))
+* **cli:** services names now appear clearly ([d9c5321](https://github.com/AssilemSDN/moleculer-gen/commit/d9c532113064b9b084f412b35beb719799465a9b))
+* **commands:** call the right command ([854bbd8](https://github.com/AssilemSDN/moleculer-gen/commit/854bbd8ace95ae0d14b765e10b67bebf560dd07d))
+* generate yarn.lock from project package.json ([#59](https://github.com/AssilemSDN/moleculer-gen/issues/59)) ([75e9943](https://github.com/AssilemSDN/moleculer-gen/commit/75e9943a0d718adba164b626ad0db8f94675a6aa))
+* **init:** no more generating project outside current dir ([f51e904](https://github.com/AssilemSDN/moleculer-gen/commit/f51e9049a88db11cb148ad55c99751495aa38753))
+* **init:** no more generating project outside current dir ([947e3b7](https://github.com/AssilemSDN/moleculer-gen/commit/947e3b72c0c8a966156d48ecec91359ac2c5d210))
+* prevent path traversal ([#39](https://github.com/AssilemSDN/moleculer-gen/issues/39)) ([c8d14c7](https://github.com/AssilemSDN/moleculer-gen/commit/c8d14c769a1a8ba12d585b144a6cda8729a81056))
+* **prompt:** using select type instead of list ([#55](https://github.com/AssilemSDN/moleculer-gen/issues/55)) ([5198954](https://github.com/AssilemSDN/moleculer-gen/commit/51989543e0170b149029a548e387144c355babb8))
+* **test:** adapt test to new display ([aec6cf6](https://github.com/AssilemSDN/moleculer-gen/commit/aec6cf6763df5948d6eb2e1bc58a93e7fb7825fb))
+* **tests:** add service unit test using objectContaining ([9247707](https://github.com/AssilemSDN/moleculer-gen/commit/92477073548fe6312988066d1bc57680cd02f454))
+* upgrade js-yaml to 5.2.3 ([#31](https://github.com/AssilemSDN/moleculer-gen/issues/31)) ([87f1ce5](https://github.com/AssilemSDN/moleculer-gen/commit/87f1ce54149a9566fd3fe6e13e0d24468d4ea560))
+* validate boolean service config with Zod ([#38](https://github.com/AssilemSDN/moleculer-gen/issues/38)) ([b6ca3a0](https://github.com/AssilemSDN/moleculer-gen/commit/b6ca3a0fcfacaab19917de12a02c90cfa5b700fe))
+
 ## [0.6.0](https://github.com/AssilemSDN/moleculer-gen/compare/v0.5.0...v0.6.0) (2026-06-29)
 
 
