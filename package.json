@@ -45,7 +45,7 @@
     "zod": "4.5.4"
   },
   "devDependencies": {
-    "@types/node": "24.8.1",
+    "@types/node": "26.4.1",
     "@vitest/coverage-v8": "4.1.11",
     "c8": "12.0.0",
     "standard": "17.1.2",
