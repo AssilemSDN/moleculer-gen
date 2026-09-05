@@ -1,0 +1,37 @@
+name: Feature or improvement
+description: Suggest a new capability or improvement
+title: "feat: "
+labels:
+  - enhancement
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement!
+        
+        Please describe the problem first, then the behavior you'd like to see.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What problem would this change solve?
+      placeholder: Describe the use case and why the current behavior is insufficient.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What behavior would you like to see?
+      placeholder: Describe the expected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add examples, alternatives, screenshots, or anything else that may help.
