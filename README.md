@@ -83,14 +83,13 @@ The generated project remains a **standard Moleculer.js project** — `moleculer
 
 ### Requirements
 
-| Requirement                                        | Version        | Purpose                          |
-| -------------------------------------------------- | -------------- | -------------------------------- |
-| [Node.js](https://nodejs.org/)                     | `>= 22.13.0`   | Run the CLI                      |
-| [Docker](https://www.docker.com/)                  | `>= 24`        | Run generated services           |
-| [Docker Compose](https://docs.docker.com/compose/) | `v2+`          | Orchestrate the generated stack  |
-| [Make](https://www.gnu.org/software/make/)         | Recent version | Build and manage the environment |
 
-> No global installation is required.
+| Requirement                                        | Version                            | Purpose                          |
+| -------------------------------------------------- | ---------------------------------- | -------------------------------- |
+| [Node.js](https://nodejs.org/)                     | `22.22.2+`, `24.15.0+`, or `26+`   | Run the CLI                      |
+| [Docker](https://www.docker.com/)                  | `>= 24`                            | Run generated services           |
+| [Docker Compose](https://docs.docker.com/compose/) | `v2+`                              | Orchestrate the generated stack  |
+| [Make](https://www.gnu.org/software/make/)         | Recent version                     | Build and manage the environment |
 
 ### Create a project
 
