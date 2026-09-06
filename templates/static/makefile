@@ -2,6 +2,10 @@
 ENV_FILE ?= .env.dev
 BUILD_ARGS ?=
 
+# Create default development environment if missing
+.env.dev:
+	cp .env.example .env.dev
+
 # Load the selected environment variables
 include $(ENV_FILE)
 export
