@@ -2,6 +2,8 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
+    pool: 'forks',
+
     coverage: {
       provider: 'v8',
 
@@ -10,11 +12,10 @@ export default defineConfig({
         'lcov'
       ],
 
-      reportsDirectory: 'coverage/unit',
-
       include: [
         'src/**/*.{js,ts}'
       ],
+
       exclude: [
         'tests/**',
         'src/modules/**',
