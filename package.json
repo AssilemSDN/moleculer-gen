@@ -47,7 +47,7 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
-    "@types/node": "24.8.1",
+    "@types/node": "26.6.4",
     "@vitest/coverage-v8": "5",
     "standard": "17.1.2",
     "typescript": "7.0.2",
