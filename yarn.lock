@@ -572,12 +572,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:24.8.1":
-  version: 24.8.1
-  resolution: "@types/node@npm:24.8.1"
+"@types/node@npm:26.6.4":
+  version: 26.6.4
+  resolution: "@types/node@npm:26.6.4"
   dependencies:
-    undici-types: "npm:~7.14.0"
-  checksum: 10c0/d185f2f14aa26cc2b482aa730bfc452943f9636df37aad6ceed80aa397f1278f894043336bd72f74c47b3dbef23e772ac9b1a256168984aa8aee26836132d290
+    undici-types: "npm:~8.9.0"
+  checksum: 10c0/094e7362df9200ba4c2da09131ca3b5d1aa51535a268a24e4ee2546d9c5a323d1d30cbdaaaa3db7ef8b2387572d1f9edabb11538ab7a09d3bca33ae5cddc2b1b
   languageName: node
   linkType: hard
 
@@ -2868,7 +2868,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "moleculer-gen@workspace:."
   dependencies:
-    "@types/node": "npm:24.8.1"
+    "@types/node": "npm:26.6.4"
     "@vitest/coverage-v8": "npm:5"
     chalk: "npm:6.0.1"
     change-case: "npm:5.4.4"
@@ -4130,10 +4130,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~7.14.0":
-  version: 7.14.0
-  resolution: "undici-types@npm:7.14.0"
-  checksum: 10c0/e7f3214b45d788f03c51ceb33817be99c65dae203863aa9386b3ccc47201a245a7955fc721fb581da9c888b6ebad59fa3f53405214afec04c455a479908f0f14
+"undici-types@npm:~8.9.0":
+  version: 8.9.0
+  resolution: "undici-types@npm:8.9.0"
+  checksum: 10c0/51c712c20c087368f62c6fc0f2bc49fa76bfe5dec28ff01584bb677ff29b0622569783c02d43e151143808c48c0503f804093bd2c491b10f2a830138034cb451
   languageName: node
   linkType: hard
 
