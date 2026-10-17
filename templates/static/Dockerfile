@@ -1,7 +1,7 @@
 # ------------------------------------
 # First stage: install dependencies
 # ------------------------------------
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /usr/app
 
@@ -16,7 +16,7 @@ RUN yarn workspaces focus --all --production
 # ------------------------------------
 # Final stage: runtime image
 # ------------------------------------
-FROM node:24-alpine
+FROM node:26-alpine
 
 WORKDIR /usr/app
 
