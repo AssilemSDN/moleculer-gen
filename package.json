@@ -44,7 +44,7 @@
     "mustache": "4.2.0",
     "pluralize-esm": "9.0.5",
     "slugify": "1.6.9",
-    "zod": "4.6.5"
+    "zod": "4.6.6"
   },
   "devDependencies": {
     "@types/node": "24.8.1",
